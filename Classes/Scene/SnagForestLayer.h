@@ -9,11 +9,11 @@
 //#include "MsgTypeForObserver.h"
 
 #define BALL_LAUNCH_ROTATION (20)
-#define BALL_LAUNCH_SPEED (7 * 240 / 960)
+#define BALL_LAUNCH_SPEED (7)
 
 const unsigned int c_triSnags = 4;
 const float c_radius = 10.0f;
-const unsigned int c_heightStart = 840 * 240 / 960;
+const unsigned int c_heightStart = 840;
 
 class SnagForestLayer: public cocos2d::Layer 
 {

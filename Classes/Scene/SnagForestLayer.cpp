@@ -95,7 +95,7 @@ bool SnagForestLayer::initWithEntryID(int entryId)
 
 void SnagForestLayer::update(float dt)
 {
-	if (m_upBall != NULL && m_upBall->getPositionY() <= ((m_upBall->getBallSize().height / 2 + 20) * 240 / 960))
+	if (m_upBall != NULL && m_upBall->getPositionY() <= (m_upBall->getBallSize().height / 2 + 20))
 	{
 		this->removeChild(m_upBall);
 		m_upBall = NULL;
@@ -104,6 +104,11 @@ void SnagForestLayer::update(float dt)
 		{
 			this->setTouchEnabled(true);
 		}
+		m_emitter->setVisible(false);
+	}
+	else if (m_upBall != NULL && !m_isBallGoingUp)
+	{
+		routeDetection(m_upBall);
 	}
 	// base on position of body(box2d) to update position of CCSprite
 	//for(b2Body* b = m_box2dWorld->m_world->GetBodyList(); b; b = b->GetNext())
@@ -185,7 +190,7 @@ void SnagForestLayer::ballLauncherMoving(float dt)
 			expect = Point(BALL_LAUNCH_SPEED*tan(CC_DEGREES_TO_RADIANS(m_upBallAngle)), -BALL_LAUNCH_SPEED);
 		}
 		m_upBall->setPosition(m_upBall->getPosition() + expect);
-		if (!m_isBallGoingUp && m_upBall->getPositionY() < m_winSize.height - 64 * 240 / 960)
+		if (!m_isBallGoingUp && m_upBall->getPositionY() < m_winSize.height - 64)
 		{
 			createFallBall();
 			this->unschedule(schedule_selector(SnagForestLayer::ballLauncherMoving));
@@ -215,10 +220,10 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 	m_upBall = Ball::create();
 	m_upBall->bindSprite(CCSprite::create("ball.png"));
 	m_upBall->setBallSize(m_upBall->getSprite()->getContentSize());
-	auto body = PhysicsBody::createCircle((m_upBall->getBallSize().width / 2) * 240 / 960);
+	auto body = PhysicsBody::createCircle(m_upBall->getBallSize().width / 2);
 	body->setDynamic(false);
 	m_upBall->setPhysicsBody(body);
-	m_upBall->setPosition(Point(m_winSize.width / 2 + 5 - CCRANDOM_0_1(), 184 * 240 / 960));
+	m_upBall->setPosition(Point(m_winSize.width / 2 + 5 - CCRANDOM_0_1(), 184));
 
 	this->addChild(m_upBall, 100);
 
@@ -286,7 +291,7 @@ void SnagForestLayer::initSnags()
 		{
 			auto snag = Sprite::create("snag.png");
 			//snag->setScale(25);
-			auto body = PhysicsBody::createCircle((snag->getContentSize().width / 2) * 240 / 960);
+			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2);
 			body->setDynamic(false);
 			snag->setPhysicsBody(body);
 			if (j % 2 == 1)
@@ -341,7 +346,6 @@ void SnagForestLayer::initSlots()
 /* === Ball Action ===*/
 void SnagForestLayer::createFallBall()
 {
-	log("createFallBall");
 	m_upBall->getPhysicsBody()->setDynamic(true);
 
 	//b2CircleShape shape1;

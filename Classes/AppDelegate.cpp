@@ -20,7 +20,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
-	Size designSize = Size(160, 240);
+	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
 	glview->setFrameSize(designSize.width, designSize.height);
 	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
