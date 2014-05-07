@@ -4,24 +4,20 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 
-
 #include "Entity/Ball.h"
+#include "Entity/Entity.h"
 //#include "MsgTypeForObserver.h"
 
 #define BALL_LAUNCH_ROTATION (20)
-#define BALL_LAUNCH_SPEED (7)
+#define BALL_LAUNCH_SPEED (7 * 240 / 960)
 
 const unsigned int c_triSnags = 4;
 const float c_radius = 10.0f;
-const unsigned int c_heightStart = 840;
+const unsigned int c_heightStart = 840 * 240 / 960;
 
-struct GameEntry;
-class Box2dWorld;
 class SnagForestLayer: public cocos2d::Layer 
 {
 public:
-	GameEntry*     m_gameEntry;
-	Box2dWorld*    m_box2dWorld;
 	int            m_entryID;
 
 public:	
@@ -43,6 +39,8 @@ public:
 
 	bool SnagForestLayer::initWithEntryID(int entryId);
 
+
+	void setPhyWorld(PhysicsWorld* world);
 private:
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);
 	void showCells(Ball* fallBall, unsigned int indexOfCellArr);
@@ -66,6 +64,8 @@ private:
 	void createParticleFire();
 
 private:
+	PhysicsWorld* m_physicsWorld;
+
 	Ball* m_upBall;
 	Size  m_winSize;
 

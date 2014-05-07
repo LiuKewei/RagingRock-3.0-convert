@@ -20,6 +20,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setOpenGLView(glview);
     }
 
+	Size designSize = Size(160, 240);
+	Size resourceSize = Size(640, 960);
+	glview->setFrameSize(designSize.width, designSize.height);
+	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
+	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
     director->setDisplayStats(true);
 
@@ -27,7 +32,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-	auto scene = SnagForestScene::create();
+	auto scene = SnagForestScene::createWithPhysics();
+	scene->getPhysicsWorld()->setGravity(Point(0.0f, -196.0f));
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // run
     director->runWithScene(scene);

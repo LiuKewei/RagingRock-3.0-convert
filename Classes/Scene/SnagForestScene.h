@@ -12,8 +12,8 @@ public:
 	SnagForestScene();
 	virtual ~SnagForestScene(void);
 
-	virtual bool init();
-	CREATE_FUNC(SnagForestScene);
+	virtual bool initWithPhysics();
+	CREATE_FUNC_PHY(SnagForestScene);
 
 	CC_SYNTHESIZE(SnagForestLayer*, _snagForestLayer, SnagForestLayer);
 	//CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);

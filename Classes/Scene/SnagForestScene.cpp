@@ -14,15 +14,16 @@ SnagForestScene::~SnagForestScene()
 }
 
 
-bool SnagForestScene::init()
+bool SnagForestScene::initWithPhysics()
 {
 	bool bRet = false;
 	do 
 	{
-		CC_BREAK_IF(!Scene::init());
+		CC_BREAK_IF(!Scene::initWithPhysics());
 		_snagForestLayer = new SnagForestLayer();
-		_snagForestLayer->initWithEntryID(0);
 		_snagForestLayer->autorelease();
+		_snagForestLayer->setPhyWorld(this->getPhysicsWorld());
+		_snagForestLayer->initWithEntryID(0);
 		this->addChild(_snagForestLayer);
 
 		//_devilLayer = DevilLayer::create();
