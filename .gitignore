@@ -1,0 +1,8 @@
+proj.android/
+proj.ios_mac/
+proj.win32/
+proj.wp8-xaml
+cocos2d/
+proj.linux/
+.cocos-project.json
+CMakeLists.txt
