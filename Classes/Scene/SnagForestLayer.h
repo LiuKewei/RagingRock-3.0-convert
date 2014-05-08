@@ -11,9 +11,15 @@
 #define BALL_LAUNCH_ROTATION (20)
 #define BALL_LAUNCH_SPEED (7)
 
-const unsigned int c_triSnags = 4;
 const float c_radius = 10.0f;
-const unsigned int c_heightStart = 840;
+
+const unsigned int c_triSnags = 4;
+const unsigned int c_snagHeightStart = 840;
+
+const unsigned int c_ballHeightBegin = 190;
+const unsigned int c_ballHeightStart = 64;
+const unsigned int c_ballHeightStop = 2;
+
 
 enum
 {
@@ -28,22 +34,13 @@ enum
 
 class SnagForestLayer: public cocos2d::Layer 
 {
-
-
-public:
-	int            m_entryID;
-
 public:	
 	SnagForestLayer();	
-	virtual ~SnagForestLayer();	
-	//virtual bool init();
+	virtual ~SnagForestLayer();
 	CREATE_FUNC(SnagForestLayer);
 
 	void update(float dt);
 	void ballLauncherMoving(float dt);
-	//void draw();//uses for debug
-
-	//virtual void registerWithTouchDispatcher();
 
 	virtual bool TouchBegan(Touch* touch, Event* event);
 	virtual void TouchMoved(Touch* touch, Event* event);
@@ -83,7 +80,8 @@ private:
 	Size  m_winSize;
 
 	Vector<Ref*> m_snagVec;
-	Map<int, Vector<Ref*>> m_cellMap;
+	std::map<int, Vector<Ref*>> m_cellMap;
+
 	Node* m_devil;
 
 	float m_randSpeed;
