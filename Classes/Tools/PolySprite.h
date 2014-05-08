@@ -20,6 +20,11 @@ public:
 	//重载父类draw
 	void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
 
+protected:
+	void drawPoly(const kmMat4 &transform, bool transformUpdated);
+
+	CustomCommand m_customCommand;
+
 private:
 	//初始化顶点信息
 	bool initWithUV(const cocos2d::Point *uvs,
@@ -29,14 +34,13 @@ private:
 	//计算中点
 	cocos2d::Point getCenter();
 	void translate(const cocos2d::Point&);
-	void drawPoly();
 	void releasePoly();
 
 private:
 	//多边形顶点
-	cocos2d::ccVertex2F *vertexs_;
+	Vertex2F *vertexs_;
 	//定点纹理坐标
-	cocos2d::ccVertex2F *uvs_;
+	Vertex2F *uvs_;
 	//三角形索引
 	unsigned short *indices_;
 	//顶点颜色

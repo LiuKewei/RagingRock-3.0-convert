@@ -15,8 +15,21 @@ const unsigned int c_triSnags = 4;
 const float c_radius = 10.0f;
 const unsigned int c_heightStart = 840;
 
+enum
+{
+	Z_ORDER_ZERO,
+	Z_ORDER_ONE,
+	Z_ORDER_TWO,
+	Z_ORDER_THREE,
+	Z_ORDER_FOUR,
+
+	Z_ORDER_MAX,
+};
+
 class SnagForestLayer: public cocos2d::Layer 
 {
+
+
 public:
 	int            m_entryID;
 
@@ -27,15 +40,14 @@ public:
 	CREATE_FUNC(SnagForestLayer);
 
 	void update(float dt);
-	void tick(float dt);
 	void ballLauncherMoving(float dt);
 	//void draw();//uses for debug
 
 	//virtual void registerWithTouchDispatcher();
 
-	virtual bool TouchBegan(CCTouch* touch, CCEvent* event);
-	virtual void TouchMoved(CCTouch* touch, CCEvent* event);
-	virtual void TouchEnded(CCTouch* touch, CCEvent* event);
+	virtual bool TouchBegan(Touch* touch, Event* event);
+	virtual void TouchMoved(Touch* touch, Event* event);
+	virtual void TouchEnded(Touch* touch, Event* event);
 
 	bool SnagForestLayer::initWithEntryID(int entryId);
 
@@ -43,13 +55,13 @@ public:
 	void setPhyWorld(PhysicsWorld* world);
 private:
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);
-	void showCells(Ball* fallBall, unsigned int indexOfCellArr);
-	void routeDetection(Ball* fallBall);
+	void showCells(unsigned int indexOfCellArr);
+	void routeDetection();
 	void createFallBall();
 
 	void interactionSubscribe();
-	void handleDevil(Object* pData);
-	void handleDevilStop(Object* pData);
+	void handleDevil(Ref* pData);
+	void handleDevilStop(Ref* pData);
 
 	void triggerDevil();
 
@@ -65,12 +77,13 @@ private:
 
 private:
 	PhysicsWorld* m_physicsWorld;
+	EventListenerTouchOneByOne* listener;
 
 	Ball* m_upBall;
 	Size  m_winSize;
 
-	Array* m_snagArr;
-	Dictionary* m_cellDic;
+	Vector<Ref*> m_snagVec;
+	Map<int, Vector<Ref*>> m_cellMap;
 	Node* m_devil;
 
 	float m_randSpeed;
