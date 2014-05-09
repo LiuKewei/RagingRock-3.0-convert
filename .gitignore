@@ -1,8 +1,5 @@
-proj.android/
-proj.ios_mac/
-proj.win32/
-proj.wp8-xaml
 cocos2d/
-proj.linux/
-.cocos-project.json
-CMakeLists.txt
+Debug.win32/
+Release.win32/
+RagingRock.sdf
+
