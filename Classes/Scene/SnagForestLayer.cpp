@@ -3,7 +3,7 @@
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "PolySprite.h"
 #else
-#inlcude "Tools/PolySprite.h"
+#inlcude "Tools\PolySprite.h"
 #endif
 USING_NS_CC;
 USING_NS_CC_EXT;
