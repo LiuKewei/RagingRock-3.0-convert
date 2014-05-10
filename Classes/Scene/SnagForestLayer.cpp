@@ -9,17 +9,17 @@ USING_NS_CC;
 USING_NS_CC_EXT;
 
 SnagForestLayer::SnagForestLayer()
-: m_ballAngle(-1.0)
-, m_ball(NULL)
-, m_arrow(NULL)
-, m_isBallGoingUp(true)
-, m_devil(NULL)
-, m_emitter(NULL)
-, m_listener(NULL)
-, m_resLoadingProgresser(NULL)
-, m_loadingVar(1.0f)
-, m_cellside(0.0f)
-, m_loadBg(NULL)
+	: m_ballAngle(-1.0)
+	, m_ball(NULL)
+	, m_arrow(NULL)
+	, m_isBallGoingUp(true)
+	, m_devil(NULL)
+	, m_emitter(NULL)
+	, m_listener(NULL)
+	, m_resLoadingProgresser(NULL)
+	, m_loadingVar(1.0f)
+	, m_cellside(0.0f)
+	, m_loadBg(NULL)
 {
 }
 
@@ -48,11 +48,12 @@ bool SnagForestLayer::initWithEntryID(int entryId)
 	m_listener->onTouchMoved = CC_CALLBACK_2(SnagForestLayer::TouchMoved, this);
 	m_listener->onTouchEnded = CC_CALLBACK_2(SnagForestLayer::TouchEnded, this);
 	m_listener->setSwallowTouches(true);
+	m_listener->setEnabled(false);
 	_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
 
 
-	
+
 	return true;
 }
 
@@ -89,6 +90,10 @@ void SnagForestLayer::updateProgresser(float dt)
 
 		this->removeChild(m_resLoadingProgresser);
 		this->removeChild(m_loadBg);
+		if (m_listener != NULL && !m_listener->isEnabled() )
+		{
+			m_listener->setEnabled(true);
+		}
 	}
 }
 
@@ -182,7 +187,7 @@ void SnagForestLayer::initResourcesWithProgresser()
 	initProgresser();
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("SnagForestScene.plist", "SnagForestScene.png");
-	
+
 
 	/*initialize stuff for this Scene*/
 
@@ -265,9 +270,11 @@ void SnagForestLayer::initCell()
 		Vector<Ref*> cellVec;
 		for (int i = 0; i < 7; ++i)
 		{
-			/*auto cell = Sprite::createWithSpriteFrame(SpriteFrame::create("SnagForestScene_bg.jpg", Rect(200, 150, m_cellside, m_cellside)));*/
 			auto cell = Sprite::createWithSpriteFrame(
-				SpriteFrameCache::getInstance()->getSpriteFrameByName("ball.png")
+				SpriteFrame::createWithTexture(
+				SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")->getTexture(), 
+				Rect(200, 150, m_cellside, m_cellside)
+				)
 				);
 			if (j % 2 == 1)
 			{
@@ -507,7 +514,7 @@ void SnagForestLayer::createParticleFire()
 	m_emitter = ParticleFire::create();
 	m_emitter->retain();
 	this->addChild(m_emitter, Z_ORDER_MAX);
-	m_emitter->setTexture(SpriteFrameCache::getInstance()->getSpriteFrameByName("fire.png")->getTexture());
+	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("fire.png"));
 	m_emitter->setEmissionRate(800);
 	m_emitter->setSpeed(120);
 	m_emitter->setSpeedVar(0);
