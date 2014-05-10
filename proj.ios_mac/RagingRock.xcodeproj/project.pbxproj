@@ -7,6 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07DB00F1191D44EA00C2B343 /* PolySprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DB00F0191D44EA00C2B343 /* PolySprite.cpp */; };
+		07DB00F3191D48F500C2B343 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB00F2191D48F500C2B343 /* Default-568h@2x.png */; };
+		07DB00F5191D490900C2B343 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07DB00F4191D490900C2B343 /* Images.xcassets */; };
+		07DB00F7191D498D00C2B343 /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB00F6191D498D00C2B343 /* ball.png */; };
+		07DB00FA191D499800C2B343 /* Marker Felt.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 07DB00F9191D499800C2B343 /* Marker Felt.ttf */; };
+		07DB00FC191D49A000C2B343 /* fire.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB00FB191D49A000C2B343 /* fire.png */; };
+		07DB0106191D49B000C2B343 /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0100191D49B000C2B343 /* button.png */; };
+		07DB0107191D49B000C2B343 /* image.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0101191D49B000C2B343 /* image.png */; };
+		07DB0108191D49B000C2B343 /* Login_1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0102191D49B000C2B343 /* Login_1.json */; };
+		07DB0109191D49B000C2B343 /* Login_BG.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0103191D49B000C2B343 /* Login_BG.png */; };
+		07DB010A191D49B000C2B343 /* Object.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0104191D49B000C2B343 /* Object.png */; };
+		07DB010B191D49B000C2B343 /* On_Login.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0105191D49B000C2B343 /* On_Login.png */; };
+		07DB010D191D49C200C2B343 /* silder_progressBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB010C191D49C200C2B343 /* silder_progressBar.png */; };
+		07DB0114191D49CF00C2B343 /* slider_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB010E191D49CF00C2B343 /* slider_bar.png */; };
+		07DB0115191D49CF00C2B343 /* slot.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB010F191D49CF00C2B343 /* slot.png */; };
+		07DB0116191D49CF00C2B343 /* snag.png in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0110191D49CF00C2B343 /* snag.png */; };
+		07DB0117191D49CF00C2B343 /* SnagForestScene_bg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0111191D49CF00C2B343 /* SnagForestScene_bg.jpg */; };
+		07DB0118191D49CF00C2B343 /* SnagForestScene_fg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0112191D49CF00C2B343 /* SnagForestScene_fg.jpg */; };
+		07DB0119191D49CF00C2B343 /* SnagForestScene.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 07DB0113191D49CF00C2B343 /* SnagForestScene.jpg */; };
+		07DE3CAC191D3A1A00A64F35 /* Ball.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DE3CA6191D3A1A00A64F35 /* Ball.cpp */; };
+		07DE3CAD191D3A1A00A64F35 /* Devil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DE3CA8191D3A1A00A64F35 /* Devil.cpp */; };
+		07DE3CAE191D3A1A00A64F35 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DE3CAA191D3A1A00A64F35 /* Entity.cpp */; };
+		07DE3CB6191D3A2200A64F35 /* SnagForestLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DE3CB2191D3A2200A64F35 /* SnagForestLayer.cpp */; };
+		07DE3CB7191D3A2200A64F35 /* SnagForestScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DE3CB4191D3A2200A64F35 /* SnagForestScene.cpp */; };
 		1AC6FB1F180E996B004C840B /* libbox2d Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC6FAFF180E9839004C840B /* libbox2d Mac.a */; };
 		1AC6FB20180E996B004C840B /* libchipmunk Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC6FAFD180E9839004C840B /* libchipmunk Mac.a */; };
 		1AC6FB21180E996B004C840B /* libcocos2dx Mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AC6FAF9180E9839004C840B /* libcocos2dx Mac.a */; };
@@ -44,9 +68,7 @@
 		5087E76917EB910900C73F5D /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620B132DFF330009C878 /* OpenAL.framework */; };
 		5087E76A17EB910900C73F5D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620D132DFF430009C878 /* AVFoundation.framework */; };
 		5087E76B17EB910900C73F5D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620F132DFF4E0009C878 /* AudioToolbox.framework */; };
-		5087E77D17EB970100C73F5D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77217EB970100C73F5D /* Default-568h@2x.png */; };
 		5087E77E17EB970100C73F5D /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77317EB970100C73F5D /* Default.png */; };
-		5087E77F17EB970100C73F5D /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77417EB970100C73F5D /* Default@2x.png */; };
 		5087E78017EB970100C73F5D /* Icon-114.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77517EB970100C73F5D /* Icon-114.png */; };
 		5087E78117EB970100C73F5D /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77617EB970100C73F5D /* Icon-120.png */; };
 		5087E78217EB970100C73F5D /* Icon-144.png in Resources */ = {isa = PBXBuildFile; fileRef = 5087E77717EB970100C73F5D /* Icon-144.png */; };
@@ -107,20 +129,6 @@
 			remoteGlobalIDString = A03F2ED617814268006731B9;
 			remoteInfo = "CocosDenshion Mac";
 		};
-		1AC6FB02180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A03F31FD1781479B006731B9;
-			remoteInfo = "jsbindings Mac";
-		};
-		1AC6FB04180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1A6FB53017854BC300CDF010;
-			remoteInfo = "luabindings Mac";
-		};
 		1AC6FB06180E9839004C840B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
@@ -155,20 +163,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = A07A4FB4178387730073F6A7;
 			remoteInfo = "CocosDenshion iOS";
-		};
-		1AC6FB10180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A07A5030178387750073F6A7;
-			remoteInfo = "jsbindings iOS";
-		};
-		1AC6FB12180E9839004C840B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1A119791178526AA00D62A44;
-			remoteInfo = "luabindings iOS";
 		};
 		1AC6FB15180E9959004C840B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -243,6 +237,36 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07DB00F0191D44EA00C2B343 /* PolySprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolySprite.cpp; sourceTree = "<group>"; };
+		07DB00F2191D48F500C2B343 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		07DB00F4191D490900C2B343 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "RagingRock iOS/Images.xcassets"; sourceTree = SOURCE_ROOT; };
+		07DB00F6191D498D00C2B343 /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball.png; sourceTree = "<group>"; };
+		07DB00F9191D499800C2B343 /* Marker Felt.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Marker Felt.ttf"; sourceTree = "<group>"; };
+		07DB00FB191D49A000C2B343 /* fire.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fire.png; sourceTree = "<group>"; };
+		07DB0100191D49B000C2B343 /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button.png; sourceTree = "<group>"; };
+		07DB0101191D49B000C2B343 /* image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image.png; sourceTree = "<group>"; };
+		07DB0102191D49B000C2B343 /* Login_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Login_1.json; sourceTree = "<group>"; };
+		07DB0103191D49B000C2B343 /* Login_BG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Login_BG.png; sourceTree = "<group>"; };
+		07DB0104191D49B000C2B343 /* Object.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Object.png; sourceTree = "<group>"; };
+		07DB0105191D49B000C2B343 /* On_Login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = On_Login.png; sourceTree = "<group>"; };
+		07DB010C191D49C200C2B343 /* silder_progressBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = silder_progressBar.png; sourceTree = "<group>"; };
+		07DB010E191D49CF00C2B343 /* slider_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slider_bar.png; sourceTree = "<group>"; };
+		07DB010F191D49CF00C2B343 /* slot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slot.png; sourceTree = "<group>"; };
+		07DB0110191D49CF00C2B343 /* snag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snag.png; sourceTree = "<group>"; };
+		07DB0111191D49CF00C2B343 /* SnagForestScene_bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SnagForestScene_bg.jpg; sourceTree = "<group>"; };
+		07DB0112191D49CF00C2B343 /* SnagForestScene_fg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SnagForestScene_fg.jpg; sourceTree = "<group>"; };
+		07DB0113191D49CF00C2B343 /* SnagForestScene.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SnagForestScene.jpg; sourceTree = "<group>"; };
+		07DE3CA6191D3A1A00A64F35 /* Ball.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Ball.cpp; sourceTree = "<group>"; };
+		07DE3CA7191D3A1A00A64F35 /* Ball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ball.h; sourceTree = "<group>"; };
+		07DE3CA8191D3A1A00A64F35 /* Devil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Devil.cpp; sourceTree = "<group>"; };
+		07DE3CA9191D3A1A00A64F35 /* Devil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Devil.h; sourceTree = "<group>"; };
+		07DE3CAA191D3A1A00A64F35 /* Entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Entity.cpp; sourceTree = "<group>"; };
+		07DE3CAB191D3A1A00A64F35 /* Entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
+		07DE3CB2191D3A2200A64F35 /* SnagForestLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnagForestLayer.cpp; sourceTree = "<group>"; };
+		07DE3CB3191D3A2200A64F35 /* SnagForestLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnagForestLayer.h; sourceTree = "<group>"; };
+		07DE3CB4191D3A2200A64F35 /* SnagForestScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SnagForestScene.cpp; sourceTree = "<group>"; };
+		07DE3CB5191D3A2200A64F35 /* SnagForestScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SnagForestScene.h; sourceTree = "<group>"; };
+		07DE3CBA191D3A2900A64F35 /* PolySprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySprite.h; sourceTree = "<group>"; };
 		1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cocos2d_libs.xcodeproj; path = ../cocos2d/build/cocos2d_libs.xcodeproj; sourceTree = "<group>"; };
 		1ACB3243164770DE00914215 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../../cocos2dx/platform/third_party/ios/libraries/libcurl.a; sourceTree = "<group>"; };
 		1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AppDelegate.cpp; path = ../Classes/AppDelegate.cpp; sourceTree = "<group>"; };
@@ -269,9 +293,7 @@
 		503AE11117EB99EE00D1A890 /* libcurl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.dylib; path = usr/lib/libcurl.dylib; sourceTree = SDKROOT; };
 		503AE11A17EB9C5A00D1A890 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		5087E76F17EB910900C73F5D /* RagingRock Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RagingRock Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5087E77217EB970100C73F5D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5087E77317EB970100C73F5D /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		5087E77417EB970100C73F5D /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		5087E77517EB970100C73F5D /* Icon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-114.png"; sourceTree = "<group>"; };
 		5087E77617EB970100C73F5D /* Icon-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-120.png"; sourceTree = "<group>"; };
 		5087E77717EB970100C73F5D /* Icon-144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-144.png"; sourceTree = "<group>"; };
@@ -346,6 +368,79 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07DB00F8191D499800C2B343 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				07DB00F9191D499800C2B343 /* Marker Felt.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		07DB00FD191D49B000C2B343 /* Gui */ = {
+			isa = PBXGroup;
+			children = (
+				07DB00FE191D49B000C2B343 /* Login_1 */,
+			);
+			path = Gui;
+			sourceTree = "<group>";
+		};
+		07DB00FE191D49B000C2B343 /* Login_1 */ = {
+			isa = PBXGroup;
+			children = (
+				07DB00FF191D49B000C2B343 /* GUI */,
+				07DB0102191D49B000C2B343 /* Login_1.json */,
+				07DB0103191D49B000C2B343 /* Login_BG.png */,
+				07DB0104191D49B000C2B343 /* Object.png */,
+				07DB0105191D49B000C2B343 /* On_Login.png */,
+			);
+			path = Login_1;
+			sourceTree = "<group>";
+		};
+		07DB00FF191D49B000C2B343 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				07DB0100191D49B000C2B343 /* button.png */,
+				07DB0101191D49B000C2B343 /* image.png */,
+			);
+			path = GUI;
+			sourceTree = "<group>";
+		};
+		07DE3CA5191D3A1A00A64F35 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				07DE3CA6191D3A1A00A64F35 /* Ball.cpp */,
+				07DE3CA7191D3A1A00A64F35 /* Ball.h */,
+				07DE3CA8191D3A1A00A64F35 /* Devil.cpp */,
+				07DE3CA9191D3A1A00A64F35 /* Devil.h */,
+				07DE3CAA191D3A1A00A64F35 /* Entity.cpp */,
+				07DE3CAB191D3A1A00A64F35 /* Entity.h */,
+			);
+			name = Entity;
+			path = ../Classes/Entity;
+			sourceTree = "<group>";
+		};
+		07DE3CB1191D3A2200A64F35 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				07DE3CB2191D3A2200A64F35 /* SnagForestLayer.cpp */,
+				07DE3CB3191D3A2200A64F35 /* SnagForestLayer.h */,
+				07DE3CB4191D3A2200A64F35 /* SnagForestScene.cpp */,
+				07DE3CB5191D3A2200A64F35 /* SnagForestScene.h */,
+			);
+			name = Scene;
+			path = ../Classes/Scene;
+			sourceTree = "<group>";
+		};
+		07DE3CB8191D3A2900A64F35 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				07DB00F0191D44EA00C2B343 /* PolySprite.cpp */,
+				07DE3CBA191D3A2900A64F35 /* PolySprite.h */,
+			);
+			name = Tools;
+			path = ../Classes/Tools;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* ios */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +459,9 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				07DE3CB8191D3A2900A64F35 /* Tools */,
+				07DE3CB1191D3A2200A64F35 /* Scene */,
+				07DE3CA5191D3A1A00A64F35 /* Entity */,
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
 				1AFAF8B516D35DE700DB1158 /* HelloWorldScene.cpp */,
@@ -390,15 +488,11 @@
 				1AC6FAFD180E9839004C840B /* libchipmunk Mac.a */,
 				1AC6FAFF180E9839004C840B /* libbox2d Mac.a */,
 				1AC6FB01180E9839004C840B /* libCocosDenshion Mac.a */,
-				1AC6FB03180E9839004C840B /* libjsbindings Mac.a */,
-				1AC6FB05180E9839004C840B /* libluabindings Mac.a */,
 				1AC6FB07180E9839004C840B /* libcocos2dx iOS.a */,
 				1AC6FB09180E9839004C840B /* libcocos2dx-extensions iOS.a */,
 				1AC6FB0B180E9839004C840B /* libchipmunk iOS.a */,
 				1AC6FB0D180E9839004C840B /* libbox2d iOS.a */,
 				1AC6FB0F180E9839004C840B /* libCocosDenshion iOS.a */,
-				1AC6FB11180E9839004C840B /* libjsbindings iOS.a */,
-				1AC6FB13180E9839004C840B /* libluabindings iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -406,6 +500,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				07DB00F2191D48F500C2B343 /* Default-568h@2x.png */,
 				1AC6FAE5180E9839004C840B /* cocos2d_libs.xcodeproj */,
 				15AA9C4015B7EC450033D6C2 /* Classes */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -462,9 +557,7 @@
 		5087E77117EB970100C73F5D /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				5087E77217EB970100C73F5D /* Default-568h@2x.png */,
 				5087E77317EB970100C73F5D /* Default.png */,
-				5087E77417EB970100C73F5D /* Default@2x.png */,
 				50EF62A017ECD613001EB2F8 /* Icon-29.png */,
 				50EF62A117ECD613001EB2F8 /* Icon-50.png */,
 				50EF629217ECD46A001EB2F8 /* Icon-40.png */,
@@ -487,6 +580,18 @@
 		78C7DDAA14EBA5050085D0C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				07DB010E191D49CF00C2B343 /* slider_bar.png */,
+				07DB010F191D49CF00C2B343 /* slot.png */,
+				07DB0110191D49CF00C2B343 /* snag.png */,
+				07DB0111191D49CF00C2B343 /* SnagForestScene_bg.jpg */,
+				07DB0112191D49CF00C2B343 /* SnagForestScene_fg.jpg */,
+				07DB0113191D49CF00C2B343 /* SnagForestScene.jpg */,
+				07DB010C191D49C200C2B343 /* silder_progressBar.png */,
+				07DB00FD191D49B000C2B343 /* Gui */,
+				07DB00FB191D49A000C2B343 /* fire.png */,
+				07DB00F8191D499800C2B343 /* fonts */,
+				07DB00F6191D498D00C2B343 /* ball.png */,
+				07DB00F4191D490900C2B343 /* Images.xcassets */,
 				1AFAF8B916D35E4900DB1158 /* CloseNormal.png */,
 				1AFAF8BA16D35E4900DB1158 /* CloseSelected.png */,
 				1AFAF8BB16D35E4900DB1158 /* HelloWorld.png */,
@@ -548,10 +653,10 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = MDDB52YB8L;
+						DevelopmentTeam = G8794HL32D;
 					};
 				};
 			};
@@ -617,20 +722,6 @@
 			remoteRef = 1AC6FB00180E9839004C840B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1AC6FB03180E9839004C840B /* libjsbindings Mac.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libjsbindings Mac.a";
-			remoteRef = 1AC6FB02180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1AC6FB05180E9839004C840B /* libluabindings Mac.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libluabindings Mac.a";
-			remoteRef = 1AC6FB04180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1AC6FB07180E9839004C840B /* libcocos2dx iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -666,20 +757,6 @@
 			remoteRef = 1AC6FB0E180E9839004C840B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		1AC6FB11180E9839004C840B /* libjsbindings iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libjsbindings iOS.a";
-			remoteRef = 1AC6FB10180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1AC6FB13180E9839004C840B /* libluabindings iOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libluabindings iOS.a";
-			remoteRef = 1AC6FB12180E9839004C840B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -687,25 +764,41 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DB010B191D49B000C2B343 /* On_Login.png in Resources */,
 				5087E78117EB970100C73F5D /* Icon-120.png in Resources */,
 				5087E78617EB970100C73F5D /* Icon-76.png in Resources */,
-				5087E77F17EB970100C73F5D /* Default@2x.png in Resources */,
 				50EF629917ECD46A001EB2F8 /* Icon-100.png in Resources */,
+				07DB0116191D49CF00C2B343 /* snag.png in Resources */,
 				1AFAF8BC16D35E4900DB1158 /* CloseNormal.png in Resources */,
 				5087E78317EB970100C73F5D /* Icon-152.png in Resources */,
-				5087E77D17EB970100C73F5D /* Default-568h@2x.png in Resources */,
 				5087E78517EB970100C73F5D /* Icon-72.png in Resources */,
+				07DB0106191D49B000C2B343 /* button.png in Resources */,
+				07DB010D191D49C200C2B343 /* silder_progressBar.png in Resources */,
+				07DB00F7191D498D00C2B343 /* ball.png in Resources */,
+				07DB0117191D49CF00C2B343 /* SnagForestScene_bg.jpg in Resources */,
 				1AFAF8BD16D35E4900DB1158 /* CloseSelected.png in Resources */,
 				50EF62A317ECD613001EB2F8 /* Icon-50.png in Resources */,
 				5087E78017EB970100C73F5D /* Icon-114.png in Resources */,
 				1AFAF8BE16D35E4900DB1158 /* HelloWorld.png in Resources */,
 				50EF62A217ECD613001EB2F8 /* Icon-29.png in Resources */,
+				07DB00F3191D48F500C2B343 /* Default-568h@2x.png in Resources */,
 				50EF629617ECD46A001EB2F8 /* Icon-40.png in Resources */,
 				5087E78217EB970100C73F5D /* Icon-144.png in Resources */,
+				07DB0114191D49CF00C2B343 /* slider_bar.png in Resources */,
+				07DB0118191D49CF00C2B343 /* SnagForestScene_fg.jpg in Resources */,
+				07DB0109191D49B000C2B343 /* Login_BG.png in Resources */,
+				07DB0119191D49CF00C2B343 /* SnagForestScene.jpg in Resources */,
+				07DB010A191D49B000C2B343 /* Object.png in Resources */,
+				07DB0115191D49CF00C2B343 /* slot.png in Resources */,
+				07DB00FC191D49A000C2B343 /* fire.png in Resources */,
 				50EF629817ECD46A001EB2F8 /* Icon-80.png in Resources */,
+				07DB00FA191D499800C2B343 /* Marker Felt.ttf in Resources */,
+				07DB00F5191D490900C2B343 /* Images.xcassets in Resources */,
 				5087E78417EB970100C73F5D /* Icon-57.png in Resources */,
 				5087E77E17EB970100C73F5D /* Default.png in Resources */,
+				07DB0108191D49B000C2B343 /* Login_1.json in Resources */,
 				50EF629717ECD46A001EB2F8 /* Icon-58.png in Resources */,
+				07DB0107191D49B000C2B343 /* image.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,10 +820,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DE3CB6191D3A2200A64F35 /* SnagForestLayer.cpp in Sources */,
+				07DE3CAE191D3A1A00A64F35 /* Entity.cpp in Sources */,
+				07DE3CB7191D3A2200A64F35 /* SnagForestScene.cpp in Sources */,
+				07DE3CAC191D3A1A00A64F35 /* Ball.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
+				07DB00F1191D44EA00C2B343 /* PolySprite.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				1AFAF8B716D35DE700DB1158 /* AppDelegate.cpp in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
+				07DE3CAD191D3A1A00A64F35 /* Devil.cpp in Sources */,
 				1AFAF8B816D35DE700DB1158 /* HelloWorldScene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -805,7 +904,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -826,6 +928,7 @@
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -836,7 +939,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -855,6 +961,7 @@
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -865,9 +972,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -894,9 +1001,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = mac/Prefix.pch;

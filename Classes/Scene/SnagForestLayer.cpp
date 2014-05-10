@@ -1,6 +1,10 @@
 #include "SnagForestLayer.h"
-#include "Tools/PolySprite.h"
 
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "PolySprite.h"
+#else
+#inlcude "Tools/PolySprite.h"
+#endif
 USING_NS_CC;
 USING_NS_CC_EXT;
 

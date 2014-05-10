@@ -4,8 +4,15 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 
-#include "Entity/Ball.h"
-#include "Entity/Entity.h"
+//define which platform
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "Ball.h"
+#include "Entity.h"
+#else
+#inlcude "Entity/Ball.h"
+#inlcude "Entity/Entity.h"
+#endif
+
 //#include "MsgTypeForObserver.h"
 
 #define BALL_LAUNCH_ROTATION (20)
@@ -46,7 +53,7 @@ public:
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
 
-	bool SnagForestLayer::initWithEntryID(int entryId);
+	bool initWithEntryID(int entryId);
 
 
 	void setPhyWorld(PhysicsWorld* world);
