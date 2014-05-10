@@ -19,7 +19,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLView::create("Raging Rock");
         director->setOpenGLView(glview);
     }
-
+    //Size frameSize = glview->getFrameSize();
 	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
