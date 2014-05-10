@@ -547,4 +547,3 @@ bool SnagForestLayer::removeDevil()
 	}
 	return false;
 }
-
