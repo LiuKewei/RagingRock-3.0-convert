@@ -19,10 +19,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLView::create("Raging Rock");
         director->setOpenGLView(glview);
     }
-
+    //Size frameSize = glview->getFrameSize();
 	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
-	glview->setFrameSize(designSize.width, designSize.height);
+	//glview->setFrameSize(designSize.width, designSize.height);//can not set framesize
 	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
 	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
