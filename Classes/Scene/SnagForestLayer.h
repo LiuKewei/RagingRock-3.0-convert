@@ -9,8 +9,8 @@
 #include "Ball.h"
 #include "Entity.h"
 #else
-#inlcude "Entity/Ball.h"
-#inlcude "Entity/Entity.h"
+#include "Entity/Ball.h"
+#include "Entity/Entity.h"
 #endif
 
 //#include "MsgTypeForObserver.h"
