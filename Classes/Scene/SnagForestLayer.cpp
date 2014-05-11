@@ -59,6 +59,7 @@ bool SnagForestLayer::initWithEntryID(int entryId)
 
 void SnagForestLayer::update(float dt)
 {
+	// remove ball when it arrive the bottom of layer
 	if (m_ball != NULL && m_ball->getPositionY() <= (m_ball->getBallSize().height / 2 + c_ballHeightStop))
 	{
 		this->removeChild(m_ball);
@@ -70,11 +71,13 @@ void SnagForestLayer::update(float dt)
 		}
 		m_emitter->setVisible(false);
 	}
+	// the ball is falling and drawing the routed path
 	else if (m_ball != NULL && !m_isBallGoingUp)
 	{
-		routeDetection();
+		routingDetection();
 	}
 }
+
 
 void SnagForestLayer::updateProgresser(float dt)
 {
@@ -97,50 +100,67 @@ void SnagForestLayer::updateProgresser(float dt)
 	}
 }
 
-void SnagForestLayer::ballLauncherMoving(float dt)
+void SnagForestLayer::ballRising(float dt)
 {
 	if (m_ball != NULL && !m_listener->isEnabled())
 	{
 		Point expect;
+		// the position of X is depend on m_ballAngle, if m_ballAngle is positive, the X should increase otherwise is should be decrease
+		float expectX = BALL_LAUNCH_SPEED*tan(CC_DEGREES_TO_RADIANS(m_ballAngle));
 		if (m_isBallGoingUp)
 		{
-			expect = Point(BALL_LAUNCH_SPEED*tan(CC_DEGREES_TO_RADIANS(m_ballAngle)), BALL_LAUNCH_SPEED);
+			// ball is rising, so the Y need be positive
+			expect = Point(expectX, BALL_LAUNCH_SPEED);
+			// if ball arrived the top of windows height, let ball down
 			m_isBallGoingUp = m_ball->getPositionY() < (m_winSize.height - m_ball->getBallSize().height / 2) ? true : false;
 		}
 		else
 		{
-			expect = Point(BALL_LAUNCH_SPEED*tan(CC_DEGREES_TO_RADIANS(m_ballAngle)), -BALL_LAUNCH_SPEED);
+			// ball is falling, so the Y need be negative
+			expect = Point(expectX, -BALL_LAUNCH_SPEED);
 		}
+		// moving ball
 		m_ball->setPosition(m_ball->getPosition() + expect);
+
+		// when ball is reach the indicate position, make ball falling in physical world
 		if (!m_isBallGoingUp && m_ball->getPositionY() < m_winSize.height - c_ballHeightStart)
 		{
-			createFallBall();
-			this->unschedule(schedule_selector(SnagForestLayer::ballLauncherMoving));
+			m_ball->getPhysicsBody()->setDynamic(true);
+			// stop rising
+			this->unschedule(schedule_selector(SnagForestLayer::ballRising));
 		}
 	}
 }
 
+
 bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 {
-	schedule(schedule_selector(SnagForestLayer::ballLauncherMoving));
+	schedule(schedule_selector(SnagForestLayer::ballRising));
 	if (m_ball != NULL)
 	{
 		this->removeChild(m_ball);
 		m_ball = NULL;
 	}
 
+	// create ball and set position of ball on arrow
 	m_ball = Ball::create();
 	m_ball->bindSprite(Sprite::createWithSpriteFrame(
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("ball.png")
 		));
 	m_ball->setBallSize(m_ball->getSprite()->getContentSize());
 	auto body = PhysicsBody::createCircle(m_ball->getBallSize().width / 2);
+
+	// set to static, otherwise it will collide snags when launch the ball
 	body->setDynamic(false);
 	m_ball->setPhysicsBody(body);
 	CC_ASSERT(m_arrow != NULL);
+
+	//set position of ball on arrow
 	m_ball->setPosition(m_arrow->getPosition());
 
 	this->addChild(m_ball, Z_ORDER_MAX);
+
+	//show arrow
 	m_arrow->setVisible(true);
 	return true;
 
@@ -151,18 +171,24 @@ void SnagForestLayer::TouchMoved(Touch* touch, Event* event)
 
 	Point afterStart = touch->getLocation();
 
+	// set the angle of ball (m_arrow) to indicate the direction of launching ball
 	if (afterStart.y - start.y < m_winSize.height && afterStart.x - start.x != 0)
 	{
+		// get the radian by atanf function
 		m_ballAngle = atanf((afterStart.x - start.x) / abs(afterStart.y - m_ball->getPositionY()));
+		// convert radian to degrees
 		float upBallRotation = (float)CC_RADIANS_TO_DEGREES(m_ballAngle);
 		if (upBallRotation < 0)
 		{
+			// set negative degree is not less than -BALL_LAUNCH_ROTATION
 			upBallRotation = upBallRotation < -BALL_LAUNCH_ROTATION ? -BALL_LAUNCH_ROTATION : upBallRotation;
 		}
 		else if (upBallRotation > 0)
 		{
+			// set positive degree is not more than BALL_LAUNCH_ROTATION
 			upBallRotation = upBallRotation > BALL_LAUNCH_ROTATION ? BALL_LAUNCH_ROTATION : upBallRotation;
 		}
+		// set angle of both ball and arrow when TouchMoved
 		m_ballAngle = upBallRotation;
 		m_ball->setRotation(m_ballAngle);
 		m_arrow->setRotation(m_ballAngle);
@@ -172,6 +198,8 @@ void SnagForestLayer::TouchMoved(Touch* touch, Event* event)
 void SnagForestLayer::TouchEnded(Touch* touch, Event* event)
 {
 	m_ballAngle = m_ball->getRotation();
+	// hide arrow
+	m_arrow->setVisible(false);
 	m_listener->setEnabled(false);
 }
 
@@ -195,16 +223,14 @@ void SnagForestLayer::initResourcesWithProgresser()
 	initSnags();
 	initSlots();
 	initCell();
-	initBallLauncher();
 	initArrow();
-	createParticleFire();
+	initParticleFire();
 }
 
 void SnagForestLayer::initProgresser()
 {
 	Point p = Point(m_winSize.width / 2, m_winSize.height / 4 + 50);
-	m_loadBg = Sprite::create("slider_bar.png");//进程条的底图  
-	//m_loadBg->setContentSize(Size(m_winSize.width, m_winSize.height));
+	m_loadBg = Sprite::create("slider_bar.png");//base map of progress bar
 	m_loadBg->setScale(300);
 	m_loadBg->setPosition(p);
 	this->addChild(m_loadBg, Z_ORDER_MAX + 1);
@@ -212,7 +238,7 @@ void SnagForestLayer::initProgresser()
 	m_resLoadingProgresser = ProgressTimer::create(Sprite::create("silder_progressBar.png"));
 	CC_ASSERT(m_resLoadingProgresser != NULL);
 	m_resLoadingProgresser->setType(ProgressTimer::Type::BAR);
-	m_resLoadingProgresser->setPosition(p);
+	m_resLoadingProgresser->setPosition(p);  // set progress bar be same with m_loadBg
 	m_resLoadingProgresser->setMidpoint(Point(0, 0));
 	m_resLoadingProgresser->setBarChangeRate(Point(1, 0));
 	m_resLoadingProgresser->setPercentage(0);
@@ -229,11 +255,6 @@ void SnagForestLayer::initMap()
 	bg_Sprite->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	bg_Sprite->setPhysicsBody(edgeBody);
 	this->addChild(bg_Sprite, Z_ORDER_ZERO);
-}
-
-void SnagForestLayer::initBallLauncher()
-{
-
 }
 
 void SnagForestLayer::initSnags()
@@ -261,6 +282,29 @@ void SnagForestLayer::initSnags()
 			snags->addChild(snag);
 		}
 	}
+}
+
+void SnagForestLayer::initSlots()
+{
+	auto slots = SpriteBatchNode::createWithTexture(SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")->getTexture());
+	this->addChild(slots, Z_ORDER_MAX);
+	for (int i = 0; i < 8; ++i)
+	{
+		auto slot = Sprite::createWithSpriteFrame(
+			SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")
+			);
+		auto body = PhysicsBody::createBox(slot->getContentSize());
+		body->setDynamic(false);
+		slot->setPhysicsBody(body);
+
+		//Node warning : This node has a physics body, the anchor must be in the middle, you cann't change this to other value.
+		//slot->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
+
+		slot->setPosition(Point(m_winX / 9 * (i + 1) + slot->getContentSize().width / 2, slot->getContentSize().height / 2));
+
+		slots->addChild(slot);
+	}
+
 }
 
 void SnagForestLayer::initCell()
@@ -292,28 +336,6 @@ void SnagForestLayer::initCell()
 	}
 }
 
-void SnagForestLayer::initSlots()
-{
-	auto slots = SpriteBatchNode::createWithTexture(SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")->getTexture());
-	this->addChild(slots, Z_ORDER_MAX);
-	for (int i = 0; i < 8; ++i)
-	{
-		auto slot = Sprite::createWithSpriteFrame(
-			SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")
-			);
-		auto body = PhysicsBody::createBox(slot->getContentSize());
-		body->setDynamic(false);
-		slot->setPhysicsBody(body);
-
-		//Node warning : This node has a physics body, the anchor must be in the middle, you cann't change this to other value.
-		//slot->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
-
-		slot->setPosition(Point(m_winX / 9 * (i + 1) + slot->getContentSize().width / 2, slot->getContentSize().height / 2));
-
-		slots->addChild(slot);
-	}
-
-}
 
 void SnagForestLayer::initArrow()
 {
@@ -323,35 +345,53 @@ void SnagForestLayer::initArrow()
 	m_arrow->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
 	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin));
 	m_arrow->setVisible(false);
-	this->addChild(m_arrow, Z_ORDER_MAX-1);
+	this->addChild(m_arrow, Z_ORDER_MAX+1);
 }
 
+// Particle
+void SnagForestLayer::initParticleFire()
+{
+	m_emitter = ParticleFire::create();
+	m_emitter->retain();
+	this->addChild(m_emitter, Z_ORDER_MAX);
+	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("fire.png"));
+	m_emitter->setEmissionRate(800);
+	m_emitter->setSpeed(120);
+	m_emitter->setSpeedVar(0);
+	m_emitter->setContentSize(m_winSize);
+	m_emitter->setLifeVar(0.3f);
+	m_emitter->setLife(0.2f);
+	m_emitter->setDuration(-1);
+	m_emitter->setStartSize(20.0f);
+	m_emitter->setStartSizeVar(50.0f);
+	m_emitter->setEndSize(ParticleSystem::START_SIZE_EQUAL_TO_END_SIZE);
+	m_emitter->setBlendAdditive(true);
+	m_emitter->setVisible(false);
+}
 
 /* === Ball Action ===*/
-void SnagForestLayer::createFallBall()
-{
-	m_ball->getPhysicsBody()->setDynamic(true);
+//void SnagForestLayer::makeBallFallingInPhysicWorld()
+//{
+//	//b2CircleShape shape1;
+//	//shape1.m_radius = 23.5/PT_RATIO;
+//	//b2FixtureDef fd1;
+//	//fd1.shape = &shape1;
+//	//fd1.density = 100.0f;
+//	//fd1.friction = 50.0f*CCRANDOM_0_1();
+//	//float32 restitution = 0.4f*CCRANDOM_0_1();
+//	//b2BodyDef bd1;
+//	//bd1.bullet = true;
+//	//bd1.type = b2_dynamicBody;
+//	//bd1.position.Set(m_ball->getPositionX()/PT_RATIO, m_ball->getPositionY()/PT_RATIO);
+//	//bd1.userData = m_ball;
+//
+//	//b2Body* body = m_box2dWorld->m_world->CreateBody(&bd1);
+//
+//	//fd1.restitution = restitution;
+//	//body->CreateFixture(&fd1);
+//}
 
-	//b2CircleShape shape1;
-	//shape1.m_radius = 23.5/PT_RATIO;
-	//b2FixtureDef fd1;
-	//fd1.shape = &shape1;
-	//fd1.density = 100.0f;
-	//fd1.friction = 50.0f*CCRANDOM_0_1();
-	//float32 restitution = 0.4f*CCRANDOM_0_1();
-	//b2BodyDef bd1;
-	//bd1.bullet = true;
-	//bd1.type = b2_dynamicBody;
-	//bd1.position.Set(m_ball->getPositionX()/PT_RATIO, m_ball->getPositionY()/PT_RATIO);
-	//bd1.userData = m_ball;
-
-	//b2Body* body = m_box2dWorld->m_world->CreateBody(&bd1);
-
-	//fd1.restitution = restitution;
-	//body->CreateFixture(&fd1);
-}
-
-void SnagForestLayer::routeDetection()
+void SnagForestLayer::routingDetection()
 {
 	if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6) && m_ball->getPositionY() <= c_snagHeightStart)
 	{
@@ -508,24 +548,3 @@ bool SnagForestLayer::removeDevil()
 	return false;
 }
 
-// Particle
-void SnagForestLayer::createParticleFire()
-{
-	m_emitter = ParticleFire::create();
-	m_emitter->retain();
-	this->addChild(m_emitter, Z_ORDER_MAX);
-	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("fire.png"));
-	m_emitter->setEmissionRate(800);
-	m_emitter->setSpeed(120);
-	m_emitter->setSpeedVar(0);
-	m_emitter->setContentSize(m_winSize);
-	m_emitter->setLifeVar(0.3f);
-	m_emitter->setLife(0.2f);
-	m_emitter->setDuration(-1);
-	m_emitter->setStartSize(20.0f);
-	m_emitter->setStartSizeVar(50.0f);
-	m_emitter->setEndSize(ParticleSystem::START_SIZE_EQUAL_TO_END_SIZE);
-	//m_emitter->setPosition( ccp(m_winSize.width/2, 0) );
-	m_emitter->setBlendAdditive(true);
-	m_emitter->setVisible(false);
-}

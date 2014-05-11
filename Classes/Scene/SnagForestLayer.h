@@ -50,11 +50,13 @@ public:
 
 	// default layer scheduler
 	void update(float dt);
+
+	//loading resources
 	void updateProgresser(float dt);
-
 	// launch ball 
-	void ballLauncherMoving(float dt);
+	void ballRising(float dt);
 
+	// Touches Callback function
 	virtual bool TouchBegan(Touch* touch, Event* event);
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
@@ -67,19 +69,17 @@ private:
 	void initResourcesWithProgresser();
 	void initProgresser();
 	void initMap();
-	void initBallLauncher();
 	void initSnags();
 	void initCell();
 	void initSlots();
 	void initArrow();
+	void initParticleFire();
 
 
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);
 
 	void showCells(unsigned int indexOfCellArr);
-	void routeDetection();
-	void createFallBall();
-	void createParticleFire();
+	void routingDetection();		
 
 
 
