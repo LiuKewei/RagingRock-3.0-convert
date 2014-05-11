@@ -152,6 +152,10 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 
 	// set to static, otherwise it will collide snags when launch the ball
 	body->setDynamic(false);
+	body->setLinearDamping(CCRANDOM_0_1());
+	body->addMass(100.0f*CCRANDOM_0_1());
+	body->setAngularDamping(CCRANDOM_0_1());
+
 	m_ball->setPhysicsBody(body);
 	CC_ASSERT(m_arrow != NULL);
 
@@ -161,6 +165,7 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 	this->addChild(m_ball, Z_ORDER_MAX);
 
 	//show arrow
+	m_arrow->setRotation(0);
 	m_arrow->setVisible(true);
 	return true;
 
@@ -270,15 +275,19 @@ void SnagForestLayer::initSnags()
 				);
 			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2);
 			body->setDynamic(false);
-			snag->setPhysicsBody(body);
 			if (j % 2 == 1)
 			{
+				body->setLinearDamping(1.00f);
+				body->setAngularDamping(1.00f);
+				body->addMass(100.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
 			else
 			{
+				body->addMass(10.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
+			snag->setPhysicsBody(body);
 			snags->addChild(snag);
 		}
 	}
