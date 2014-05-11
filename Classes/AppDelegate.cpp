@@ -35,7 +35,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
 	auto scene = SnagForestScene::createWithPhysics();
-	scene->getPhysicsWorld()->setGravity(Point(0.0f, -640.0f));
+	scene->getPhysicsWorld()->setGravity(Point(0.0f, -1000.0f));
 	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // run

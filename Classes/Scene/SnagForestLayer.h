@@ -16,7 +16,7 @@
 //#include "MsgTypeForObserver.h"
 
 #define BALL_LAUNCH_ROTATION (20)
-#define BALL_LAUNCH_SPEED (7)
+#define BALL_LAUNCH_SPEED (10)
 
 const float c_radius = 10.0f;
 
