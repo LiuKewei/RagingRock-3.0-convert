@@ -148,14 +148,14 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("ball.png")
 		));
 	m_ball->setBallSize(m_ball->getSprite()->getContentSize());
-	auto body = PhysicsBody::createCircle(m_ball->getBallSize().width / 2);
+	PhysicsMaterial pm;
+	pm.density = 0.0f;
+	pm.friction = 2.0f*CCRANDOM_0_1();
+	pm.restitution = 0.9f;
+	auto body = PhysicsBody::createCircle(m_ball->getBallSize().width / 2, pm);
 
 	// set to static, otherwise it will collide snags when launch the ball
 	body->setDynamic(false);
-	body->setLinearDamping(CCRANDOM_0_1());
-	body->addMass(100.0f*CCRANDOM_0_1());
-	body->setAngularDamping(CCRANDOM_0_1());
-
 	m_ball->setPhysicsBody(body);
 	CC_ASSERT(m_arrow != NULL);
 
@@ -266,6 +266,9 @@ void SnagForestLayer::initSnags()
 {
 	auto snags = SpriteBatchNode::createWithTexture(SpriteFrameCache::getInstance()->getSpriteFrameByName("snag.png")->getTexture());
 	this->addChild(snags, Z_ORDER_FOUR);
+	PhysicsMaterial pm;
+	pm.density = 1.0f;
+	pm.restitution = 0.5f;
 	for (int i = 0; i < 7; ++i)
 	{
 		for (int j = 0; j < 13; ++j)
@@ -273,20 +276,17 @@ void SnagForestLayer::initSnags()
 			auto snag = Sprite::createWithSpriteFrame(
 				SpriteFrameCache::getInstance()->getSpriteFrameByName("snag.png")
 				);
-			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2);
-			body->setDynamic(false);
+			pm.friction = 0.1f*CCRANDOM_0_1();
 			if (j % 2 == 1)
 			{
-				body->setLinearDamping(1.00f);
-				body->setAngularDamping(1.00f);
-				body->addMass(100.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
 			else
 			{
-				body->addMass(10.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
+			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2, pm);
+			body->setDynamic(false);
 			snag->setPhysicsBody(body);
 			snags->addChild(snag);
 		}
