@@ -6,6 +6,23 @@
 #include "SnagForestLayer.h"
 //#include "DevilLayer.h"
 
+#define CREATE_FUNC_PHY(__TYPE__) \
+static __TYPE__* createWithPhysics() \
+{ \
+__TYPE__ *pRet = new __TYPE__(); \
+if (pRet && pRet->initWithPhysics()) \
+{ \
+pRet->autorelease(); \
+return pRet; \
+} \
+else \
+{ \
+delete pRet; \
+pRet = NULL; \
+return NULL; \
+} \
+}
+
 class SnagForestScene: public cocos2d::Scene
 {
 public:

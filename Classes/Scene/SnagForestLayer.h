@@ -4,12 +4,19 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 
+//define which platform
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "Ball.h"
+#include "Entity.h"
+#else
 #include "Entity/Ball.h"
 #include "Entity/Entity.h"
+#endif
+
 //#include "MsgTypeForObserver.h"
 
 #define BALL_LAUNCH_ROTATION (20)
-#define BALL_LAUNCH_SPEED (7)
+#define BALL_LAUNCH_SPEED (10)
 
 const float c_radius = 10.0f;
 
@@ -32,67 +39,78 @@ enum
 	Z_ORDER_MAX,
 };
 
-class SnagForestLayer: public cocos2d::Layer 
+class SnagForestLayer : public cocos2d::Layer
 {
-public:	
-	SnagForestLayer();	
+public:
+	SnagForestLayer();
 	virtual ~SnagForestLayer();
+	//Layer init
+	bool initWithEntryID(int entryId);
 	CREATE_FUNC(SnagForestLayer);
 
+	// default layer scheduler
 	void update(float dt);
-	void ballLauncherMoving(float dt);
 
+	//loading resources
+	void updateProgresser(float dt);
+	// launch ball 
+	void ballRising(float dt);
+
+	// Touches Callback function
 	virtual bool TouchBegan(Touch* touch, Event* event);
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
 
-	bool SnagForestLayer::initWithEntryID(int entryId);
-
-
+	//PhysicsWorld of layer setter function
 	void setPhyWorld(PhysicsWorld* world);
 private:
+	//initialize the resources of this layer
+	void initResourcesWithProgresser();
+	void initProgresser();
+	void initMap();
+	void initSnags();
+	void initCell();
+	void initSlots();
+	void initArrow();
+	void initParticleFire();
+
+
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);
+
 	void showCells(unsigned int indexOfCellArr);
-	void routeDetection();
-	void createFallBall();
+	void routingDetection();		
 
 	void interactionSubscribe();
 	void handleDevil(Ref* pData);
 	void handleDevilStop(Ref* pData);
 
 	void triggerDevil();
-
-	void initMap();
-	void initBallLauncher();
-	void initSnags();
-	void initCell();
-	void initSlots();
-
+	
 	bool removeDevil();
 
-	void createParticleFire();
 
 private:
 	PhysicsWorld* m_physicsWorld;
-	EventListenerTouchOneByOne* listener;
+	EventListenerTouchOneByOne* m_listener;
 
-	Ball* m_upBall;
-	Size  m_winSize;
+	// progress of loading resources
+	ProgressTimer* m_resLoadingProgresser;
+	Sprite* m_loadBg;
+	float m_loadingVar;
 
-	Vector<Ref*> m_snagVec;
+	// use for routeDetection
 	std::map<int, Vector<Ref*>> m_cellMap;
 
 	Node* m_devil;
-
-	float m_randSpeed;
-	float m_upBallAngle;
-	float m_winX;
-
-	b2Body* m_removeb;
-
-	bool m_isBallGoingUp;
-
-	float m_cellside;
 	ParticleSystem*    m_emitter;
+
+	Ball* m_ball;
+	Sprite* m_arrow;
+	Size  m_winSize;
+	float m_winX;
+	float m_cellside;
+	float m_ballAngle;
+	bool  m_isBallGoingUp;
+
 };
 #endif // __SNAGFOREST_LAYER_H__

@@ -17,6 +17,12 @@ public:
 		int verCnt,
 		const int *indices);
 
+	static PolySprite* create(Texture2D* texture,
+	const Point *uvs,
+	int verCnt,
+	const int *indices);
+
+
 	//÷ÿ‘ÿ∏∏¿‡draw
 	void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
 

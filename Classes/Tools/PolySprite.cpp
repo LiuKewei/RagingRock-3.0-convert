@@ -19,7 +19,26 @@ PolySprite* PolySprite::create(const char *pFile,
 		return pobSprite;
 	}
 	CC_SAFE_DELETE(pobSprite);
-	return false;
+
+	return NULL;
+}
+
+PolySprite* PolySprite::create(Texture2D* texture,
+	const Point *uvs,
+	int verCnt,
+	const int *indices)
+{
+	PolySprite *pobSprite = new PolySprite();
+	//´´½¨¾«Áé
+	if (pobSprite &&
+		pobSprite->initWithTexture(texture) &&
+		pobSprite->initWithUV(uvs, indices, verCnt)) {
+
+		pobSprite->autorelease();
+		return pobSprite;
+	}
+	CC_SAFE_DELETE(pobSprite);
+	return NULL;
 }
 
 PolySprite::~PolySprite()

@@ -22,7 +22,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	glview->setFrameSize(designSize.width, designSize.height);
+#endif
 	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
 	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
@@ -33,7 +35,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
 	auto scene = SnagForestScene::createWithPhysics();
-	scene->getPhysicsWorld()->setGravity(Point(0.0f, -640.0f));
+	scene->getPhysicsWorld()->setGravity(Point(0.0f, -1000.0f));
 	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // run

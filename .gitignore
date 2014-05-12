@@ -1,5 +1,2 @@
-Debug.win32/
-RagingRock.sdf
 cocos2d/
-Release.win32/
-proj.linux/
+proj.win32/
