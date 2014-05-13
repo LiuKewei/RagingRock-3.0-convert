@@ -25,7 +25,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	glview->setFrameSize(designSize.width, designSize.height);
 #endif
-	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
+	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
 	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
     director->setDisplayStats(true);
