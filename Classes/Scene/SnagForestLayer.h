@@ -8,12 +8,14 @@
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "Ball.h"
 #include "Entity.h"
+#include "MsgTypeForObserver.h"
+
 #else
 #include "Entity/Ball.h"
 #include "Entity/Entity.h"
-#endif
+#include "Tools/MsgTypeForObserver.h"
 
-//#include "MsgTypeForObserver.h"
+#endif
 
 #define BALL_LAUNCH_ROTATION (20)
 #define BALL_LAUNCH_SPEED (10)

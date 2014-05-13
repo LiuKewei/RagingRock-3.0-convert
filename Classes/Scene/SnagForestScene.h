@@ -4,7 +4,13 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "SnagForestLayer.h"
-//#include "DevilLayer.h"
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "DevilLayer.h"
+#else
+#include "CommLayer/DevilLayer.h"
+#endif
+
 
 #define CREATE_FUNC_PHY(__TYPE__) \
 static __TYPE__* createWithPhysics() \
@@ -33,7 +39,7 @@ public:
 	CREATE_FUNC_PHY(SnagForestScene);
 
 	CC_SYNTHESIZE(SnagForestLayer*, _snagForestLayer, SnagForestLayer);
-	//CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);
+	CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);
 
 };
 
