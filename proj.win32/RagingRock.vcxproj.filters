@@ -19,6 +19,9 @@
     <Filter Include="Classes\Tools">
       <UniqueIdentifier>{12d37509-5c65-4143-bcef-26df1f53c538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\CommLayer">
+      <UniqueIdentifier>{97dc5466-b0ee-45b2-b445-3ed7764189d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="..\Classes\Scene\SnagForestScene.cpp">
       <Filter>Classes\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\CommLayer\DevilLayer.cpp">
+      <Filter>Classes\CommLayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -76,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Scene\SnagForestScene.h">
       <Filter>Classes\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Tools\MsgTypeForObserver.h">
+      <Filter>Classes\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CommLayer\DevilLayer.h">
+      <Filter>Classes\CommLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

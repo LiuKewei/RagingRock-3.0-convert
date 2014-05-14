@@ -64,7 +64,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>F:\RagingRock\RagingRock\cocos2d;$(IncludePath)</IncludePath>
+    <IncludePath>D:\buildCompetence\RagingRock\cocos2d;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v7.1A\lib;$(LibraryPath)</LibraryPath>
@@ -137,6 +137,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\CommLayer\DevilLayer.cpp" />
     <ClCompile Include="..\Classes\Entity\Ball.cpp" />
     <ClCompile Include="..\Classes\Entity\Devil.cpp" />
     <ClCompile Include="..\Classes\Entity\Entity.cpp" />
@@ -148,12 +149,14 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\CommLayer\DevilLayer.h" />
     <ClInclude Include="..\Classes\Entity\Ball.h" />
     <ClInclude Include="..\Classes\Entity\Devil.h" />
     <ClInclude Include="..\Classes\Entity\Entity.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Scene\SnagForestLayer.h" />
     <ClInclude Include="..\Classes\Scene\SnagForestScene.h" />
+    <ClInclude Include="..\Classes\Tools\MsgTypeForObserver.h" />
     <ClInclude Include="..\Classes\Tools\PolySprite.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

@@ -71,7 +71,7 @@ private:
 	void initProgresser();
 	void initMap();
 	void initSnags();
-	void initCell();
+	void initCells();
 	void initSlots();
 	void initArrow();
 	void initParticleFire();

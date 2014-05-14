@@ -232,7 +232,7 @@ void SnagForestLayer::initResourcesWithProgresser()
 	initMap();
 	initSnags();
 	initSlots();
-	initCell();
+	initCells();
 	initArrow();
 	initParticleFire();
 }
@@ -259,12 +259,17 @@ void SnagForestLayer::initProgresser()
 void SnagForestLayer::initMap()
 {
 	auto edgeBody = PhysicsBody::createEdgeBox(this->m_winSize, PHYSICSBODY_MATERIAL_DEFAULT, 1);
-	auto bg_Sprite = Sprite::createWithSpriteFrame(
+	/*auto bg_Sprite = Sprite::createWithSpriteFrame(
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")
-		);
+		);*/
+	auto bg_Sprite = Sprite::create("SnagForestScene_bg.jpg");
 	bg_Sprite->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	bg_Sprite->setPhysicsBody(edgeBody);
 	this->addChild(bg_Sprite, Z_ORDER_ZERO);
+
+	auto fg_Sprite = Sprite::create("SnagForestScene_fg.jpg");
+	fg_Sprite->setPosition(Point(m_winSize.width / 2, c_snagHeightStart - fg_Sprite->getContentSize().height / 2));
+	this->addChild(fg_Sprite, Z_ORDER_ZERO);
 }
 
 void SnagForestLayer::initSnags()
@@ -321,35 +326,39 @@ void SnagForestLayer::initSlots()
 
 }
 
-void SnagForestLayer::initCell()
+void SnagForestLayer::initCells()
 {
-	for (int j = 0; j < 11; ++j)
+	auto cellPos = Point(0, 0);
+	int index[] = { 0, 1, 2, 0, 3, 2 };
+	for (int row = 0; row < 13; ++row)//rows
 	{
 		Vector<Ref*> cellVec;
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < 7; ++i)//columns
 		{
-			auto cell = Sprite::createWithSpriteFrame(
-				SpriteFrame::createWithTexture(
-				SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")->getTexture(), 
-				Rect(200, 150, m_cellside, m_cellside)
-				)
-				);
-			if (j % 2 == 1)
+			if (row % 2 == 1)
 			{
-				cell->setPosition(Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(j + 1))));
+				cellPos = Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(row+1)));
 			}
 			else
 			{
-				cell->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(j + 1))));
+				cellPos = Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(row+1)));
 			}
+			Point p[] = {
+				Point((cellPos.x - m_winSize.width / 6 / 2) / m_winSize.width, (m_winSize.height - cellPos.y) / m_winSize.height),
+				Point(cellPos.x / m_winSize.width, (m_winSize.height - cellPos.y + m_winSize.width / 6 / 2) / m_winSize.height),
+				Point((cellPos.x + m_winSize.width / 6 / 2) / m_winSize.width, (m_winSize.height - cellPos.y) / m_winSize.height),
+				Point(cellPos.x / m_winSize.width, (m_winSize.height - cellPos.y - m_winSize.width / 6 / 2) / m_winSize.height)
+			};
+			auto cell = PolySprite::create("SnagForestScene_bg.jpg", p, 4, index);
+			//cell->setPosition(Point(cell->getAnchorPoint().x*m_winSize.width, cell->getAnchorPoint().y*m_winSize.height));
+			cell->setPosition(cellPos);
 			cell->setVisible(false);
 			this->addChild(cell, Z_ORDER_ZERO);
 			cellVec.pushBack(cell);
 		}
-		m_cellMap.insert(std::pair<int, Vector<Ref*>>(j, cellVec));
+		m_cellMap.insert(std::pair<int, Vector<Ref*>>(row, cellVec));
 	}
 }
-
 
 void SnagForestLayer::initArrow()
 {
@@ -430,10 +439,14 @@ void SnagForestLayer::routingDetection()
 	{
 		showCells(10);
 	}
-	//else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 6))
-	//{
-	//	showCells(11);
-	//}
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 6))
+	{
+		showCells(11);
+	}
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 6))
+	{
+		showCells(12);
+	}
 
 }
 
@@ -451,27 +464,11 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 			{
 				auto cellPos = cell->getPosition();
 				cell->setVisible(true);
-				this->removeChild(cell);
-
-				Point p[] = {
-					Point((cellPos.x - m_winSize.width / 6 / 2) / m_winSize.width, (m_winSize.height - cellPos.y) / m_winSize.height),
-					Point(cellPos.x / m_winSize.width, (m_winSize.height - cellPos.y + m_winSize.width / 6 / 2) / m_winSize.height),
-					Point((cellPos.x + m_winSize.width / 6 / 2) / m_winSize.width, (m_winSize.height - cellPos.y) / m_winSize.height),
-					Point(cellPos.x / m_winSize.width, (m_winSize.height - cellPos.y - m_winSize.width / 6 / 2) / m_winSize.height)
-				};
-
-				int index[] = { 0, 1, 2, 0, 3, 2 };
-				auto showcell = PolySprite::create("SnagForestScene_bg.jpg", p, 4, index);
-				showcell->setPosition(Point(showcell->getAnchorPoint().x*m_winSize.width, showcell->getAnchorPoint().y*m_winSize.height));
-
-				this->addChild(showcell);
-
 				if (m_emitter != NULL)
 				{
 					m_emitter->setPosition(cellPos);
 					m_emitter->setVisible(true);
 				}
-
 			}
 		}
 	}
