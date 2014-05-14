@@ -74,6 +74,11 @@ void SnagForestLayer::update(float dt)
 	// the ball is falling and drawing the routed path
 	else if (m_ball != NULL && !m_isBallGoingUp)
 	{
+		if (m_devil != NULL && isCollidedWithBall(m_ball, m_devil))
+		{
+			triggerDevil();
+			removeDevil();
+		}
 		routingDetection();
 	}
 }
@@ -148,14 +153,14 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("ball.png")
 		));
 	m_ball->setBallSize(m_ball->getSprite()->getContentSize());
-	auto body = PhysicsBody::createCircle(m_ball->getBallSize().width / 2);
+	PhysicsMaterial pm;
+	pm.density = 0.0f;
+	pm.friction = 2.0f*CCRANDOM_0_1();
+	pm.restitution = 0.9f;
+	auto body = PhysicsBody::createCircle(m_ball->getBallSize().width / 2, pm);
 
 	// set to static, otherwise it will collide snags when launch the ball
 	body->setDynamic(false);
-	body->setLinearDamping(CCRANDOM_0_1());
-	body->addMass(100.0f*CCRANDOM_0_1());
-	body->setAngularDamping(CCRANDOM_0_1());
-
 	m_ball->setPhysicsBody(body);
 	CC_ASSERT(m_arrow != NULL);
 
@@ -266,6 +271,9 @@ void SnagForestLayer::initSnags()
 {
 	auto snags = SpriteBatchNode::createWithTexture(SpriteFrameCache::getInstance()->getSpriteFrameByName("snag.png")->getTexture());
 	this->addChild(snags, Z_ORDER_FOUR);
+	PhysicsMaterial pm;
+	pm.density = 1.0f;
+	pm.restitution = 0.5f;
 	for (int i = 0; i < 7; ++i)
 	{
 		for (int j = 0; j < 13; ++j)
@@ -273,20 +281,17 @@ void SnagForestLayer::initSnags()
 			auto snag = Sprite::createWithSpriteFrame(
 				SpriteFrameCache::getInstance()->getSpriteFrameByName("snag.png")
 				);
-			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2);
-			body->setDynamic(false);
+			pm.friction = 0.1f*CCRANDOM_0_1();
 			if (j % 2 == 1)
 			{
-				body->setLinearDamping(1.00f);
-				body->setAngularDamping(1.00f);
-				body->addMass(100.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
 			else
 			{
-				body->addMass(10.0f*CCRANDOM_0_1());
 				snag->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
 			}
+			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2, pm);
+			body->setDynamic(false);
 			snag->setPhysicsBody(body);
 			snags->addChild(snag);
 		}
@@ -379,27 +384,6 @@ void SnagForestLayer::initParticleFire()
 }
 
 /* === Ball Action ===*/
-//void SnagForestLayer::makeBallFallingInPhysicWorld()
-//{
-//	//b2CircleShape shape1;
-//	//shape1.m_radius = 23.5/PT_RATIO;
-//	//b2FixtureDef fd1;
-//	//fd1.shape = &shape1;
-//	//fd1.density = 100.0f;
-//	//fd1.friction = 50.0f*CCRANDOM_0_1();
-//	//float32 restitution = 0.4f*CCRANDOM_0_1();
-//	//b2BodyDef bd1;
-//	//bd1.bullet = true;
-//	//bd1.type = b2_dynamicBody;
-//	//bd1.position.Set(m_ball->getPositionX()/PT_RATIO, m_ball->getPositionY()/PT_RATIO);
-//	//bd1.userData = m_ball;
-//
-//	//b2Body* body = m_box2dWorld->m_world->CreateBody(&bd1);
-//
-//	//fd1.restitution = restitution;
-//	//body->CreateFixture(&fd1);
-//}
-
 void SnagForestLayer::routingDetection()
 {
 	if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6) && m_ball->getPositionY() <= c_snagHeightStart)
@@ -515,34 +499,32 @@ void SnagForestLayer::handleDevil(Ref* pData)
 
 void SnagForestLayer::handleDevilStop(Ref* pData)
 {
-	//removeDevil();
-	//this->schedule( schedule_selector(SnagForestLayer::tick) );
-	//this->scheduleUpdate();
+	removeDevil();
+	m_ball->getPhysicsBody()->setDynamic(true);
+	this->scheduleUpdate();
 }
 
 void SnagForestLayer::interactionSubscribe()
 {
-	//CCNotificationCenter::sharedNotificationCenter()->addObserver(
-	//	this,
-	//	callfuncO_selector(SnagForestLayer::handleDevil),
-	//	MsgTypeForObserver::c_DevilPosUpdate,
-	//	NULL);
+	NotificationCenter::getInstance()->addObserver(
+		this,
+		callfuncO_selector(SnagForestLayer::handleDevil),
+		MsgTypeForObserver::c_DevilPosUpdate,
+		NULL);
 
-	//CCNotificationCenter::sharedNotificationCenter()->addObserver(
-	//	this,
-	//	callfuncO_selector(SnagForestLayer::handleDevilStop),
-	//	MsgTypeForObserver::c_DevilFightingStop,
-	//	NULL);
+	NotificationCenter::getInstance()->addObserver(
+		this,
+		callfuncO_selector(SnagForestLayer::handleDevilStop),
+		MsgTypeForObserver::c_DevilFightingStop,
+		NULL);
 }
 
 void SnagForestLayer::triggerDevil()
 {
-	//CCNotificationCenter::sharedNotificationCenter()->postNotification(MsgTypeForObserver::c_DevilFightingStart, NULL);
-	//this->setTouchEnabled( false );
-	////this->setVisible(false);
-	//CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
-	//this->unschedule( schedule_selector(SnagForestLayer::tick) );
-	//this->unscheduleUpdate();
+	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilFightingStart, NULL);
+	m_listener->setEnabled(false);
+	m_ball->getPhysicsBody()->setDynamic(false);
+	this->unscheduleUpdate();
 }
 
 

@@ -3,6 +3,10 @@
 
 USING_NS_CC;
 
+const char* MsgTypeForObserver::c_DevilPosUpdate = "1";
+const char* MsgTypeForObserver::c_DevilFightingStart = "2";
+const char* MsgTypeForObserver::c_DevilFightingStop = "3";
+
 AppDelegate::AppDelegate() {
 
 }
@@ -19,7 +23,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
         glview = GLView::create("Raging Rock");
         director->setOpenGLView(glview);
     }
-
+    //Size frameSize = glview->getFrameSize();
 	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
