@@ -111,6 +111,7 @@ private:
 
 	Ball* m_ball;
 	Sprite* m_arrow;
+	Sprite* m_littleGameSlot;
 	Size  m_winSize;
 	float m_winX;
 	float m_cellside;

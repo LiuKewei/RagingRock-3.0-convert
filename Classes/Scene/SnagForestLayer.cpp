@@ -12,6 +12,7 @@ SnagForestLayer::SnagForestLayer()
 	: m_ballAngle(-1.0)
 	, m_ball(NULL)
 	, m_arrow(NULL)
+	, m_littleGameSlot(NULL)
 	, m_isBallGoingUp(true)
 	, m_devil(NULL)
 	, m_emitter(NULL)
@@ -70,9 +71,12 @@ void SnagForestLayer::update(float dt)
 			m_listener->setEnabled(true);
 		}
 		m_emitter->setVisible(false);
-		m_devil->setDevilMaxIndexInCurrent(m_devil->getDevilMaxIndexInCurrent() + m_devil->getDevilPosCnt());
-		m_devil->setDevilPosCnt(0);
-		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosPush, m_devil);
+		if (m_devil!=NULL)
+		{
+			m_devil->setDevilMaxIndexInCurrent(m_devil->getDevilMaxIndexInCurrent() + m_devil->getDevilPosCnt());
+			m_devil->setDevilPosCnt(0);
+			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosPush, m_devil);
+		}
 	}
 	// the ball is falling and drawing the routed path
 	else if (m_ball != NULL && !m_isBallGoingUp)
@@ -263,8 +267,8 @@ void SnagForestLayer::initMap()
 {
 	auto edgeBody = PhysicsBody::createEdgeBox(this->m_winSize, PHYSICSBODY_MATERIAL_DEFAULT, 1);
 	/*auto bg_Sprite = Sprite::createWithSpriteFrame(
-		SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")
-		);*/
+	SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")
+	);*/
 	auto bg_Sprite = Sprite::create("SnagForestScene_bg.jpg");
 	bg_Sprite->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	bg_Sprite->setPhysicsBody(edgeBody);
@@ -326,7 +330,9 @@ void SnagForestLayer::initSlots()
 
 		slots->addChild(slot);
 	}
-
+	m_littleGameSlot = Sprite::create("littlegameslot.png");
+	m_littleGameSlot->setPosition(Point(m_winSize.width / 2, c_ballHeightBegin));
+	this->addChild(m_littleGameSlot, Z_ORDER_THREE);
 }
 
 void SnagForestLayer::initCells()
@@ -478,6 +484,10 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 					m_devil->setDevilPosCnt(m_devil->getDevilPosCnt()+1);
 				}
 			}
+		}
+		if (indexOfCellArr == 12 && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
+		{
+			CCLOG("m_littleGameSlot is been Collided !!!!!!!!!!!");
 		}
 	}
 }

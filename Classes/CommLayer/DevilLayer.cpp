@@ -126,8 +126,7 @@ void DevilLayer::initDevil()
 
 void DevilLayer::devilFighting(Ref* pData)
 {
-
-	//m_devil->setVisible(false);
+	m_devil->setVisible(false);
 	auto fightingProgressBg = Sprite::create("slider_bar.png");
 	fightingProgressBg->setPosition(Point(150,300));
 	this->addChild(fightingProgressBg);
