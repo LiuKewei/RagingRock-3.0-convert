@@ -14,10 +14,15 @@ public:
 	virtual bool init();
 	CREATE_FUNC(Devil);
 
+	std::vector<Point> getDevilPosVec();
 
-//	void setIsTrigger(bool isTrigger);
-//	bool getIsTrigger();
-//private:
-//	bool m_isTrigger;
+	Point getDevilTmpPos();
+	void setDevilTmpPos(Point p);
+
+private:
+	std::vector<Point> m_devilPosVec;
+
+	Point m_tmpPos;
+
 };
 #endif // __DEVIL_H__

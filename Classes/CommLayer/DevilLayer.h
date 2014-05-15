@@ -33,6 +33,7 @@ public:
 private:
 	void initDevil();
 	void devilFighting(Ref* pData);
+	void devilPosHandle(Ref* pData);
 	void destoryDevilLayer(Ref* pData);
 
 private:
@@ -45,5 +46,7 @@ private:
 	float m_fightingMoved;
 	
 	Size  m_winSize;
+
+	bool m_isdevilpos;
 };
 #endif // __DEVIL_LAYER_H__

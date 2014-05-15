@@ -1,13 +1,13 @@
 #include "DevilLayer.h"
 
 
-
 DevilLayer::DevilLayer()
 	: m_devil(NULL)
 	, m_fightingVal(0.0f)
 	, m_fightingMoved(0.0f)
 	, m_winSize(0,0)
 	, m_progress(NULL)
+	, m_isdevilpos(false)
 {
 }
 
@@ -43,7 +43,7 @@ bool DevilLayer::init()
 		m_listener->setEnabled(true);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
-		this->schedule( schedule_selector(DevilLayer::updateDevil), 30.0 );
+		this->schedule( schedule_selector(DevilLayer::updateDevil), 2.0 );
 
 		NotificationCenter::getInstance()->addObserver(
 			this,
@@ -59,19 +59,17 @@ bool DevilLayer::init()
 
 void DevilLayer::updateDevil(float dt)
 {
-	float rand_x = m_winSize.width*CCRANDOM_0_1();
-	float rand_y = 0.0;
-	do
+	if (m_isdevilpos)
 	{
-		rand_y = m_winSize.height*CCRANDOM_0_1();
-	} while (rand_y > 840 || rand_y <840 - m_winSize.width );
-	m_devil->setPosition(rand_x, rand_y);
-	//m_devil->setPosition(ccp(m_winSize.width/2, m_winSize.height/2));
-	for (int index = 0; index<13; ++index)
-	{
-	}
-	
+		timeval psv;
+		gettimeofday(&psv, NULL);
+		unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
+		srand(rand_seed);
 
+		float i = CCRANDOM_0_1()*(m_devil->getDevilPosVec().size() - 0 + 1) + 0;
+
+		m_devil->setPosition(m_devil->getDevilPosVec().at((int)i));
+	}
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
 }
 
@@ -137,6 +135,13 @@ void DevilLayer::devilFighting(Ref* pData)
 	this->schedule( schedule_selector(DevilLayer::updateFightingBar) );
 }
 
+
+void DevilLayer::devilPosHandle(Ref* pData)
+{
+	auto devil = (Devil*)pData;
+	m_devil->getDevilPosVec().push_back(devil->getDevilTmpPos());
+	m_isdevilpos = true;
+}
 
 void DevilLayer::destoryDevilLayer(Ref* pData)
 {

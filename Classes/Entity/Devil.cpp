@@ -2,7 +2,7 @@
 
 
 Devil::Devil()
-	//: m_isTrigger(false)
+: m_tmpPos(Point(0,0))
 {
 }
 
@@ -16,12 +16,16 @@ bool Devil::init()
 }
 
 
-//void Devil::setIsTrigger(bool isTrigger)
-//{
-//	this->m_isTrigger = isTrigger;
-//}
-//
-//bool Devil::getIsTrigger()
-//{
-//	return this->m_isTrigger;
-//}
+Point Devil::getDevilTmpPos()
+{
+	return this->m_tmpPos;
+}
+void Devil::setDevilTmpPos(Point p)
+{
+	this->m_tmpPos = p;
+}
+
+std::vector<Point> Devil::getDevilPosVec()
+{
+	return this->m_devilPosVec;
+}

@@ -6,11 +6,13 @@
 
 //define which platform
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "Devil.h"
 #include "Ball.h"
 #include "Entity.h"
 #include "MsgTypeForObserver.h"
 
 #else
+#include "Entity/Devil.h"
 #include "Entity/Ball.h"
 #include "Entity/Entity.h"
 #include "Tools/MsgTypeForObserver.h"
@@ -104,7 +106,7 @@ private:
 	// use for routeDetection
 	std::map<int, Vector<Ref*>> m_cellMap;
 
-	Node* m_devil;
+	Devil* m_devil;
 	ParticleSystem*    m_emitter;
 
 	Ball* m_ball;

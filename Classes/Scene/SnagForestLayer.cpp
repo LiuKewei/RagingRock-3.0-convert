@@ -70,6 +70,8 @@ void SnagForestLayer::update(float dt)
 			m_listener->setEnabled(true);
 		}
 		m_emitter->setVisible(false);
+
+		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosPush, m_devil);
 	}
 	// the ball is falling and drawing the routed path
 	else if (m_ball != NULL && !m_isBallGoingUp)
@@ -455,9 +457,9 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 	Ref* obj = NULL;
 	Sprite* cell = NULL;
 	auto cellVec = m_cellMap.at(indexOfCellArr);
-	for (auto& e : cellVec)
+	for (auto& element : cellVec)
 	{
-		cell = (Sprite*)e;
+		cell = (Sprite*)element;
 		if (isCollidedWithBall(m_ball, cell))
 		{
 			if (!cell->isVisible())
@@ -468,6 +470,10 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 				{
 					m_emitter->setPosition(cellPos);
 					m_emitter->setVisible(true);
+				}
+				if (m_devil != NULL)
+				{
+					m_devil->setDevilTmpPos(cellPos);
 				}
 			}
 		}
@@ -490,7 +496,7 @@ bool SnagForestLayer::isCollidedWithBall(Ball* ball, Node *node)
 /* === Devil Action ===*/
 void SnagForestLayer::handleDevil(Ref* pData)
 {
-	m_devil = (Node*)pData;
+	m_devil = (Devil*)pData;
 	m_devil->retain();
 }
 
