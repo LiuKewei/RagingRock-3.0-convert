@@ -65,6 +65,7 @@ public:
 
 	//PhysicsWorld of layer setter function
 	void setPhyWorld(PhysicsWorld* world);
+
 private:
 	//initialize the resources of this layer
 	void initResourcesWithProgresser();

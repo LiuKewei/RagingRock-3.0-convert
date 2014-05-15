@@ -279,21 +279,21 @@ void SnagForestLayer::initSnags()
 	PhysicsMaterial pm;
 	pm.density = 1.0f;
 	pm.restitution = 0.5f;
-	for (int i = 0; i < 7; ++i)
+	for (int column = 0; column < 7; ++column)//columns
 	{
-		for (int j = 0; j < 13; ++j)
+		for (int row = 0; row < 13; ++row)//rows
 		{
 			auto snag = Sprite::createWithSpriteFrame(
 				SpriteFrameCache::getInstance()->getSpriteFrameByName("snag.png")
 				);
 			pm.friction = 0.1f*CCRANDOM_0_1();
-			if (j % 2 == 1)
+			if (row % 2 == 1)
 			{
-				snag->setPosition(Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
+				snag->setPosition(Point(m_winX / 6 * column + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*row)));
 			}
 			else
 			{
-				snag->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*j)));
+				snag->setPosition(Point(m_winX / 6 / 2 + m_winX / 6 * column + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*row)));
 			}
 			auto body = PhysicsBody::createCircle(snag->getContentSize().width / 2, pm);
 			body->setDynamic(false);
@@ -333,15 +333,15 @@ void SnagForestLayer::initCells()
 	for (int row = 0; row < 13; ++row)//rows
 	{
 		Vector<Ref*> cellVec;
-		for (int i = 0; i < 7; ++i)//columns
+		for (int column = 0; column < 7; ++column)//columns
 		{
-			if (row % 2 == 1)
+			if (row % 2 == 0)
 			{
-				cellPos = Point(m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(row+1)));
+				cellPos = Point(m_winX / 6 * column + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*row));
 			}
 			else
 			{
-				cellPos = Point(m_winX / 6 / 2 + m_winX / 6 * i + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*(row+1)));
+				cellPos = Point(m_winX / 6 / 2 + m_winX / 6 * column + c_radius, (c_snagHeightStart - (m_winX / 6 / 2)*row));
 			}
 			Point p[] = {
 				Point((cellPos.x - m_winSize.width / 6 / 2) / m_winSize.width, (m_winSize.height - cellPos.y) / m_winSize.height),
@@ -353,7 +353,7 @@ void SnagForestLayer::initCells()
 			//cell->setPosition(Point(cell->getAnchorPoint().x*m_winSize.width, cell->getAnchorPoint().y*m_winSize.height));
 			cell->setPosition(cellPos);
 			cell->setVisible(false);
-			this->addChild(cell, Z_ORDER_ZERO);
+			this->addChild(cell, Z_ORDER_ONE);
 			cellVec.pushBack(cell);
 		}
 		m_cellMap.insert(std::pair<int, Vector<Ref*>>(row, cellVec));
@@ -395,51 +395,51 @@ void SnagForestLayer::initParticleFire()
 /* === Ball Action ===*/
 void SnagForestLayer::routingDetection()
 {
-	if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6) && m_ball->getPositionY() <= c_snagHeightStart)
+	if (m_ball->getPositionY() > c_snagHeightStart - m_winX / 6/2 && m_ball->getPositionY() <= c_snagHeightStart+m_winX / 6/2)
 	{
 		showCells(0);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 1.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6) && m_ball->getPositionY() <= c_snagHeightStart)
 	{
 		showCells(1);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 2) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 1.5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 1.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6))
 	{
 		showCells(2);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 2.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 2))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 2) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 1.5))
 	{
 		showCells(3);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 3) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 2.5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 2.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 2))
 	{
 		showCells(4);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 3.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 3))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 3) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 2.5))
 	{
 		showCells(5);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 4) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 3.5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 3.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 3))
 	{
 		showCells(6);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 4.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 4))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 4) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 3.5))
 	{
 		showCells(7);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 4.5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 4.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 4))
 	{
 		showCells(8);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 5.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 4.5))
 	{
 		showCells(9);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 5.5))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 5.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 5))
 	{
 		showCells(10);
 	}
-	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6.5) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 6))
+	else if (m_ball->getPositionY() > c_snagHeightStart - (m_winX / 6 * 6) && m_ball->getPositionY() <= c_snagHeightStart - (m_winX / 6 * 5.5))
 	{
 		showCells(11);
 	}

@@ -67,6 +67,10 @@ void DevilLayer::updateDevil(float dt)
 	} while (rand_y > 840 || rand_y <840 - m_winSize.width );
 	m_devil->setPosition(rand_x, rand_y);
 	//m_devil->setPosition(ccp(m_winSize.width/2, m_winSize.height/2));
+	for (int index = 0; index<13; ++index)
+	{
+	}
+	
 
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
 }

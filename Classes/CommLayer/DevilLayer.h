@@ -29,6 +29,7 @@ public:
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
 
+
 private:
 	void initDevil();
 	void devilFighting(Ref* pData);
