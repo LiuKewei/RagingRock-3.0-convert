@@ -70,7 +70,8 @@ void SnagForestLayer::update(float dt)
 			m_listener->setEnabled(true);
 		}
 		m_emitter->setVisible(false);
-
+		m_devil->setDevilMaxIndexInCurrent(m_devil->getDevilMaxIndexInCurrent() + m_devil->getDevilPosCnt());
+		m_devil->setDevilPosCnt(0);
 		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosPush, m_devil);
 	}
 	// the ball is falling and drawing the routed path
@@ -471,9 +472,10 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 					m_emitter->setPosition(cellPos);
 					m_emitter->setVisible(true);
 				}
-				if (m_devil != NULL)
+				if (m_devil != NULL && indexOfCellArr != 0 && indexOfCellArr != 12)
 				{
-					m_devil->setDevilTmpPos(cellPos);
+					m_devil->getDevilPosVec()->push_back(cellPos);
+					m_devil->setDevilPosCnt(m_devil->getDevilPosCnt()+1);
 				}
 			}
 		}
@@ -498,6 +500,7 @@ void SnagForestLayer::handleDevil(Ref* pData)
 {
 	m_devil = (Devil*)pData;
 	m_devil->retain();
+	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilPosUpdate);
 }
 
 void SnagForestLayer::handleDevilStop(Ref* pData)
@@ -505,6 +508,7 @@ void SnagForestLayer::handleDevilStop(Ref* pData)
 	removeDevil();
 	m_ball->getPhysicsBody()->setDynamic(true);
 	this->scheduleUpdate();
+	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilFightingStop);
 }
 
 void SnagForestLayer::interactionSubscribe()

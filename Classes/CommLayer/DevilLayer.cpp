@@ -23,6 +23,8 @@ DevilLayer::~DevilLayer()
 		//delete m_progress;
 		m_progress = NULL;
 	}
+
+	NotificationCenter::getInstance()->removeAllObservers(this);
 }
 
 bool DevilLayer::init()
@@ -43,13 +45,24 @@ bool DevilLayer::init()
 		m_listener->setEnabled(true);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
-		this->schedule( schedule_selector(DevilLayer::updateDevil), 2.0 );
+		
 
 		NotificationCenter::getInstance()->addObserver(
 			this,
 			callfuncO_selector(DevilLayer::devilFighting),
 			MsgTypeForObserver::c_DevilFightingStart,
 			NULL);
+
+		NotificationCenter::getInstance()->addObserver(
+			this,
+			callfuncO_selector(DevilLayer::devilPosHandle),
+			MsgTypeForObserver::c_DevilPosPush,
+			NULL);
+
+		timeval psv;
+		gettimeofday(&psv, NULL);
+		unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
+		srand(rand_seed);
 
 		bRet = true;
 	} while (0);
@@ -59,18 +72,13 @@ bool DevilLayer::init()
 
 void DevilLayer::updateDevil(float dt)
 {
-	if (m_isdevilpos)
-	{
-		timeval psv;
-		gettimeofday(&psv, NULL);
-		unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
-		srand(rand_seed);
-
-		float i = CCRANDOM_0_1()*(m_devil->getDevilPosVec().size() - 0 + 1) + 0;
-
-		m_devil->setPosition(m_devil->getDevilPosVec().at((int)i));
-	}
-	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
+	unsigned int maxIdx = m_devil->getDevilMaxIndexInCurrent();
+	//CCLOG("maxIdx %d", maxIdx);
+	//CCLOG("m_devil->getDevilPosVec()->size() %d", m_devil->getDevilPosVec()->size());
+	CC_ASSERT(maxIdx <= m_devil->getDevilPosVec()->size());
+	int idx = (int)(CCRANDOM_0_1()*(maxIdx + 1));
+	--idx;
+	m_devil->setPosition(m_devil->getDevilPosVec()->at(idx == -1 ? 0 : idx));
 }
 
 
@@ -110,15 +118,15 @@ void DevilLayer::initDevil()
 {
 	m_devil = Devil::create();
 	m_devil->bindSprite(Sprite::create("devil.png"));
-	m_devil->setPosition(Point(m_winSize.width/2-30, m_winSize.height/2));
-	this->addChild(m_devil);
+	m_devil->setDevilMaxIndexInCurrent(0);
+	m_devil->setDevilPosCnt(0);
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
 }
 
 
 void DevilLayer::devilFighting(Ref* pData)
 {
-	
+
 	//m_devil->setVisible(false);
 	auto fightingProgressBg = Sprite::create("slider_bar.png");
 	fightingProgressBg->setPosition(Point(150,300));
@@ -138,9 +146,9 @@ void DevilLayer::devilFighting(Ref* pData)
 
 void DevilLayer::devilPosHandle(Ref* pData)
 {
-	auto devil = (Devil*)pData;
-	m_devil->getDevilPosVec().push_back(devil->getDevilTmpPos());
-	m_isdevilpos = true;
+	this->schedule( schedule_selector(DevilLayer::updateDevil), 2.0 );
+	this->addChild(m_devil);
+	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilPosPush);
 }
 
 void DevilLayer::destoryDevilLayer(Ref* pData)
