@@ -18,6 +18,11 @@ AppDelegate::~AppDelegate()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+	timeval psv;
+	gettimeofday(&psv, NULL);
+	unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
+	srand(rand_seed);
+
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();

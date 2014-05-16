@@ -59,10 +59,7 @@ bool DevilLayer::init()
 			MsgTypeForObserver::c_DevilPosPush,
 			NULL);
 
-		timeval psv;
-		gettimeofday(&psv, NULL);
-		unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
-		srand(rand_seed);
+		
 
 		bRet = true;
 	} while (0);

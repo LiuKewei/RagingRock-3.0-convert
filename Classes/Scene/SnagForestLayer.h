@@ -8,13 +8,11 @@
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "Devil.h"
 #include "Ball.h"
-#include "Entity.h"
 #include "MsgTypeForObserver.h"
 
 #else
 #include "Entity/Devil.h"
 #include "Entity/Ball.h"
-#include "Entity/Entity.h"
 #include "Tools/MsgTypeForObserver.h"
 
 #endif

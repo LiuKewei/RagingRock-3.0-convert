@@ -29,6 +29,10 @@ bool SnagForestScene::initWithPhysics()
 		_devilLayer = DevilLayer::create();
 		this->addChild(_devilLayer,1);
 
+		_balloonLayer = BalloonLayer::create();
+		this->addChild(_balloonLayer, 2);
+
+
 		bRet = true;
 	} while (0);
 

@@ -9,7 +9,6 @@
 #include "MsgTypeForObserver.h"
 #else
 #include "Entity/Devil.h"
-#include "Entity/Entity.h"
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
