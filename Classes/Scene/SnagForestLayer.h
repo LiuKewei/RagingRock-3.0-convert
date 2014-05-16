@@ -91,7 +91,7 @@ private:
 	
 	bool removeDevil();
 
-
+	void pause();
 private:
 	PhysicsWorld* m_physicsWorld;
 	EventListenerTouchOneByOne* m_listener;
@@ -115,6 +115,7 @@ private:
 	float m_cellside;
 	float m_ballAngle;
 	bool  m_isBallGoingUp;
+	bool  m_isLittleGameStart;
 
 };
 #endif // __SNAGFOREST_LAYER_H__

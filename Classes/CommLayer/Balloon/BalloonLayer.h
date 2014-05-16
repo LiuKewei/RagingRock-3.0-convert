@@ -25,14 +25,19 @@ public:
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
 
+	void bombedreset(float dt);
+	void unbombedreset(float dt);
 
 private:
 	void initBalloon();
+
+	void balloonGameStart(Ref* pData);
 
 private:
 	EventListenerTouchOneByOne* m_listener;
 	Size  m_winSize;
 
+	Sprite* m_loadBg;
 	Balloon* m_balloon;
 };
 

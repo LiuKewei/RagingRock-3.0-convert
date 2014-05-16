@@ -14,6 +14,7 @@ SnagForestLayer::SnagForestLayer()
 	, m_arrow(NULL)
 	, m_littleGameSlot(NULL)
 	, m_isBallGoingUp(true)
+	, m_isLittleGameStart(false)
 	, m_devil(NULL)
 	, m_emitter(NULL)
 	, m_listener(NULL)
@@ -487,7 +488,12 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 		}
 		if (indexOfCellArr == 12 && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
 		{
-			CCLOG("m_littleGameSlot is been Collided !!!!!!!!!!!");
+			if (!m_isLittleGameStart)
+			{
+				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+				pause();
+				m_isLittleGameStart = true;
+			}
 		}
 	}
 }
@@ -539,10 +545,13 @@ void SnagForestLayer::interactionSubscribe()
 void SnagForestLayer::triggerDevil()
 {
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilFightingStart, NULL);
-	m_listener->setEnabled(false);
-	m_ball->getPhysicsBody()->setDynamic(false);
-	this->unscheduleUpdate();
+	pause();
 }
+
+
+
+/* === Little Game Action ===*/
+
 
 
 bool SnagForestLayer::removeDevil()
@@ -554,4 +563,22 @@ bool SnagForestLayer::removeDevil()
 		return true;
 	}
 	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void SnagForestLayer::pause()
+{
+	m_listener->setEnabled(false);
+	m_ball->getPhysicsBody()->setDynamic(false);
+	this->unscheduleUpdate();
 }

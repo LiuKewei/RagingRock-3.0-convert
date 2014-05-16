@@ -6,8 +6,16 @@ USING_NS_CC;
 const char* MsgTypeForObserver::c_DevilPosUpdate = "1";
 const char* MsgTypeForObserver::c_DevilFightingStart = "2";
 const char* MsgTypeForObserver::c_DevilFightingStop = "3";
-
 const char* MsgTypeForObserver::c_DevilPosPush = "4";
+
+const char* MsgTypeForObserver::c_BalloonStart = "5";
+
+
+int MsgTypeForObserver::getRand(int start,int end)
+{  
+	float i = CCRANDOM_0_1()*(end-start+1)+start;  //产生一个从start到end间的随机数  
+	return (int)i;  
+}
 
 AppDelegate::AppDelegate() {
 
