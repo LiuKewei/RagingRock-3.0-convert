@@ -2,12 +2,16 @@
 
 
 Devil::Devil()
-	//: m_isTrigger(false)
+	: m_currentMaxIndex(0)
+	, m_devilPosCnt(0)
 {
+	m_devilPosVec = new std::vector<Point>();
 }
 
 Devil::~Devil()
 {
+	delete m_devilPosVec;
+	m_devilPosVec = NULL;
 }
 
 bool Devil::init()
@@ -15,13 +19,26 @@ bool Devil::init()
 	return true;
 }
 
+std::vector<Point>* Devil::getDevilPosVec()
+{
+	return this->m_devilPosVec;
+}
 
-//void Devil::setIsTrigger(bool isTrigger)
-//{
-//	this->m_isTrigger = isTrigger;
-//}
-//
-//bool Devil::getIsTrigger()
-//{
-//	return this->m_isTrigger;
-//}
+void Devil::setDevilMaxIndexInCurrent(unsigned int index)
+{
+	this->m_currentMaxIndex = index;
+}
+
+unsigned int Devil::getDevilMaxIndexInCurrent()
+{
+	return this->m_currentMaxIndex;
+}
+
+void Devil::setDevilPosCnt(unsigned int devilPosCnt)
+{
+	this->m_devilPosCnt = devilPosCnt;
+}
+unsigned int Devil::getDevilPosCnt()
+{
+	return this->m_devilPosCnt;
+}

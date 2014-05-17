@@ -22,6 +22,7 @@ public:
 	int verCnt,
 	const int *indices);
 
+
 	//÷ÿ‘ÿ∏∏¿‡draw
 	void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
 

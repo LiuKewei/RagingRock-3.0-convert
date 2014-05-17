@@ -6,13 +6,13 @@
 
 //define which platform
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+#include "Devil.h"
 #include "Ball.h"
-#include "Entity.h"
 #include "MsgTypeForObserver.h"
 
 #else
+#include "Entity/Devil.h"
 #include "Entity/Ball.h"
-#include "Entity/Entity.h"
 #include "Tools/MsgTypeForObserver.h"
 
 #endif
@@ -63,19 +63,21 @@ public:
 	virtual void TouchMoved(Touch* touch, Event* event);
 	virtual void TouchEnded(Touch* touch, Event* event);
 
-
 	//PhysicsWorld of layer setter function
 	void setPhyWorld(PhysicsWorld* world);
+
 private:
 	//initialize the resources of this layer
 	void initResourcesWithProgresser();
 	void initProgresser();
 	void initMap();
 	void initSnags();
-	void initCell();
+	void initCells();
 	void initSlots();
 	void initArrow();
 	void initParticleFire();
+	void initExitButton();
+	void menuCloseCallback(Ref* pSender);
 
 
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);
@@ -83,17 +85,15 @@ private:
 	void showCells(unsigned int indexOfCellArr);
 	void routingDetection();		
 
-
-
 	void interactionSubscribe();
 	void handleDevil(Ref* pData);
 	void handleDevilStop(Ref* pData);
 
 	void triggerDevil();
-
+	
 	bool removeDevil();
 
-
+	void pause();
 private:
 	PhysicsWorld* m_physicsWorld;
 	EventListenerTouchOneByOne* m_listener;
@@ -106,16 +106,18 @@ private:
 	// use for routeDetection
 	std::map<int, Vector<Ref*>> m_cellMap;
 
-	Node* m_devil;
+	Devil* m_devil;
 	ParticleSystem*    m_emitter;
 
 	Ball* m_ball;
 	Sprite* m_arrow;
+	Sprite* m_littleGameSlot;
 	Size  m_winSize;
 	float m_winX;
 	float m_cellside;
 	float m_ballAngle;
 	bool  m_isBallGoingUp;
+	bool  m_isLittleGameStart;
 
 };
 #endif // __SNAGFOREST_LAYER_H__

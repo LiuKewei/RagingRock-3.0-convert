@@ -8,7 +8,13 @@ public:
 	const static char* c_DevilPosUpdate;
 	const static char* c_DevilFightingStart;
 	const static char* c_DevilFightingStop;
-};
+	const static char* c_DevilPosPush;
 
+
+
+	const static char* c_BalloonStart;
+
+	static int getRand(int start,int end);
+};
 
 #endif // __MSG_TYPE_FOR_OBSERVER_H__

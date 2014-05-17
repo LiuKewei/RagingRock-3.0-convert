@@ -6,6 +6,16 @@ USING_NS_CC;
 const char* MsgTypeForObserver::c_DevilPosUpdate = "1";
 const char* MsgTypeForObserver::c_DevilFightingStart = "2";
 const char* MsgTypeForObserver::c_DevilFightingStop = "3";
+const char* MsgTypeForObserver::c_DevilPosPush = "4";
+
+const char* MsgTypeForObserver::c_BalloonStart = "5";
+
+
+int MsgTypeForObserver::getRand(int start,int end)
+{  
+	float i = CCRANDOM_0_1()*(end-start+1)+start;  //产生一个从start到end间的随机数  
+	return (int)i;  
+}
 
 AppDelegate::AppDelegate() {
 
@@ -16,6 +26,11 @@ AppDelegate::~AppDelegate()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+	timeval psv;
+	gettimeofday(&psv, NULL);
+	unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
+	srand(rand_seed);
+
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
@@ -29,7 +44,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	glview->setFrameSize(designSize.width, designSize.height);
 #endif
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
+#else
 	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
+#endif
 	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
     director->setDisplayStats(true);

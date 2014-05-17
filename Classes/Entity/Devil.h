@@ -14,10 +14,17 @@ public:
 	virtual bool init();
 	CREATE_FUNC(Devil);
 
+	std::vector<Point>* getDevilPosVec();
 
-//	void setIsTrigger(bool isTrigger);
-//	bool getIsTrigger();
-//private:
-//	bool m_isTrigger;
+	void setDevilMaxIndexInCurrent(unsigned int index);
+	unsigned int getDevilMaxIndexInCurrent();
+
+	void setDevilPosCnt(unsigned int devilPosCnt);
+	unsigned int getDevilPosCnt();
+	
+private:
+	std::vector<Point>* m_devilPosVec;
+	unsigned int m_devilPosCnt;
+	unsigned int m_currentMaxIndex;
 };
 #endif // __DEVIL_H__

@@ -19,6 +19,7 @@ PolySprite* PolySprite::create(const char *pFile,
 		return pobSprite;
 	}
 	CC_SAFE_DELETE(pobSprite);
+
 	return NULL;
 }
 
