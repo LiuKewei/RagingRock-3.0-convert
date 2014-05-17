@@ -464,7 +464,7 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 				auto showcell = PolySprite::create("SnagForestScene_bg.jpg", p, 4, index);
 				showcell->setPosition(Point(showcell->getAnchorPoint().x*m_winSize.width, showcell->getAnchorPoint().y*m_winSize.height));
 
-				this->addChild(showcell);
+				this->addChild(showcell, Z_ORDER_THREE);
 
 				if (m_emitter != NULL)
 				{
