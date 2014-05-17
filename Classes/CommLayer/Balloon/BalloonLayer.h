@@ -43,6 +43,7 @@ private:
 
 	Label* m_maxCntLabel;
 	Label* m_bomb;
+	Label* m_balloonLabel;
 };
 
 #endif // __BALLOON_LAYER_H__

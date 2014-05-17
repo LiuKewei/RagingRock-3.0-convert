@@ -277,7 +277,7 @@ void SnagForestLayer::initMap()
 	this->addChild(bg_Sprite, Z_ORDER_ZERO);
 
 	auto fg_Sprite = Sprite::create("SnagForestScene_fg.jpg");
-	fg_Sprite->setPosition(Point(m_winSize.width / 2, c_snagHeightStart - fg_Sprite->getContentSize().height / 2));
+	fg_Sprite->setPosition(Point(m_winSize.width / 2, c_snagHeightStart - fg_Sprite->getContentSize().height / 2 + c_radius));
 	this->addChild(fg_Sprite, Z_ORDER_ZERO);
 }
 

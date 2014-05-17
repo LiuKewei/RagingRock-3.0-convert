@@ -78,6 +78,8 @@ void BalloonLayer::unbombedreset(float dt)
 			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
 			m_loadBg->setVisible(false);
 			m_balloon->setVisible(false);
+			m_balloonLabel->setVisible(false);
+			m_maxCntLabel->setVisible(false);
 			m_listener->setEnabled(false);
 		}
 		this->unschedule(schedule_selector(BalloonLayer::unbombedreset));
@@ -150,9 +152,10 @@ void BalloonLayer::initBalloon()
 void BalloonLayer::initLabels()
 {
 	TTFConfig config2("fonts/Marker Felt.ttf",30,GlyphCollection::DYNAMIC,nullptr,true);
-	auto balloonLabel = Label::createWithTTF(config2, "Balloon:",TextHAlignment::LEFT);//创建显示 气球: 的label
-	balloonLabel->setPosition(Point(m_winSize.width/2-30,m_winSize.height/2+300));
-	this->addChild(balloonLabel,1);
+	m_balloonLabel = Label::createWithTTF(config2, "Balloon:",TextHAlignment::LEFT);//创建显示 气球: 的label
+	m_balloonLabel->setPosition(Point(m_winSize.width/2-30,m_winSize.height/2+300));
+	m_balloonLabel->setVisible(false);
+	this->addChild(m_balloonLabel,1);
 
 
 	m_maxCntLabel = Label::createWithTTF(config2, m_balloon->getMaxCnt() + "",TextHAlignment::LEFT);//创建显示 气球次数 的label
@@ -161,6 +164,7 @@ void BalloonLayer::initLabels()
 	char tmp[10];
 	sprintf(tmp," %d",m_balloon->getMaxCnt());
 	m_maxCntLabel->setString(tmp);
+	m_maxCntLabel->setVisible(false);
 	this->addChild(m_maxCntLabel,1);
 
 
@@ -174,6 +178,7 @@ void BalloonLayer::balloonGameStart(Ref* pData)
 {
 	m_loadBg->setVisible(true);
 	m_balloon->setVisible(true);
-
+	m_balloonLabel->setVisible(true);
+	m_maxCntLabel->setVisible(true);
 	m_listener->setEnabled(true);
 }
