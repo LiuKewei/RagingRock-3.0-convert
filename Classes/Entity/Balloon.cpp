@@ -39,7 +39,7 @@ unsigned int Balloon::getCounter()
 
 void Balloon::setSuccessCnt(unsigned int successCnt)
 {
-	this->m_successCnt;
+	this->m_successCnt = successCnt;
 }
 unsigned int Balloon::getSuccessCnt()
 {

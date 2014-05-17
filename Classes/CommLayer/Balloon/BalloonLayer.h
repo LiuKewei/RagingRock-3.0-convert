@@ -30,6 +30,7 @@ public:
 
 private:
 	void initBalloon();
+	void initLabels();
 
 	void balloonGameStart(Ref* pData);
 
@@ -39,6 +40,9 @@ private:
 
 	Sprite* m_loadBg;
 	Balloon* m_balloon;
+
+	Label* m_maxCntLabel;
+	Label* m_bomb;
 };
 
 #endif // __BALLOON_LAYER_H__

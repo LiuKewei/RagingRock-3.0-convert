@@ -13,6 +13,7 @@ public:
 
 
 	const static char* c_BalloonStart;
+	const static char* c_BalloonStop;
 
 	static int getRand(int start,int end);
 };

@@ -9,7 +9,7 @@ const char* MsgTypeForObserver::c_DevilFightingStop = "3";
 const char* MsgTypeForObserver::c_DevilPosPush = "4";
 
 const char* MsgTypeForObserver::c_BalloonStart = "5";
-
+const char* MsgTypeForObserver::c_BalloonStop = "6";
 
 int MsgTypeForObserver::getRand(int start,int end)
 {  

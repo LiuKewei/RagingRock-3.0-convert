@@ -88,12 +88,14 @@ private:
 	void interactionSubscribe();
 	void handleDevil(Ref* pData);
 	void handleDevilStop(Ref* pData);
-
 	void triggerDevil();
+
+	void handleBalloonStop(Ref* pData);
 	
 	bool removeDevil();
 
 	void pause();
+	void recover();
 private:
 	PhysicsWorld* m_physicsWorld;
 	EventListenerTouchOneByOne* m_listener;

@@ -563,8 +563,7 @@ void SnagForestLayer::handleDevil(Ref* pData)
 void SnagForestLayer::handleDevilStop(Ref* pData)
 {
 	removeDevil();
-	m_ball->getPhysicsBody()->setDynamic(true);
-	this->scheduleUpdate();
+	recover();
 	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilFightingStop);
 }
 
@@ -581,6 +580,13 @@ void SnagForestLayer::interactionSubscribe()
 		callfuncO_selector(SnagForestLayer::handleDevilStop),
 		MsgTypeForObserver::c_DevilFightingStop,
 		NULL);
+
+
+	NotificationCenter::getInstance()->addObserver(
+		this,
+		callfuncO_selector(SnagForestLayer::handleBalloonStop),
+		MsgTypeForObserver::c_BalloonStop,
+		NULL);
 }
 
 void SnagForestLayer::triggerDevil()
@@ -592,7 +598,10 @@ void SnagForestLayer::triggerDevil()
 
 
 /* === Little Game Action ===*/
-
+void SnagForestLayer::handleBalloonStop(Ref* pData)
+{
+	recover();
+}
 
 
 bool SnagForestLayer::removeDevil()
@@ -609,17 +618,15 @@ bool SnagForestLayer::removeDevil()
 
 
 
-
-
-
-
-
-
-
-
 void SnagForestLayer::pause()
 {
 	m_listener->setEnabled(false);
 	m_ball->getPhysicsBody()->setDynamic(false);
 	this->unscheduleUpdate();
+}
+
+void SnagForestLayer::recover()
+{
+	m_ball->getPhysicsBody()->setDynamic(true);
+	this->scheduleUpdate();
 }

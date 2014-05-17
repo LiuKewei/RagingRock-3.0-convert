@@ -17,7 +17,7 @@ bool BalloonLayer::init()
 		CC_BREAK_IF(!Layer::init());
 		m_winSize = Director::getInstance()->getWinSize();
 		initBalloon();
-
+		initLabels();
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->setSwallowTouches(true);
 		m_listener->onTouchBegan = CC_CALLBACK_2(BalloonLayer::TouchBegan, this);
@@ -36,7 +36,7 @@ bool BalloonLayer::init()
 			NULL);
 
 
-		
+
 
 
 
@@ -50,8 +50,12 @@ void BalloonLayer::bombedreset(float dt)
 {
 	m_balloon->setCounter(0);
 	m_balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
-	CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
+	char tmp[10];
+	sprintf(tmp," %d",m_balloon->getMaxCnt());
+	m_maxCntLabel->setString(tmp);
+	//CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
 	m_listener->setEnabled(true);
+	m_bomb->setVisible(false);
 	m_balloon->setVisible(true);
 	this->unschedule(schedule_selector(BalloonLayer::bombedreset));
 }
@@ -63,8 +67,19 @@ void BalloonLayer::unbombedreset(float dt)
 		m_balloon->setSuccessCnt(m_balloon->getSuccessCnt() + 1);
 		m_balloon->setCounter(0);
 		m_balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
-	CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
+		char tmp[10];
+		sprintf(tmp," %d",m_balloon->getMaxCnt());
+		m_maxCntLabel->setString(tmp);
+		//CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
 		m_balloon->setScale(1.0f);
+		CCLOG("m_balloon->getSuccessCnt()    %d",  m_balloon->getSuccessCnt());
+		if(m_balloon->getSuccessCnt() == 10)
+		{
+			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
+			m_loadBg->setVisible(false);
+			m_balloon->setVisible(false);
+			m_listener->setEnabled(false);
+		}
 		this->unschedule(schedule_selector(BalloonLayer::unbombedreset));
 	}
 }
@@ -85,6 +100,7 @@ bool BalloonLayer::TouchBegan(Touch* touch, Event* event)
 		m_listener->setEnabled(false);
 		m_balloon->setbombed(true);
 		m_balloon->setVisible(false);
+		m_bomb->setVisible(true);
 		m_balloon->setScale(1.0f);
 		this->schedule( schedule_selector(BalloonLayer::bombedreset), 1.0 );
 		return false;
@@ -131,7 +147,28 @@ void BalloonLayer::initBalloon()
 	this->addChild(m_balloon);
 }
 
+void BalloonLayer::initLabels()
+{
+	TTFConfig config2("fonts/Marker Felt.ttf",30,GlyphCollection::DYNAMIC,nullptr,true);
+	auto balloonLabel = Label::createWithTTF(config2, "Balloon:",TextHAlignment::LEFT);//创建显示 气球: 的label
+	balloonLabel->setPosition(Point(m_winSize.width/2-30,m_winSize.height/2+300));
+	this->addChild(balloonLabel,1);
 
+
+	m_maxCntLabel = Label::createWithTTF(config2, m_balloon->getMaxCnt() + "",TextHAlignment::LEFT);//创建显示 气球次数 的label
+	m_maxCntLabel->setPosition(Point(m_winSize.width/2+35,m_winSize.height/2+300));
+
+	char tmp[10];
+	sprintf(tmp," %d",m_balloon->getMaxCnt());
+	m_maxCntLabel->setString(tmp);
+	this->addChild(m_maxCntLabel,1);
+
+
+	m_bomb = Label::createWithTTF(config2, "Bomb !!",TextHAlignment::LEFT);//创建显示 爆炸 的label
+	m_bomb->setPosition(Point(m_winSize.width/2, m_winSize.height/2));
+	m_bomb->setVisible(false);
+	this->addChild(m_bomb,1);
+}
 
 void BalloonLayer::balloonGameStart(Ref* pData)
 {
