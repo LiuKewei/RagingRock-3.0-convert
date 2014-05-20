@@ -20,6 +20,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(DevilLayer);
 
+	void update(float dt);
 	void updateDevil(float dt);
 	void updateFightingBar(float dt);
 	
@@ -39,7 +40,7 @@ private:
 	Devil* m_devil;
 	EventListenerTouchOneByOne* m_listener;
 	ProgressTimer* m_progress;
-
+	ParticleSystemQuad* m_fingerSparkle;
 
 	float m_fightingVal;
 	float m_fightingMoved;

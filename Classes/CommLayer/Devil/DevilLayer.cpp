@@ -8,6 +8,7 @@ DevilLayer::DevilLayer()
 	, m_winSize(0,0)
 	, m_progress(NULL)
 	, m_isdevilpos(false)
+	, m_fingerSparkle(NULL)
 {
 }
 
@@ -45,7 +46,7 @@ bool DevilLayer::init()
 		m_listener->setEnabled(true);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
-		
+		this->scheduleUpdate();
 
 		NotificationCenter::getInstance()->addObserver(
 			this,
@@ -59,12 +60,17 @@ bool DevilLayer::init()
 			MsgTypeForObserver::c_DevilPosPush,
 			NULL);
 
-		
+
 
 		bRet = true;
 	} while (0);
 
 	return bRet;
+}
+
+void DevilLayer::update(float dt)
+{
+
 }
 
 void DevilLayer::updateDevil(float dt)
@@ -83,6 +89,23 @@ bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 	{
 		return false;
 	}
+
+
+	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
+
+	m_fingerSparkle->setPosition(location);
+	m_fingerSparkle->resetSystem();
+
+	/*CCObject* temp;
+	CCARRAY_FOREACH(_blades, temp){
+	CCBlade* blade = (CCBlade*)temp;
+	if(blade->getPath()->count() == 0){
+	_blade = blade;
+	_blade->push(location);
+	break;
+	}
+	}*/
+
 	return true;
 }
 
@@ -116,6 +139,10 @@ void DevilLayer::initDevil()
 	m_devil->setDevilMaxIndexInCurrent(0);
 	m_devil->setDevilPosCnt(0);
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
+
+	m_fingerSparkle = ParticleSystemQuad::create("fingerSparkle.plist");
+	m_fingerSparkle->stopSystem();
+	this->addChild(m_fingerSparkle, Z_ORDER_TWO);
 }
 
 
@@ -124,7 +151,7 @@ void DevilLayer::devilFighting(Ref* pData)
 	m_devil->setVisible(false);
 	auto fightingProgressBg = Sprite::create("slider_bar.png");
 	fightingProgressBg->setPosition(Point(150,300));
-	this->addChild(fightingProgressBg);
+	this->addChild(fightingProgressBg, Z_ORDER_ONE);
 
 	auto* fightingProgress = Sprite::create("silder_progressBar.png");
 	m_progress = ProgressTimer::create(fightingProgress);
@@ -133,7 +160,7 @@ void DevilLayer::devilFighting(Ref* pData)
 	m_progress->setMidpoint(Point(0,0));
 	m_progress->setBarChangeRate(Point(1,0));
 	m_progress->setPercentage(50);
-	this->addChild(m_progress);
+	this->addChild(m_progress, Z_ORDER_ONE);
 	this->schedule( schedule_selector(DevilLayer::updateFightingBar) );
 }
 
@@ -141,7 +168,7 @@ void DevilLayer::devilFighting(Ref* pData)
 void DevilLayer::devilPosHandle(Ref* pData)
 {
 	this->schedule( schedule_selector(DevilLayer::updateDevil), 2.0 );
-	this->addChild(m_devil);
+	this->addChild(m_devil,Z_ORDER_ZERO);
 	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilPosPush);
 }
 

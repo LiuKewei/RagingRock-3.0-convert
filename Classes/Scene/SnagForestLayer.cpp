@@ -268,9 +268,7 @@ void SnagForestLayer::initProgresser()
 void SnagForestLayer::initMap()
 {
 	auto edgeBody = PhysicsBody::createEdgeBox(this->m_winSize, PHYSICSBODY_MATERIAL_DEFAULT, 1);
-	/*auto bg_Sprite = Sprite::createWithSpriteFrame(
-	SpriteFrameCache::getInstance()->getSpriteFrameByName("SnagForestScene.jpg")
-	);*/
+
 	auto bg_Sprite = Sprite::create("SnagForestScene_bg.jpg");
 	bg_Sprite->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	bg_Sprite->setPhysicsBody(edgeBody);

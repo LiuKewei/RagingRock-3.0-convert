@@ -11,12 +11,6 @@ const char* MsgTypeForObserver::c_DevilPosPush = "4";
 const char* MsgTypeForObserver::c_BalloonStart = "5";
 const char* MsgTypeForObserver::c_BalloonStop = "6";
 
-int MsgTypeForObserver::getRand(int start,int end)
-{  
-	float i = CCRANDOM_0_1()*(end-start+1)+start;  //产生一个从start到end间的随机数  
-	return (int)i;  
-}
-
 AppDelegate::AppDelegate() {
 
 }

@@ -29,18 +29,6 @@ const unsigned int c_ballHeightBegin = 190;
 const unsigned int c_ballHeightStart = 64;
 const unsigned int c_ballHeightStop = 2;
 
-
-enum
-{
-	Z_ORDER_ZERO,
-	Z_ORDER_ONE,
-	Z_ORDER_TWO,
-	Z_ORDER_THREE,
-	Z_ORDER_FOUR,
-
-	Z_ORDER_MAX,
-};
-
 class SnagForestLayer : public cocos2d::Layer
 {
 public:
