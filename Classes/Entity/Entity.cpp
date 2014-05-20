@@ -9,6 +9,11 @@ Entity::~Entity()
 
 }
 
+void Entity::drawFunc(const kmMat4 &transform, bool transformUpdated)
+{
+
+}
+
 Sprite* Entity::getSprite()
 {
 	return this->m_sprite;

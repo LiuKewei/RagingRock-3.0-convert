@@ -10,8 +10,7 @@ Devil::Devil()
 
 Devil::~Devil()
 {
-	delete m_devilPosVec;
-	m_devilPosVec = NULL;
+	CC_SAFE_DELETE(m_devilPosVec);
 }
 
 bool Devil::init()

@@ -29,6 +29,7 @@ SnagForestLayer::~SnagForestLayer()
 {
 	_eventDispatcher->removeEventListener(m_listener);
 	m_cellMap.clear();
+	m_devil->release();
 }
 
 void SnagForestLayer::setPhyWorld(PhysicsWorld* world)

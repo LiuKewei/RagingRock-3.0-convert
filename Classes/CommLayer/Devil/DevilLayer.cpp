@@ -14,17 +14,6 @@ DevilLayer::DevilLayer()
 
 DevilLayer::~DevilLayer()
 {
-	if (m_devil)
-	{
-		//delete m_devil;
-		m_devil = NULL;
-	}
-	if (m_progress)
-	{
-		//delete m_progress;
-		m_progress = NULL;
-	}
-
 	NotificationCenter::getInstance()->removeAllObservers(this);
 }
 
@@ -36,6 +25,7 @@ bool DevilLayer::init()
 		CC_BREAK_IF(!Layer::init());
 		m_winSize = Director::getInstance()->getWinSize();
 		initDevil();
+		initFingers();
 
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->setSwallowTouches(true);
@@ -70,7 +60,17 @@ bool DevilLayer::init()
 
 void DevilLayer::update(float dt)
 {
+	if (m_finger && m_finger->getRowedPath()->size() > 3){
+		m_finger->setDeltaRemainder(dt * 60 * 1.2f);
+		int pop = (int)(m_finger->getDeltaRemainder() + 0.5f);
+		m_finger->setDeltaRemainder(m_finger->getDeltaRemainder() - pop);
 
+		while (pop > 0 && !m_finger->getRowedPath()->empty())
+		{
+			m_finger->getRowedPath()->pop();
+			--pop;
+		}
+	}
 }
 
 void DevilLayer::updateDevil(float dt)
@@ -90,21 +90,19 @@ bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 		return false;
 	}
 
-
 	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
 
 	m_fingerSparkle->setPosition(location);
 	m_fingerSparkle->resetSystem();
 
-	/*CCObject* temp;
-	CCARRAY_FOREACH(_blades, temp){
-	CCBlade* blade = (CCBlade*)temp;
-	if(blade->getPath()->count() == 0){
-	_blade = blade;
-	_blade->push(location);
-	break;
+	for (auto finger : *m_fingers)
+	{
+		if (finger->getRowedPath()->size() == 0)
+		{
+			m_finger = finger;
+			m_finger->getRowedPath()->push(location);
+		}
 	}
-	}*/
 
 	return true;
 }
@@ -124,11 +122,20 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 		CCLOG("m_fightingVal  %f", m_fightingVal);
 	}
 	m_fightingMoved = afterStart.x;
+
+
+	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
+	m_fingerSparkle->setPosition(location);
+
+	m_finger->getRowedPath()->push(location);
 }
 
 void DevilLayer::TouchEnded(Touch* touch, Event* event)
 {
 	m_fightingVal = -0.1f;
+
+	m_fingerSparkle->stopSystem();
+	m_finger->setReset(true);
 }
 
 /*private function*/
@@ -139,6 +146,22 @@ void DevilLayer::initDevil()
 	m_devil->setDevilMaxIndexInCurrent(0);
 	m_devil->setDevilPosCnt(0);
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
+}
+
+void DevilLayer::initFingers()
+{
+	m_finger = NULL;
+	m_fingers = new Vector<Finger*>(c_fingers_capability);
+	Texture2D* texture = Director::getInstance()->getTextureCache()->addImage("streak.png");
+	for (int i = 0; i < c_fingers_capability; i++){
+		Finger* finger = Finger::createWithMaximumPoint(c_finger_point_limit);
+		finger->setAutoDim(false);
+		finger->setTexture(texture);
+
+		this->addChild(finger, 2);
+		m_fingers->pushBack(finger);
+	}
+
 
 	m_fingerSparkle = ParticleSystemQuad::create("fingerSparkle.plist");
 	m_fingerSparkle->stopSystem();
