@@ -21,7 +21,7 @@ inline float fangle(Point vect){
 	}
 
 	if (vect.y == 0.0 && vect.x < 0) {
-		return -M_PI;
+		return -(float)M_PI;
 	}
 
 	float angle = atan(vect.y / vect.x);
@@ -30,16 +30,16 @@ inline float fangle(Point vect){
 }
 
 inline void f1(Point p1, Point p2, float d, Point *o1, Point *o2){
-	float l = ccpDistance(p1, p2);
-	float angle = fangle(ccpSub(p2, p1));
-	*o1 = ccpRotateByAngle(ccp(p1.x + l, p1.y + d), p1, angle);
-	*o2 = ccpRotateByAngle(ccp(p1.x + l, p1.y - d), p1, angle);
+	float l = p1.getDistance(p2);
+	float angle = fangle(p2 - p1);
+	*o1 = Point(p1.x + l, p1.y + d).rotateByAngle(p1, angle);
+	*o2 = Point(p1.x + l, p1.y - d).rotateByAngle(p1, angle);
 }
 
-class Entity: public cocos2d::Node
+class Entity : public cocos2d::Node
 {
-public:	
-	Entity();	
+public:
+	Entity();
 	~Entity();
 	Sprite* getSprite();		/*get sprite object*/
 	void setSpriteAsNULL();		/*set sprite object*/

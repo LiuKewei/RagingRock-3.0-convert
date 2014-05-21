@@ -27,8 +27,6 @@ bool BalloonLayer::init()
 		m_listener->setEnabled(false);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
-
-
 		NotificationCenter::getInstance()->addObserver(
 			this,
 			callfuncO_selector(BalloonLayer::balloonGameStart),
@@ -93,8 +91,6 @@ bool BalloonLayer::TouchBegan(Touch* touch, Event* event)
 		m_balloon->setScale(m_balloon->getScale()+0.4f);
 		m_balloon->setCounter(m_balloon->getCounter() + 1);
 	}
-
-	CCLOG("m_balloon->getCounter()    %d", m_balloon->getCounter() );
 
 	if (m_balloon->getCounter() > m_balloon->getMaxCnt())
 	{

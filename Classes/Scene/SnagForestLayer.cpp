@@ -29,7 +29,6 @@ SnagForestLayer::~SnagForestLayer()
 {
 	_eventDispatcher->removeEventListener(m_listener);
 	m_cellMap.clear();
-	m_devil->release();
 }
 
 void SnagForestLayer::setPhyWorld(PhysicsWorld* world)
@@ -73,7 +72,7 @@ void SnagForestLayer::update(float dt)
 			m_listener->setEnabled(true);
 		}
 		m_emitter->setVisible(false);
-		if (m_devil!=NULL)
+		if (m_devil != NULL)
 		{
 			m_devil->setDevilMaxIndexInCurrent(m_devil->getDevilMaxIndexInCurrent() + m_devil->getDevilPosCnt());
 			m_devil->setDevilPosCnt(0);
@@ -107,7 +106,7 @@ void SnagForestLayer::updateProgresser(float dt)
 
 		this->removeChild(m_resLoadingProgresser);
 		this->removeChild(m_loadBg);
-		if (m_listener != NULL && !m_listener->isEnabled() )
+		if (m_listener != NULL && !m_listener->isEnabled())
 		{
 			m_listener->setEnabled(true);
 		}
@@ -262,7 +261,7 @@ void SnagForestLayer::initProgresser()
 	m_resLoadingProgresser->setMidpoint(Point(0, 0));
 	m_resLoadingProgresser->setBarChangeRate(Point(1, 0));
 	m_resLoadingProgresser->setPercentage(0);
-	this->addChild(m_resLoadingProgresser, Z_ORDER_MAX+1);
+	this->addChild(m_resLoadingProgresser, Z_ORDER_MAX + 1);
 	this->schedule(schedule_selector(SnagForestLayer::updateProgresser));
 }
 
@@ -270,10 +269,10 @@ void SnagForestLayer::initMap()
 {
 	auto edgeBody = PhysicsBody::createEdgeBox(this->m_winSize, PHYSICSBODY_MATERIAL_DEFAULT, 1);
 
-	/*auto bg_Sprite = Sprite::create("SnagForestScene_bg.jpg");
+	auto bg_Sprite = Sprite::create("SnagForestScene_bg.jpg");
 	bg_Sprite->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	bg_Sprite->setPhysicsBody(edgeBody);
-	this->addChild(bg_Sprite, Z_ORDER_ZERO);*/
+	this->addChild(bg_Sprite, Z_ORDER_ZERO);
 
 	auto fg_Sprite = Sprite::create("SnagForestScene_fg.jpg");
 	fg_Sprite->setPosition(Point(m_winSize.width / 2, c_snagHeightStart - fg_Sprite->getContentSize().height / 2 + c_radius));
@@ -378,7 +377,7 @@ void SnagForestLayer::initArrow()
 	m_arrow->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
 	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin));
 	m_arrow->setVisible(false);
-	this->addChild(m_arrow, Z_ORDER_MAX+1);
+	this->addChild(m_arrow, Z_ORDER_MAX + 1);
 }
 
 // Particle
@@ -407,45 +406,41 @@ void SnagForestLayer::initExitButton()
 {
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-    Point origin = Director::getInstance()->getVisibleOrigin();
+	Point origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+	// add a "close" icon to exit the progress. it's an autorelease object
+	auto closeItem = MenuItemImage::create(
+		"CloseNormal.png",
+		"CloseSelected.png",
+		CC_CALLBACK_1(SnagForestLayer::menuCloseCallback, this));
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(SnagForestLayer::menuCloseCallback, this));
-    
-	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + closeItem->getContentSize().height/2));
+	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
+		origin.y + closeItem->getContentSize().height / 2));
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Point::ZERO);
+	// create menu, it's an autorelease object
+	auto menu = Menu::create(closeItem, NULL);
+	menu->setPosition(Point::ZERO);
 	this->addChild(menu, Z_ORDER_MAX);
 }
 
 void SnagForestLayer::menuCloseCallback(Ref* pSender)
 {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
-	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
-    return;
+	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
+	return;
 #endif
 
-    Director::getInstance()->end();
+	Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+	exit(0);
 #endif
 }
 
 /* === Ball Action ===*/
 void SnagForestLayer::routingDetection()
 {
-	if (m_ball->getPositionY() > c_snagHeightStart - m_winX / 6/2 && m_ball->getPositionY() <= c_snagHeightStart+m_winX / 6/2)
+	if (m_ball->getPositionY() > c_snagHeightStart - m_winX / 6 / 2 && m_ball->getPositionY() <= c_snagHeightStart + m_winX / 6 / 2)
 	{
 		showCells(0);
 	}
@@ -522,18 +517,18 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 				if (m_devil != NULL && indexOfCellArr != 0 && indexOfCellArr != 12)
 				{
 					m_devil->getDevilPosVec()->push_back(cellPos);
-					m_devil->setDevilPosCnt(m_devil->getDevilPosCnt()+1);
+					m_devil->setDevilPosCnt(m_devil->getDevilPosCnt() + 1);
 				}
 			}
 		}
 		if (indexOfCellArr == 12 && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
 		{
-			//if (!m_isLittleGameStart)
-			//{
-			//	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
-			//	pause();
-			//	m_isLittleGameStart = true;
-			//}
+			if (!m_isLittleGameStart)
+			{
+				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+				pause();
+				m_isLittleGameStart = true;
+			}
 		}
 	}
 }
@@ -556,14 +551,14 @@ void SnagForestLayer::handleDevil(Ref* pData)
 {
 	m_devil = (Devil*)pData;
 	m_devil->retain();
-	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilPosUpdate);
+	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_DevilPosUpdate);
 }
 
 void SnagForestLayer::handleDevilStop(Ref* pData)
 {
 	removeDevil();
 	recover();
-	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilFightingStop);
+	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_DevilFightingStop);
 }
 
 void SnagForestLayer::interactionSubscribe()

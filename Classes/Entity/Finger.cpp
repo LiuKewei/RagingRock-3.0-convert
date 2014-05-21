@@ -7,6 +7,7 @@ Finger::~Finger()
 	delete[] m_vertices;
 	delete[] m_coordinates;
 
+	m_rowedPath->clear();
 	delete m_rowedPath;
 	m_rowedPath = NULL;
 }

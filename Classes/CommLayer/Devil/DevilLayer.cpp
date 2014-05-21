@@ -207,6 +207,7 @@ void DevilLayer::updateFightingBar(float dt)
 		m_listener->setEnabled(false);
 		this->unschedule(schedule_selector(DevilLayer::updateDevil));
 		this->unschedule(schedule_selector(DevilLayer::updateFightingBar));
+		this->unscheduleUpdate();
 		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilFightingStop, NULL);
 	}
 	else
