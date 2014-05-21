@@ -16,7 +16,7 @@ bool Finger::init()
 	return true;
 }
 
-std::queue<Point>* Finger::getRowedPath()
+std::list<Point>* Finger::getRowedPath()
 {
 	return this->m_rowedPath;
 }
@@ -54,7 +54,7 @@ bool Finger::initWithMaximumPoint(int limit)
 		m_willPop = true;
 
 
-		m_rowedPath = new std::queue<Point>();
+		m_rowedPath = new std::list<Point>();
 
 		bRet = true;
 	} while (0);
@@ -64,12 +64,10 @@ bool Finger::initWithMaximumPoint(int limit)
 void Finger::drawFunc(const kmMat4 &transform, bool transformUpdated)
 {
 	if ((m_reset && m_rowedPath->size() > 0) || (this->getAutoDim() && m_willPop)){
-		m_rowedPath->pop();
+		m_rowedPath->pop_front();
 		if (m_rowedPath->size() < 3){
-			while (!m_rowedPath->empty())
-			{
-				m_rowedPath->pop();
-			}
+			m_rowedPath->clear();
+			m_reset = false;
 		}
 	}
 
@@ -101,33 +99,64 @@ void Finger::draw(Renderer *renderer, const kmMat4& transform, bool transformUpd
 	renderer->addCommand(&m_customCommand);
 }
 
+void Finger::push(Point v)
+{
+	this->m_willPop = false;
+	if (this->m_reset)
+	{
+		return;
+	}
+	this->m_rowedPath->push_back(v);
+	if (this->m_rowedPath->size() > m_pointLimit)
+	{
+		this->m_rowedPath->pop_front();
+	}
+	this->populateVertices();
+}
+
+void Finger::pop(int n)
+{
+	while (this->m_rowedPath->size() > 0 && n > 0)
+	{
+		this->m_rowedPath->pop_front();
+		--n;
+	}
+
+	if (this->m_rowedPath->size() > 2)
+	{
+		this->populateVertices();
+	}
+}
+
 void Finger::populateVertices()
 {
-	int size = m_rowedPath->size();
-	m_vertices[0] = m_rowedPath->front();
-	Point pre = m_vertices[0];
-	m_rowedPath->pop();
-
+	std::list<Point>::iterator iter = m_rowedPath->begin();
 	unsigned int i = 0;
-	Point it = m_rowedPath->front();
-	float dd = m_width / size;
-	m_rowedPath->pop();
-	while (i < size - 2){
+	float dd = m_width / m_rowedPath->size();
+
+	m_vertices[0] = *iter;
+	Point pre = *iter;
+	Point it;
+
+	++iter;
+	while ((iter != m_rowedPath->end()) && (i < m_rowedPath->size() - 2))
+	{
+		it = *iter;
 		f1(pre, it, m_width - i * dd, m_vertices + 2 * i + 1, m_vertices + 2 * i + 2);
 		PointSet(m_coordinates + 2 * i + 1, 0.5f, 1.0f);
 		PointSet(m_coordinates + 2 * i + 2, 0.5f, 0.0f);
-
-		i++;
+		++i;
 		pre = it;
-
-		it = m_rowedPath->front();
-		m_rowedPath->pop();
+		++iter;
 	}
 
 	PointSet(m_coordinates + 1, 0.25f, 1.0f);
 	PointSet(m_coordinates + 2, 0.25f, 0.0f);
 
-	m_vertices[2 * size - 3] = it;
-	PointSet(m_coordinates + 2 * size - 3, 0.75f, 0.5f);
+	if (m_rowedPath->size() > 1)
+	{
+		m_vertices[2 * m_rowedPath->size() - 3] = it;
+		PointSet(m_coordinates + 2 * m_rowedPath->size() - 3, 0.75f, 0.5f);
+	}
 
 }

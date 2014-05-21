@@ -2,18 +2,19 @@
 
 
 DevilLayer::DevilLayer()
-	: m_devil(NULL)
-	, m_fightingVal(0.0f)
-	, m_fightingMoved(0.0f)
-	, m_winSize(0,0)
-	, m_progress(NULL)
-	, m_isdevilpos(false)
-	, m_fingerSparkle(NULL)
+: m_devil(NULL)
+, m_fightingVal(0.0f)
+, m_fightingMoved(0.0f)
+, m_winSize(0, 0)
+, m_progress(NULL)
+, m_isdevilpos(false)
+, m_fingerSparkle(NULL)
 {
 }
 
 DevilLayer::~DevilLayer()
 {
+	m_fingers->clear();
 	delete m_fingers;
 	NotificationCenter::getInstance()->removeAllObservers(this);
 }
@@ -21,7 +22,7 @@ DevilLayer::~DevilLayer()
 bool DevilLayer::init()
 {
 	bool bRet = false;
-	do 
+	do
 	{
 		CC_BREAK_IF(!Layer::init());
 		m_winSize = Director::getInstance()->getWinSize();
@@ -65,12 +66,7 @@ void DevilLayer::update(float dt)
 		m_finger->setDeltaRemainder(dt * 60 * 1.2f);
 		int pop = (int)(m_finger->getDeltaRemainder() + 0.5f);
 		m_finger->setDeltaRemainder(m_finger->getDeltaRemainder() - pop);
-		CCLOG("%d", pop);
-		while (pop > 0 && !m_finger->getRowedPath()->empty())
-		{
-			m_finger->getRowedPath()->pop();
-			--pop;
-		}
+		m_finger->pop(pop);
 	}
 }
 
@@ -80,7 +76,7 @@ void DevilLayer::updateDevil(float dt)
 	//CCLOG("maxIdx %d", maxIdx);
 	//CCLOG("m_devil->getDevilPosVec()->size() %d", m_devil->getDevilPosVec()->size());
 	CC_ASSERT(maxIdx <= m_devil->getDevilPosVec()->size());
-	m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx-1)));
+	m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx - 1)));
 }
 
 
@@ -101,8 +97,8 @@ bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 		if (finger->getRowedPath()->size() == 0)
 		{
 			m_finger = finger;
-			m_finger->getRowedPath()->push(location);
-			m_finger->populateVertices();
+			m_finger->push(location);
+			break;
 		}
 	}
 
@@ -114,22 +110,21 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 	Point start = touch->getStartLocation();
 
 	Point afterStart = touch->getLocation();
-	if ( abs(afterStart.x - m_fightingMoved) > 10.0f)
+	if (abs(afterStart.x - m_fightingMoved) > 10.0f)
 	{
 		m_fightingVal = 0.1f;
 	}
 	else
 	{
-		m_fightingVal = (m_progress !=NULL && (m_progress->getPercentage() <= 80.0f)) ? -0.08f : -0.18f;
+		m_fightingVal = (m_progress != NULL && (m_progress->getPercentage() <= 80.0f)) ? -0.08f : -0.18f;
 	}
 	m_fightingMoved = afterStart.x;
 
 
 	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
 	m_fingerSparkle->setPosition(location);
+	m_finger->push(location);
 
-	m_finger->getRowedPath()->push(location);
-	m_finger->populateVertices();
 }
 
 void DevilLayer::TouchEnded(Touch* touch, Event* event)
@@ -157,10 +152,8 @@ void DevilLayer::initFingers()
 	Texture2D* texture = Director::getInstance()->getTextureCache()->addImage("streak.png");
 	for (int i = 0; i < c_fingers_capability; i++){
 		Finger* finger = Finger::createWithMaximumPoint(c_finger_point_limit);
-		//finger->retain();
 		finger->setAutoDim(false);
 		finger->setTexture(texture);
-		//finger->bindSprite(Sprite::create("streak.png"));
 		this->addChild(finger, Z_ORDER_MAX);
 		m_fingers->pushBack(finger);
 	}
@@ -176,26 +169,26 @@ void DevilLayer::devilFighting(Ref* pData)
 {
 	m_devil->setVisible(false);
 	auto fightingProgressBg = Sprite::create("slider_bar.png");
-	fightingProgressBg->setPosition(Point(150,300));
+	fightingProgressBg->setPosition(Point(150, 300));
 	this->addChild(fightingProgressBg, Z_ORDER_ONE);
 
 	auto* fightingProgress = Sprite::create("silder_progressBar.png");
 	m_progress = ProgressTimer::create(fightingProgress);
 	m_progress->setType(ProgressTimer::Type::BAR);
-	m_progress->setPosition(Point(150,300));
-	m_progress->setMidpoint(Point(0,0));
-	m_progress->setBarChangeRate(Point(1,0));
+	m_progress->setPosition(Point(150, 300));
+	m_progress->setMidpoint(Point(0, 0));
+	m_progress->setBarChangeRate(Point(1, 0));
 	m_progress->setPercentage(50);
 	this->addChild(m_progress, Z_ORDER_ONE);
-	this->schedule( schedule_selector(DevilLayer::updateFightingBar) );
+	this->schedule(schedule_selector(DevilLayer::updateFightingBar));
 }
 
 
 void DevilLayer::devilPosHandle(Ref* pData)
 {
-	this->schedule( schedule_selector(DevilLayer::updateDevil), 2.0 );
-	this->addChild(m_devil,Z_ORDER_ZERO);
-	NotificationCenter::getInstance()->removeObserver(this,MsgTypeForObserver::c_DevilPosPush);
+	this->schedule(schedule_selector(DevilLayer::updateDevil), 2.0);
+	this->addChild(m_devil, Z_ORDER_ZERO);
+	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_DevilPosPush);
 }
 
 void DevilLayer::destoryDevilLayer(Ref* pData)
@@ -212,13 +205,13 @@ void DevilLayer::updateFightingBar(float dt)
 		m_progress = NULL;
 		m_devil = NULL;
 		m_listener->setEnabled(false);
-		this->unschedule( schedule_selector(DevilLayer::updateDevil) );
-		this->unschedule( schedule_selector(DevilLayer::updateFightingBar) );
+		this->unschedule(schedule_selector(DevilLayer::updateDevil));
+		this->unschedule(schedule_selector(DevilLayer::updateFightingBar));
 		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilFightingStop, NULL);
 	}
 	else
 	{
-		m_progress->setPercentage(proPercet+m_fightingVal);
+		m_progress->setPercentage(proPercet + m_fightingVal);
 	}
 }
 

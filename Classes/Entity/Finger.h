@@ -18,9 +18,11 @@ public:
 	void drawFunc(const kmMat4 &transform, bool transformUpdated);
 	//÷ÿ‘ÿ∏∏¿‡draw
 	void draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated);
-	
-	std::queue<Point>* getRowedPath();
 
+	std::list<Point>* getRowedPath();
+
+	void push(Point v);
+	void pop(int n);
 
 	CC_SYNTHESIZE_READONLY(unsigned int, m_pointLimit, PointLimit);
 	CC_SYNTHESIZE_RETAIN(Texture2D*, m_texture, Texture);
@@ -36,12 +38,12 @@ protected:
 	//Point m_startPoint;
 	//Point m_endPoint;
 
-	std::queue<Point>* m_rowedPath;
+	std::list<Point>* m_rowedPath;
 
 	Point* m_vertices;
 	Point* m_coordinates;
 
-public:
+private:
 	void populateVertices();
 };
 #endif // __FINGER_H__
