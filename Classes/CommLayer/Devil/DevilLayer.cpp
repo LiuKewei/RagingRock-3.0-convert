@@ -14,6 +14,7 @@ DevilLayer::DevilLayer()
 
 DevilLayer::~DevilLayer()
 {
+	delete m_fingers;
 	NotificationCenter::getInstance()->removeAllObservers(this);
 }
 
@@ -64,7 +65,7 @@ void DevilLayer::update(float dt)
 		m_finger->setDeltaRemainder(dt * 60 * 1.2f);
 		int pop = (int)(m_finger->getDeltaRemainder() + 0.5f);
 		m_finger->setDeltaRemainder(m_finger->getDeltaRemainder() - pop);
-
+		CCLOG("%d", pop);
 		while (pop > 0 && !m_finger->getRowedPath()->empty())
 		{
 			m_finger->getRowedPath()->pop();
@@ -101,6 +102,7 @@ bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 		{
 			m_finger = finger;
 			m_finger->getRowedPath()->push(location);
+			m_finger->populateVertices();
 		}
 	}
 
@@ -119,7 +121,6 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 	else
 	{
 		m_fightingVal = (m_progress !=NULL && (m_progress->getPercentage() <= 80.0f)) ? -0.08f : -0.18f;
-		CCLOG("m_fightingVal  %f", m_fightingVal);
 	}
 	m_fightingMoved = afterStart.x;
 
@@ -128,6 +129,7 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 	m_fingerSparkle->setPosition(location);
 
 	m_finger->getRowedPath()->push(location);
+	m_finger->populateVertices();
 }
 
 void DevilLayer::TouchEnded(Touch* touch, Event* event)
@@ -155,10 +157,11 @@ void DevilLayer::initFingers()
 	Texture2D* texture = Director::getInstance()->getTextureCache()->addImage("streak.png");
 	for (int i = 0; i < c_fingers_capability; i++){
 		Finger* finger = Finger::createWithMaximumPoint(c_finger_point_limit);
+		//finger->retain();
 		finger->setAutoDim(false);
 		finger->setTexture(texture);
-
-		this->addChild(finger, 2);
+		//finger->bindSprite(Sprite::create("streak.png"));
+		this->addChild(finger, Z_ORDER_MAX);
 		m_fingers->pushBack(finger);
 	}
 

@@ -11,6 +11,31 @@ inline void PointSet(cocos2d::Point *v, float x, float y){
 	v->y = y;
 }
 
+inline float fangle(Point vect){
+	if (vect.x == 0.0 && vect.y == 0.0) {
+		return 0;
+	}
+
+	if (vect.x == 0.0) {
+		return vect.y > 0 ? M_PI / 2 : -M_PI / 2;
+	}
+
+	if (vect.y == 0.0 && vect.x < 0) {
+		return -M_PI;
+	}
+
+	float angle = atan(vect.y / vect.x);
+
+	return vect.x < 0 ? angle + M_PI : angle;
+}
+
+inline void f1(Point p1, Point p2, float d, Point *o1, Point *o2){
+	float l = ccpDistance(p1, p2);
+	float angle = fangle(ccpSub(p2, p1));
+	*o1 = ccpRotateByAngle(ccp(p1.x + l, p1.y + d), p1, angle);
+	*o2 = ccpRotateByAngle(ccp(p1.x + l, p1.y - d), p1, angle);
+}
+
 class Entity: public cocos2d::Node
 {
 public:	
@@ -21,8 +46,6 @@ public:
 	void bindSprite(Sprite* sprite);		/*bind sprite object*/
 
 protected:
-	virtual void drawFunc(const kmMat4 &transform, bool transformUpdated);
-
 	CustomCommand m_customCommand;
 private:
 	Sprite* m_sprite;

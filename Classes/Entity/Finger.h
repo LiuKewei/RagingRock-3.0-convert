@@ -33,12 +33,15 @@ public:
 
 protected:
 
-	Point m_startPoint;
-	Point m_endPoint;
+	//Point m_startPoint;
+	//Point m_endPoint;
 
 	std::queue<Point>* m_rowedPath;
 
 	Point* m_vertices;
 	Point* m_coordinates;
+
+public:
+	void populateVertices();
 };
 #endif // __FINGER_H__

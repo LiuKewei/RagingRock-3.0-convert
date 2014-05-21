@@ -528,12 +528,12 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 		}
 		if (indexOfCellArr == 12 && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
 		{
-			if (!m_isLittleGameStart)
-			{
-				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
-				pause();
-				m_isLittleGameStart = true;
-			}
+			//if (!m_isLittleGameStart)
+			//{
+			//	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+			//	pause();
+			//	m_isLittleGameStart = true;
+			//}
 		}
 	}
 }

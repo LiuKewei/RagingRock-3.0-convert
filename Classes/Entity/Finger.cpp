@@ -49,6 +49,11 @@ bool Finger::initWithMaximumPoint(int limit)
 
 		PointSet(m_coordinates + 0, 0.0f, 0.5f);
 
+		m_reset = false;
+
+		m_willPop = true;
+
+
 		m_rowedPath = new std::queue<Point>();
 
 		bRet = true;
@@ -96,3 +101,33 @@ void Finger::draw(Renderer *renderer, const kmMat4& transform, bool transformUpd
 	renderer->addCommand(&m_customCommand);
 }
 
+void Finger::populateVertices()
+{
+	int size = m_rowedPath->size();
+	m_vertices[0] = m_rowedPath->front();
+	Point pre = m_vertices[0];
+	m_rowedPath->pop();
+
+	unsigned int i = 0;
+	Point it = m_rowedPath->front();
+	float dd = m_width / size;
+	m_rowedPath->pop();
+	while (i < size - 2){
+		f1(pre, it, m_width - i * dd, m_vertices + 2 * i + 1, m_vertices + 2 * i + 2);
+		PointSet(m_coordinates + 2 * i + 1, 0.5f, 1.0f);
+		PointSet(m_coordinates + 2 * i + 2, 0.5f, 0.0f);
+
+		i++;
+		pre = it;
+
+		it = m_rowedPath->front();
+		m_rowedPath->pop();
+	}
+
+	PointSet(m_coordinates + 1, 0.25f, 1.0f);
+	PointSet(m_coordinates + 2, 0.25f, 0.0f);
+
+	m_vertices[2 * size - 3] = it;
+	PointSet(m_coordinates + 2 * size - 3, 0.75f, 0.5f);
+
+}
