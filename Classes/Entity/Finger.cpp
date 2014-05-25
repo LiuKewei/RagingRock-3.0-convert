@@ -45,8 +45,8 @@ bool Finger::initWithMaximumPoint(int limit)
 		this->m_pointLimit = limit;
 		this->m_width = 5;
 
-		m_vertices = new Point[2 * limit + 5];
-		m_coordinates = new Point[2 * limit + 5];
+		m_vertices = new Point[2 * limit + 15];
+		m_coordinates = new Point[2 * limit + 15];
 
 		PointSet(m_coordinates + 0, 0.0f, 0.5f);
 
@@ -137,7 +137,7 @@ void Finger::populateVertices()
 
 	m_vertices[0] = *iter;
 	Point pre = *iter;
-	Point it;
+	Point it = *iter;
 
 	++iter;
 	while ((iter != m_rowedPath->end()) && (i < m_rowedPath->size() - 2))

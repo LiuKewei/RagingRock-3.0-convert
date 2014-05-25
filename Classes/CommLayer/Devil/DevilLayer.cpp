@@ -86,9 +86,7 @@ bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 	{
 		return false;
 	}
-
-	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
-
+	Point location = touch->getLocation();
 	m_fingerSparkle->setPosition(location);
 	m_fingerSparkle->resetSystem();
 
@@ -120,10 +118,8 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 	}
 	m_fightingMoved = afterStart.x;
 
-
-	Point location = Director::getInstance()->convertToGL(touch->getLocationInView());
-	m_fingerSparkle->setPosition(location);
-	m_finger->push(location);
+	m_fingerSparkle->setPosition(afterStart);
+	m_finger->push(afterStart);
 
 }
 

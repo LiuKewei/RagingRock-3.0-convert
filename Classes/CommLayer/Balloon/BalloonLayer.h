@@ -3,6 +3,12 @@
 
 #include "cocos2d.h"
 #include "cocos-ext.h"
+#include "ui/CocosGUI.h"
+#include "cocostudio/CocoStudio.h"
+
+using namespace cocos2d;
+using namespace cocostudio;
+using namespace ui;
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "Balloon.h"
@@ -38,12 +44,14 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 	Size  m_winSize;
 
-	Sprite* m_loadBg;
 	Balloon* m_balloon;
 
 	Label* m_maxCntLabel;
 	Label* m_bomb;
 	Label* m_balloonLabel;
+
+
+	Widget* m_balloonLayout;
 };
 
 #endif // __BALLOON_LAYER_H__

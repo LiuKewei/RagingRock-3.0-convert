@@ -3,6 +3,12 @@
 
 #include "cocos2d.h"
 #include "cocos-ext.h"
+#include "ui/CocosGUI.h"
+#include "cocostudio/CocoStudio.h"
+
+using namespace cocos2d;
+using namespace cocostudio;
+using namespace ui;
 
 USING_NS_CC;
 
@@ -42,12 +48,15 @@ public:
 	Entity();
 	~Entity();
 	Sprite* getSprite();		/*get sprite object*/
+	Armature* getArmature();
 	void setSpriteAsNULL();		/*set sprite object*/
 	void bindSprite(Sprite* sprite);		/*bind sprite object*/
+	void bindArmature(Armature* armature);
 
 protected:
 	CustomCommand m_customCommand;
 private:
 	Sprite* m_sprite;
+	Armature* m_armature;
 };
 #endif // __ENTITY_H__

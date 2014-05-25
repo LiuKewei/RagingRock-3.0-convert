@@ -16,7 +16,7 @@
 
 
 const unsigned int c_fingers_capability = 3;
-const unsigned int c_finger_point_limit = 50;
+const unsigned int c_finger_point_limit = 30;
 
 
 class DevilLayer: public cocos2d::Layer 

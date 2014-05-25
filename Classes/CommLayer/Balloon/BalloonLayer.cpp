@@ -21,8 +21,8 @@ bool BalloonLayer::init()
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->setSwallowTouches(true);
 		m_listener->onTouchBegan = CC_CALLBACK_2(BalloonLayer::TouchBegan, this);
-		m_listener->onTouchMoved = CC_CALLBACK_2(BalloonLayer::TouchMoved, this);
-		m_listener->onTouchEnded = CC_CALLBACK_2(BalloonLayer::TouchEnded, this);
+		//m_listener->onTouchMoved = CC_CALLBACK_2(BalloonLayer::TouchMoved, this);
+		//m_listener->onTouchEnded = CC_CALLBACK_2(BalloonLayer::TouchEnded, this);
 		m_listener->setSwallowTouches(false);
 		m_listener->setEnabled(false);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
@@ -51,10 +51,9 @@ void BalloonLayer::bombedreset(float dt)
 	char tmp[10];
 	sprintf(tmp," %d",m_balloon->getMaxCnt());
 	m_maxCntLabel->setString(tmp);
-	//CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
-	m_listener->setEnabled(true);
 	m_bomb->setVisible(false);
 	m_balloon->setVisible(true);
+	m_listener->setEnabled(true);
 	this->unschedule(schedule_selector(BalloonLayer::bombedreset));
 }
 
@@ -68,13 +67,11 @@ void BalloonLayer::unbombedreset(float dt)
 		char tmp[10];
 		sprintf(tmp," %d",m_balloon->getMaxCnt());
 		m_maxCntLabel->setString(tmp);
-		//CCLOG("m_balloon->getMaxCnt()    %d", m_balloon->getMaxCnt() );
-		m_balloon->setScale(1.0f);
-		CCLOG("m_balloon->getSuccessCnt()    %d",  m_balloon->getSuccessCnt());
+		m_balloon->getArmature()->getAnimation()->play("Animation0");
 		if(m_balloon->getSuccessCnt() == 10)
 		{
 			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
-			m_loadBg->setVisible(false);
+			m_balloonLayout->setVisible(false);
 			m_balloon->setVisible(false);
 			m_balloonLabel->setVisible(false);
 			m_maxCntLabel->setVisible(false);
@@ -86,11 +83,13 @@ void BalloonLayer::unbombedreset(float dt)
 
 bool BalloonLayer::TouchBegan(Touch* touch, Event* event)
 {
-	if (m_balloon->getCounter() <= m_balloon->getMaxCnt())
+	if (m_balloon->getCounter() < m_balloon->getMaxCnt())
 	{
-		m_balloon->setScale(m_balloon->getScale()+0.4f);
-		m_balloon->setCounter(m_balloon->getCounter() + 1);
+		char tmp[11];
+		sprintf(tmp,"Animation%d",m_balloon->getCounter() + 1);
+		m_balloon->getArmature()->getAnimation()->play(tmp);
 	}
+	m_balloon->setCounter(m_balloon->getCounter() + 1);
 
 	if (m_balloon->getCounter() > m_balloon->getMaxCnt())
 	{
@@ -99,7 +98,8 @@ bool BalloonLayer::TouchBegan(Touch* touch, Event* event)
 		m_balloon->setbombed(true);
 		m_balloon->setVisible(false);
 		m_bomb->setVisible(true);
-		m_balloon->setScale(1.0f);
+		m_balloon->getArmature()->getAnimation()->play("Animation0");
+		this->unschedule( schedule_selector(BalloonLayer::unbombedreset) );
 		this->schedule( schedule_selector(BalloonLayer::bombedreset), 1.0 );
 		return false;
 	}
@@ -127,21 +127,23 @@ void BalloonLayer::TouchEnded(Touch* touch, Event* event)
 
 void BalloonLayer::initBalloon()
 {
-	Point p = Point(m_winSize.width / 2, m_winSize.height / 4 + 50);
-	m_loadBg = Sprite::create("slider_bar.png");//base map of progress bar
-	m_loadBg->setScale(300);
-	m_loadBg->setPosition(p);
-	m_loadBg->setVisible(false);
-	this->addChild(m_loadBg);
+	Point p = Point(m_winSize.width / 2, m_winSize.height / 2);
+
+	m_balloonLayout = GUIReader::getInstance()->widgetFromJsonFile("Balloon/Balloon_1.ExportJson");
+	m_balloonLayout->setVisible(false);
+	this->addChild(m_balloonLayout);
+
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("Balloon/BalloonAnimation.ExportJson");
 
 	m_balloon = Balloon::create();
-	m_balloon->bindSprite(Sprite::create("ball.png"));
-	m_balloon->setPosition(Point(m_winSize.width/2, m_winSize.height/2));
+	m_balloon->bindArmature(Armature::create("BalloonAnimation"));
+	m_balloon->setPosition(Point(243,614));
 	m_balloon->setVisible(false);
 	m_balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
 	m_balloon->setCounter(0);
 	m_balloon->setbombed(false);
 	m_balloon->setSuccessCnt(0);
+	//m_balloon->setTag(38250);
 	this->addChild(m_balloon);
 }
 
@@ -172,7 +174,8 @@ void BalloonLayer::initLabels()
 
 void BalloonLayer::balloonGameStart(Ref* pData)
 {
-	m_loadBg->setVisible(true);
+	//this->getChildByTag(38250)->setVisible(true);
+	m_balloonLayout->setVisible(true);
 	m_balloon->setVisible(true);
 	m_balloonLabel->setVisible(true);
 	m_maxCntLabel->setVisible(true);
