@@ -129,11 +129,11 @@ void BalloonLayer::initBalloon()
 {
 	Point p = Point(m_winSize.width / 2, m_winSize.height / 2);
 
-	m_balloonLayout = GUIReader::getInstance()->widgetFromJsonFile("Balloon/Balloon_1.ExportJson");
+	m_balloonLayout = GUIReader::getInstance()->widgetFromJsonFile("Balloon_1.ExportJson");
 	m_balloonLayout->setVisible(false);
 	this->addChild(m_balloonLayout);
 
-	ArmatureDataManager::getInstance()->addArmatureFileInfo("Balloon/BalloonAnimation.ExportJson");
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("BalloonAnimation.ExportJson");
 
 	m_balloon = Balloon::create();
 	m_balloon->bindArmature(Armature::create("BalloonAnimation"));
@@ -149,7 +149,7 @@ void BalloonLayer::initBalloon()
 
 void BalloonLayer::initLabels()
 {
-	TTFConfig config2("fonts/Marker Felt.ttf",30,GlyphCollection::DYNAMIC,nullptr,true);
+	TTFConfig config2("Marker Felt.ttf",30,GlyphCollection::DYNAMIC,nullptr,true);
 	m_balloonLabel = Label::createWithTTF(config2, "Balloon:",TextHAlignment::LEFT);//创建显示 气球: 的label
 	m_balloonLabel->setPosition(Point(m_winSize.width/2-30,m_winSize.height/2+300));
 	m_balloonLabel->setVisible(false);

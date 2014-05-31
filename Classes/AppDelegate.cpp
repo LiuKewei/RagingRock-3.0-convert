@@ -1,6 +1,5 @@
 #include "AppDelegate.h"
 #include "Scene/SnagForestScene.h"
-
 USING_NS_CC;
 
 const char* MsgTypeForObserver::c_DevilPosUpdate = "1";
@@ -22,7 +21,7 @@ AppDelegate::~AppDelegate()
 bool AppDelegate::applicationDidFinishLaunching() {
 	timeval psv;
 	gettimeofday(&psv, NULL);
-	unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;
+	unsigned long int rand_seed = psv.tv_sec * 1000 + psv.tv_usec / 1000;//设置时间随机因子
 	srand(rand_seed);
 
     // initialize director
