@@ -34,16 +34,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //Size frameSize = glview->getFrameSize();
 	Size designSize = Size(640, 960);
 	Size resourceSize = Size(640, 960);
+    director->setContentScaleFactor(resourceSize.height / designSize.height);
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 	glview->setFrameSize(designSize.width, designSize.height);
 #endif
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
-	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::FIXED_WIDTH);
+	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
 #else
 	glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
 #endif
-	director->setContentScaleFactor(resourceSize.height / designSize.height);
     // turn on display FPS
     director->setDisplayStats(true);
 
