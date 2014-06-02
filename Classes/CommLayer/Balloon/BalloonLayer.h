@@ -45,8 +45,6 @@ private:
 	Size  m_winSize;
 
 	Balloon* m_balloon;
-
-	Label* m_maxCntLabel;
 	Label* m_bomb;
 	Label* m_balloonLabel;
 

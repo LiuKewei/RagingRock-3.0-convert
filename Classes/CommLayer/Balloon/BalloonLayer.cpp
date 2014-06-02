@@ -49,10 +49,16 @@ void BalloonLayer::bombedreset(float dt)
 	m_balloon->setCounter(0);
 	m_balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
 	char tmp[10];
-	sprintf(tmp," %d",m_balloon->getMaxCnt());
-	m_maxCntLabel->setString(tmp);
+	sprintf(tmp,"Status%d",m_balloon->getMaxCnt());
+
+
+	auto balloonStatus = (Balloon*)this->getChildByTag(38250);
+	balloonStatus->getArmature()->getAnimation()->play(tmp);
+
+
 	m_bomb->setVisible(false);
 	m_balloon->setVisible(true);
+	this->getChildByTag(38250)->setVisible(true);
 	m_listener->setEnabled(true);
 	this->unschedule(schedule_selector(BalloonLayer::bombedreset));
 }
@@ -65,16 +71,17 @@ void BalloonLayer::unbombedreset(float dt)
 		m_balloon->setCounter(0);
 		m_balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
 		char tmp[10];
-		sprintf(tmp," %d",m_balloon->getMaxCnt());
-		m_maxCntLabel->setString(tmp);
+		sprintf(tmp,"Status%d",m_balloon->getMaxCnt());
 		m_balloon->getArmature()->getAnimation()->play("Animation0");
+		auto balloonStatus = (Balloon*)this->getChildByTag(38250);
+		balloonStatus->getArmature()->getAnimation()->play(tmp);
 		if(m_balloon->getSuccessCnt() == 10)
 		{
 			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
 			m_balloonLayout->setVisible(false);
 			m_balloon->setVisible(false);
+			this->getChildByTag(38250)->setVisible(false);
 			m_balloonLabel->setVisible(false);
-			m_maxCntLabel->setVisible(false);
 			m_listener->setEnabled(false);
 		}
 		this->unschedule(schedule_selector(BalloonLayer::unbombedreset));
@@ -143,8 +150,23 @@ void BalloonLayer::initBalloon()
 	m_balloon->setCounter(0);
 	m_balloon->setbombed(false);
 	m_balloon->setSuccessCnt(0);
-	//m_balloon->setTag(38250);
+
 	this->addChild(m_balloon);
+
+
+	auto balloonStatus = Balloon::create();
+	balloonStatus->bindArmature(Armature::create("BalloonAnimation"));
+	balloonStatus->setPosition(Point(243,614));
+	balloonStatus->setVisible(false);
+	balloonStatus->setMaxCnt(m_balloon->getMaxCnt());
+	char tmp[10];
+	sprintf(tmp,"Status%d",m_balloon->getMaxCnt());
+	balloonStatus->getArmature()->getAnimation()->play(tmp);
+	balloonStatus->setCounter(0);
+	balloonStatus->setbombed(false);
+	balloonStatus->setSuccessCnt(0);
+	balloonStatus->setTag(38250);
+	this->addChild(balloonStatus);
 }
 
 void BalloonLayer::initLabels()
@@ -156,16 +178,6 @@ void BalloonLayer::initLabels()
 	this->addChild(m_balloonLabel,1);
 
 
-	m_maxCntLabel = Label::createWithTTF(config2, m_balloon->getMaxCnt() + "",TextHAlignment::LEFT);//创建显示 气球次数 的label
-	m_maxCntLabel->setPosition(Point(m_winSize.width/2+35,m_winSize.height/2+300));
-
-	char tmp[10];
-	sprintf(tmp," %d",m_balloon->getMaxCnt());
-	m_maxCntLabel->setString(tmp);
-	m_maxCntLabel->setVisible(false);
-	this->addChild(m_maxCntLabel,1);
-
-
 	m_bomb = Label::createWithTTF(config2, "Bomb !!",TextHAlignment::LEFT);//创建显示 爆炸 的label
 	m_bomb->setPosition(Point(m_winSize.width/2, m_winSize.height/2));
 	m_bomb->setVisible(false);
@@ -174,10 +186,9 @@ void BalloonLayer::initLabels()
 
 void BalloonLayer::balloonGameStart(Ref* pData)
 {
-	//this->getChildByTag(38250)->setVisible(true);
+	this->getChildByTag(38250)->setVisible(true);
 	m_balloonLayout->setVisible(true);
 	m_balloon->setVisible(true);
 	m_balloonLabel->setVisible(true);
-	m_maxCntLabel->setVisible(true);
 	m_listener->setEnabled(true);
 }
