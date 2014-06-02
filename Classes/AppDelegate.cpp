@@ -50,6 +50,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
+	addResPath();
+
     // create a scene. it's an autorelease object
 	auto scene = SnagForestScene::createWithPhysics();
 	scene->getPhysicsWorld()->setGravity(Point(0.0f, -1000.0f));
@@ -75,4 +77,12 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
+
+void AppDelegate::addResPath() {
+	std::vector<std::string> searchPaths =FileUtils::getInstance()->getSearchPaths();
+	searchPaths.insert(searchPaths.begin(), "./Balloon");
+	searchPaths.insert(searchPaths.begin(), "./fonts");
+	FileUtils::getInstance()->setSearchPaths(searchPaths);
 }
