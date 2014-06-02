@@ -76,7 +76,7 @@ void DevilLayer::updateDevil(float dt)
 	//CCLOG("maxIdx %d", maxIdx);
 	//CCLOG("m_devil->getDevilPosVec()->size() %d", m_devil->getDevilPosVec()->size());
 	CC_ASSERT(maxIdx <= m_devil->getDevilPosVec()->size());
-	m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx - 1)));
+	if ( m_devil->getDevilPosVec()->size() != 0 )m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx - 1)));
 }
 
 

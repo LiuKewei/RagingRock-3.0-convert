@@ -20,6 +20,13 @@ using namespace ui;
 
 class BalloonLayer : public cocos2d::Layer
 {
+	enum
+	{
+		TAG_BALLOON = 38250,
+		TAG_BALLOON_STAT,
+		TAG_BALLOON_SUCC,
+	};
+
 public:
 	BalloonLayer();
 	virtual ~BalloonLayer();
@@ -44,7 +51,6 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 	Size  m_winSize;
 
-	Balloon* m_balloon;
 	Label* m_bomb;
 	Label* m_balloonLabel;
 

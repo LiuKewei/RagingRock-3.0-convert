@@ -375,7 +375,7 @@ void SnagForestLayer::initArrow()
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")
 		);
 	m_arrow->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
-	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin));
+	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin-120));
 	m_arrow->setVisible(false);
 	this->addChild(m_arrow, Z_ORDER_MAX + 1);
 }
