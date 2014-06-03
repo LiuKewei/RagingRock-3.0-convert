@@ -26,6 +26,8 @@ public:
 	const static char* c_BalloonStart;
 	const static char* c_BalloonStop;
 
+	const static char* c_BattleStart;
+
 	static int getRand(int start,int end);
 };
 

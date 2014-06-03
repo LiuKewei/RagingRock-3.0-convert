@@ -27,8 +27,6 @@ public:
 	static ReversibleCard* create(const char* inCardImageName, const char* outCardImageName, float duration);
     virtual bool init(const char* inCardImageName, const char* outCardImageName, float duration);
 
-
-
 	void openCard();
 
 private:

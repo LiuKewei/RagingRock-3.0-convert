@@ -10,6 +10,8 @@ const char* MsgTypeForObserver::c_DevilPosPush = "4";
 const char* MsgTypeForObserver::c_BalloonStart = "5";
 const char* MsgTypeForObserver::c_BalloonStop = "6";
 
+const char* MsgTypeForObserver::c_BattleStart = "7";
+
 AppDelegate::AppDelegate() {
 
 }
@@ -83,6 +85,7 @@ void AppDelegate::applicationWillEnterForeground() {
 void AppDelegate::addResPath() {
 	std::vector<std::string> searchPaths =FileUtils::getInstance()->getSearchPaths();
 	searchPaths.insert(searchPaths.begin(), "./Balloon");
+	searchPaths.insert(searchPaths.begin(), "./Battle");
 	searchPaths.insert(searchPaths.begin(), "./fonts");
 	FileUtils::getInstance()->setSearchPaths(searchPaths);
 }

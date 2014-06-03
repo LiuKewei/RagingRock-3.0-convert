@@ -8,9 +8,11 @@
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 #include "DevilLayer.h"
 #include "BalloonLayer.h"
+#include "BattleLayer.h"
 #else
 #include "CommLayer/Devil/DevilLayer.h"
 #include "CommLayer/Balloon/BalloonLayer.h"
+#include "CommLayer/Battle/BattleLayer.h"
 #endif
 
 
@@ -43,6 +45,8 @@ public:
 	CC_SYNTHESIZE(SnagForestLayer*, _snagForestLayer, SnagForestLayer);
 	CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);
 	CC_SYNTHESIZE(BalloonLayer*, _balloonLayer, BalloonLayer);
+	CC_SYNTHESIZE(BattleLayer*, _battleLayer, BattleLayer);
+	
 };
 
 #endif // __SNAGFOREST_SCENE_H__
