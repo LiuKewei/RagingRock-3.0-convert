@@ -171,7 +171,7 @@ void BalloonLayer::initBalloon()
 	this->addChild(balloonStatus);
 
 	auto balloonSucc = Armature::create("BalloonSuccAnimation");
-	balloonSucc->setPosition(Point(480, 320));
+	balloonSucc->setPosition(Point(480, 480));
 	balloonSucc->setVisible(false);
 	balloonSucc->setTag(TAG_BALLOON_SUCC);
 	this->addChild(balloonSucc);

@@ -34,7 +34,6 @@ bool DevilLayer::init()
 		m_listener->onTouchBegan = CC_CALLBACK_2(DevilLayer::TouchBegan, this);
 		m_listener->onTouchMoved = CC_CALLBACK_2(DevilLayer::TouchMoved, this);
 		m_listener->onTouchEnded = CC_CALLBACK_2(DevilLayer::TouchEnded, this);
-		m_listener->setSwallowTouches(true);
 		m_listener->setEnabled(true);
 		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 

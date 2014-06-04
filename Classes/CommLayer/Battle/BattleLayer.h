@@ -22,10 +22,19 @@ class BattleLayer : public cocos2d::Layer
 {
 	enum
 	{
-		TAG_BATTLE = 37250,
+		TYPE_BATTLE_LEAD_NORMAL,
+		TYPE_BATTLE_LEAD_MAGIC,
+		TYPE_BATTLE_LEAD_INVINCIBLE,
+		TYPE_BATTLE_LEAD_PET,
+		TYPE_BATTLE_LEAD_DEVIL,
 	};
 
-
+	enum
+	{
+		TAG_BATTLE_LEFT = 37250,
+		TAG_BATTLE_MID,
+		TAG_BATTLE_RIGHT,
+	};
 
 public:
 	BattleLayer();
@@ -33,19 +42,14 @@ public:
 	virtual bool init();
 	CREATE_FUNC(BattleLayer);
 
-	// Touches Callback function
-	virtual bool TouchBegan(Touch* touch, Event* event);
-	virtual void TouchMoved(Touch* touch, Event* event);
-	virtual void TouchEnded(Touch* touch, Event* event);
-
 private:
 	void battleGameStart(Ref* pData);
-
 	void initBattleGame();
-private:
-	EventListenerTouchOneByOne* m_listener;
-	Size  m_winSize;
 
+	void pushCards();
+private:
+	Size m_winSize;
+	std::queue<ReversibleCard*>* m_battleCardGroups;
 };
 
 #endif // __BATTLE_LAYER_H__

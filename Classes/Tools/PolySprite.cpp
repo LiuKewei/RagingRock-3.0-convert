@@ -149,10 +149,10 @@ void PolySprite::drawPoly(const kmMat4 &transform, bool transformUpdated)
 
 void PolySprite::releasePoly()
 {
-	CC_SAFE_DELETE(vertexs_);
-	CC_SAFE_DELETE(uvs_);
-	CC_SAFE_DELETE(indices_);
-	CC_SAFE_DELETE(colors_);
+	CC_SAFE_DELETE_ARRAY(vertexs_);
+	CC_SAFE_DELETE_ARRAY(uvs_);
+	CC_SAFE_DELETE_ARRAY(indices_);
+	CC_SAFE_DELETE_ARRAY(colors_);
 }
 
 void PolySprite::draw(Renderer *renderer, const kmMat4& transform, bool transformUpdated)

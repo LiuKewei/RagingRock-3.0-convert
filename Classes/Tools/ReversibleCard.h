@@ -27,6 +27,14 @@ public:
 	static ReversibleCard* create(const char* inCardImageName, const char* outCardImageName, float duration);
     virtual bool init(const char* inCardImageName, const char* outCardImageName, float duration);
 
+	void update(float dt);
+
+	// Touches Callback function
+	virtual bool TouchBegan(Touch* touch, Event* event);
+	virtual void TouchMoved(Touch* touch, Event* event);
+	virtual void TouchEnded(Touch* touch, Event* event);
+
+private:
 	void openCard();
 
 private:
@@ -35,6 +43,8 @@ private:
     ActionInterval* m_openAnimOut;
 
 	void initData(const char* inCardImageName, const char* outCardImageName, float duration);
+	
+	EventListenerTouchOneByOne* m_listener;
 };
 
 #endif // __REVERSIBLE_CARD_H__

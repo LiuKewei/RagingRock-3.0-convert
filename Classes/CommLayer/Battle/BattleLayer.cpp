@@ -2,11 +2,11 @@
 
 BattleLayer::BattleLayer()
 {
-
+	m_battleCardGroups = new std::queue<ReversibleCard*>();
 }
 BattleLayer::~BattleLayer()
 {
-
+	CC_SAFE_DELETE(m_battleCardGroups);
 }
 bool BattleLayer::init()
 {
@@ -18,15 +18,6 @@ bool BattleLayer::init()
 
 		initBattleGame();
 
-		m_listener = EventListenerTouchOneByOne::create();
-		m_listener->setSwallowTouches(true);
-		m_listener->onTouchBegan = CC_CALLBACK_2(BattleLayer::TouchBegan, this);
-		//m_listener->onTouchMoved = CC_CALLBACK_2(BalloonLayer::TouchMoved, this);
-		//m_listener->onTouchEnded = CC_CALLBACK_2(BalloonLayer::TouchEnded, this);
-		m_listener->setSwallowTouches(false);
-		//m_listener->setEnabled(false);
-		_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
-
 		NotificationCenter::getInstance()->addObserver(
 			this,
 			callfuncO_selector(BattleLayer::battleGameStart),
@@ -34,34 +25,10 @@ bool BattleLayer::init()
 			NULL);
 
 
-
-
-
-
 		bRet = true;
 	} while (0);
 
 	return bRet;
-}
-
-
-bool BattleLayer::TouchBegan(Touch* touch, Event* event)
-{
-	auto card = (ReversibleCard*)this->getChildByTag(TAG_BATTLE);
-	card->openCard();
-	m_listener->setEnabled(false);
-	return true;
-}
-
-
-void BattleLayer::TouchMoved(Touch* touch, Event* event)
-{
-
-}
-
-void BattleLayer::TouchEnded(Touch* touch, Event* event)
-{
-
 }
 
 void BattleLayer::battleGameStart(Ref* pData)
@@ -72,9 +39,34 @@ void BattleLayer::battleGameStart(Ref* pData)
 
 void BattleLayer::initBattleGame()
 {
-	auto card = ReversibleCard::create("battle1.png", "battle2.png", 4);
-	card->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
-	card->setTag(TAG_BATTLE);
-	this->addChild(card);
+	char cardname[12];
+	if (m_battleCardGroups != nullptr)
+	{
+		int cards = 0;
+		while (cards < 3*6)
+		{
+			sprintf(cardname, "battle%d.png", MsgTypeForObserver::getRand(TYPE_BATTLE_LEAD_NORMAL,TYPE_BATTLE_LEAD_DEVIL));
+			m_battleCardGroups->push( ReversibleCard::create(cardname, "battle_card_bg.png", 3) );
+			++cards;
+		}
+	}
+
+	pushCards();
 }
 
+
+void BattleLayer::pushCards()
+{
+
+	if (m_battleCardGroups->size() >= 3)
+	{
+		int i = -1;
+		while(i < 2)
+		{
+			m_battleCardGroups->front()->setPosition(Point(m_winSize.width/2 + 200*i,m_winSize.height/2));
+			this->addChild(m_battleCardGroups->front());
+			m_battleCardGroups->pop();
+			++i;
+		}
+	}
+}
