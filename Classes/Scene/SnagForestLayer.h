@@ -27,7 +27,7 @@ const unsigned int c_snagHeightStart = 840;
 
 const unsigned int c_ballHeightBegin = 190;
 const unsigned int c_ballHeightStart = 64;
-const unsigned int c_ballHeightStop = 0.5;
+const unsigned int c_ballHeightStop = 2;
 
 class SnagForestLayer : public cocos2d::Layer
 {
@@ -103,6 +103,10 @@ private:
 	Sprite* m_arrow;
 	Sprite* m_littleGameSlot;
 	Size  m_winSize;
+
+	std::vector<Point>* m_slotPos;
+	unsigned int m_slotPosIdx;
+
 	float m_winX;
 	float m_cellside;
 	float m_ballAngle;

@@ -23,12 +23,14 @@ SnagForestLayer::SnagForestLayer()
 	, m_cellside(0.0f)
 	, m_loadBg(NULL)
 {
+	m_slotPos = new std::vector<Point>();
 }
 
 SnagForestLayer::~SnagForestLayer()
 {
 	_eventDispatcher->removeEventListener(m_listener);
 	m_cellMap.clear();
+	CC_SAFE_DELETE(m_slotPos);
 }
 
 void SnagForestLayer::setPhyWorld(PhysicsWorld* world)
@@ -88,6 +90,16 @@ void SnagForestLayer::update(float dt)
 			removeDevil();
 		}
 		routingDetection();
+	}
+
+	if (m_ball != NULL && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
+	{
+		if (!m_isLittleGameStart)
+		{
+			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+			pause();
+			m_isLittleGameStart = true;
+		}
 	}
 }
 
@@ -330,8 +342,19 @@ void SnagForestLayer::initSlots()
 		slots->addChild(slot);
 	}
 	m_littleGameSlot = Sprite::create("littlegameslot.png");
-	m_littleGameSlot->setScale(0.4);
-	m_littleGameSlot->setPosition(Point(m_winSize.width / 2,  60));
+	m_littleGameSlot->setScale(0.4f);
+
+	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
+	//gameslotY=500.0f;
+
+	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
+	for (int idx = 1; idx < 5; ++idx)
+	{
+		m_slotPos->push_back(Point(m_winSize.width / 2 - m_winX / 9 * idx,  gameslotY));
+		m_slotPos->push_back(Point(m_winSize.width / 2 + m_winX / 9 * idx,  gameslotY));
+	}
+	m_slotPosIdx = MsgTypeForObserver::getRand(0,m_slotPos->size()-1);
+	m_littleGameSlot->setPosition(m_slotPos->at(m_slotPosIdx));
 	this->addChild(m_littleGameSlot, Z_ORDER_THREE);
 }
 
@@ -375,7 +398,7 @@ void SnagForestLayer::initArrow()
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("slot.png")
 		);
 	m_arrow->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
-	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin-120));
+	m_arrow->setPosition(Point(m_winSize.width / 2 - CCRANDOM_0_1(), c_ballHeightBegin));
 	m_arrow->setVisible(false);
 	this->addChild(m_arrow, Z_ORDER_MAX + 1);
 }
@@ -521,15 +544,6 @@ void SnagForestLayer::showCells(unsigned int indexOfCellArr)
 				}
 			}
 		}
-		if (indexOfCellArr == 12 && m_littleGameSlot != NULL && isCollidedWithBall(m_ball, m_littleGameSlot))
-		{
-			if (!m_isLittleGameStart)
-			{
-				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
-				pause();
-				m_isLittleGameStart = true;
-			}
-		}
 	}
 }
 
@@ -594,6 +608,17 @@ void SnagForestLayer::triggerDevil()
 /* === Little Game Action ===*/
 void SnagForestLayer::handleBalloonStop(Ref* pData)
 {
+	unsigned int slotPosIdx;
+	if (m_littleGameSlot != NULL)
+	{
+		m_isLittleGameStart = false;
+		do
+		{
+			slotPosIdx = MsgTypeForObserver::getRand(0,m_slotPos->size()-1);
+		}while(slotPosIdx == m_slotPosIdx);
+		m_slotPosIdx = slotPosIdx;
+		m_littleGameSlot->setPosition(m_slotPos->at(m_slotPosIdx));
+	}
 	recover();
 }
 

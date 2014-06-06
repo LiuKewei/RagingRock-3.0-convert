@@ -73,16 +73,18 @@ void BalloonLayer::unbombedreset(float dt)
 		sprintf(tmp, " %d", balloon->getSuccessCnt());
 		m_succCntLabel->setString(tmp);
 
-		balloon->setCounter(0);
-		balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
-		//char tmp[10];
-		sprintf(tmp, "Status%d", balloon->getMaxCnt());
-		balloon->getArmature()->getAnimation()->play("Animation0");
-		auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
-		balloonStatus->getArmature()->getAnimation()->play(tmp);
 		if (balloon->getSuccessCnt() == 10)
 		{
 			this->schedule(schedule_selector(BalloonLayer::playSucc));
+		}
+		else
+		{
+			balloon->setCounter(0);
+			balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
+			sprintf(tmp, "Status%d", balloon->getMaxCnt());
+			balloon->getArmature()->getAnimation()->play("Animation0");
+			auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
+			balloonStatus->getArmature()->getAnimation()->play(tmp);
 		}
 		this->unschedule(schedule_selector(BalloonLayer::unbombedreset));
 	}
@@ -206,7 +208,6 @@ void BalloonLayer::initLabels()
 	m_succCntLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 气球次数 的label
 	m_succCntLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 400));
 
-	m_succCntLabel->setString(" 0");
 	m_succCntLabel->setVisible(false);
 	this->addChild(m_succCntLabel, 1);
 
@@ -219,11 +220,24 @@ void BalloonLayer::initLabels()
 
 void BalloonLayer::balloonGameStart(Ref* pData)
 {
+	auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
+	balloon->setVisible(true);
+	balloon->setSuccessCnt(0);
+	balloon->setCounter(0);
+	balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
+	char tmp[10];
+	sprintf(tmp, "Status%d", balloon->getMaxCnt());
+	balloon->getArmature()->getAnimation()->play("Animation0");
+
+	auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
+	balloonStatus->getArmature()->getAnimation()->play(tmp);
+	balloonStatus->setVisible(true);
+
+	this->getChildByTag(TAG_BALLOON_SUCC)->setVisible(true);
+
+	m_listener->setEnabled(true);
 	m_balloonLayout->setVisible(true);
 	m_balloonLabel->setVisible(true);
+	m_succCntLabel->setString(" 0");
 	m_succCntLabel->setVisible(true);
-	this->getChildByTag(TAG_BALLOON)->setVisible(true);
-	this->getChildByTag(TAG_BALLOON_STAT)->setVisible(true);
-	this->getChildByTag(TAG_BALLOON_SUCC)->setVisible(true);
-	m_listener->setEnabled(true);
 }
