@@ -32,8 +32,8 @@ bool SnagForestScene::initWithPhysics()
 		_balloonLayer = BalloonLayer::create();
 		this->addChild(_balloonLayer, 2);
 
-		_battleLayer = BattleLayer::create();
-		this->addChild(_battleLayer, 3);
+		//_battleLayer = BattleLayer::create();
+		//this->addChild(_battleLayer, 3);
 
 		bRet = true;
 	} while (0);

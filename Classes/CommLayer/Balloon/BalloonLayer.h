@@ -40,6 +40,7 @@ public:
 
 	void bombedreset(float dt);
 	void unbombedreset(float dt);
+	void playSucc(float dt);
 
 private:
 	void initBalloon();
@@ -53,6 +54,8 @@ private:
 
 	Label* m_bomb;
 	Label* m_balloonLabel;
+
+	Label* m_succCntLabel;
 
 
 	Widget* m_balloonLayout;

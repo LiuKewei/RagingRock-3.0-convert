@@ -68,23 +68,40 @@ void BalloonLayer::unbombedreset(float dt)
 		balloonSucc->setVisible(true);
 		balloonSucc->getAnimation()->play("A1");
 		balloon->setSuccessCnt(balloon->getSuccessCnt() + 1);
+
+		char tmp[10];
+		sprintf(tmp, " %d", balloon->getSuccessCnt());
+		m_succCntLabel->setString(tmp);
+
 		balloon->setCounter(0);
 		balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
-		char tmp[10];
+		//char tmp[10];
 		sprintf(tmp, "Status%d", balloon->getMaxCnt());
 		balloon->getArmature()->getAnimation()->play("Animation0");
 		auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
 		balloonStatus->getArmature()->getAnimation()->play(tmp);
 		if (balloon->getSuccessCnt() == 10)
 		{
-			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
-			m_balloonLayout->setVisible(false);
-			balloon->setVisible(false);
-			this->getChildByTag(TAG_BALLOON_STAT)->setVisible(false);
-			m_balloonLabel->setVisible(false);
-			m_listener->setEnabled(false);
+			this->schedule(schedule_selector(BalloonLayer::playSucc));
 		}
 		this->unschedule(schedule_selector(BalloonLayer::unbombedreset));
+	}
+}
+
+void BalloonLayer::playSucc(float dt)
+{
+	auto balloonSucc = (Armature*)this->getChildByTag(TAG_BALLOON_SUCC);
+	if (balloonSucc->getAnimation()->isComplete())
+	{
+		auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
+		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
+		m_balloonLayout->setVisible(false);
+		balloon->setVisible(false);
+		this->getChildByTag(TAG_BALLOON_STAT)->setVisible(false);
+		m_balloonLabel->setVisible(false);
+		m_succCntLabel->setVisible(false);
+		m_listener->setEnabled(false);
+		this->unschedule(schedule_selector(BalloonLayer::playSucc));
 	}
 }
 
@@ -180,10 +197,18 @@ void BalloonLayer::initBalloon()
 void BalloonLayer::initLabels()
 {
 	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
-	m_balloonLabel = Label::createWithTTF(config2, "Balloon:", TextHAlignment::LEFT);//创建显示 气球: 的label
-	m_balloonLabel->setPosition(Point(m_winSize.width / 2 - 30, m_winSize.height / 2 + 300));
+	m_balloonLabel = Label::createWithTTF(config2, "Balloon Success Count : ", TextHAlignment::LEFT);//创建显示 气球: 的label
+	m_balloonLabel->setPosition(Point(m_winSize.width / 2 - 30, m_winSize.height / 2 + 400));
 	m_balloonLabel->setVisible(false);
 	this->addChild(m_balloonLabel, 1);
+
+
+	m_succCntLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 气球次数 的label
+	m_succCntLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 400));
+
+	m_succCntLabel->setString(" 0");
+	m_succCntLabel->setVisible(false);
+	this->addChild(m_succCntLabel, 1);
 
 
 	m_bomb = Label::createWithTTF(config2, "Bomb !!", TextHAlignment::LEFT);//创建显示 爆炸 的label
@@ -196,6 +221,7 @@ void BalloonLayer::balloonGameStart(Ref* pData)
 {
 	m_balloonLayout->setVisible(true);
 	m_balloonLabel->setVisible(true);
+	m_succCntLabel->setVisible(true);
 	this->getChildByTag(TAG_BALLOON)->setVisible(true);
 	this->getChildByTag(TAG_BALLOON_STAT)->setVisible(true);
 	this->getChildByTag(TAG_BALLOON_SUCC)->setVisible(true);

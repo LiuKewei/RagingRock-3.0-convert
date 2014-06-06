@@ -327,11 +327,11 @@ void SnagForestLayer::initSlots()
 		//slot->setAnchorPoint(Point::ANCHOR_MIDDLE_BOTTOM);
 
 		slot->setPosition(Point(m_winX / 9 * (i + 1) + slot->getContentSize().width / 2, slot->getContentSize().height / 2));
-
 		slots->addChild(slot);
 	}
 	m_littleGameSlot = Sprite::create("littlegameslot.png");
-	m_littleGameSlot->setPosition(Point(m_winSize.width / 2, c_ballHeightBegin));
+	m_littleGameSlot->setScale(0.4);
+	m_littleGameSlot->setPosition(Point(m_winSize.width / 2,  60));
 	this->addChild(m_littleGameSlot, Z_ORDER_THREE);
 }
 

@@ -27,7 +27,7 @@ const unsigned int c_snagHeightStart = 840;
 
 const unsigned int c_ballHeightBegin = 190;
 const unsigned int c_ballHeightStart = 64;
-const unsigned int c_ballHeightStop = 2;
+const unsigned int c_ballHeightStop = 0.5;
 
 class SnagForestLayer : public cocos2d::Layer
 {
