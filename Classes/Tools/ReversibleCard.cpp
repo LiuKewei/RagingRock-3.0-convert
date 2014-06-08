@@ -5,8 +5,6 @@ ReversibleCard::ReversibleCard()
 }
 ReversibleCard::~ReversibleCard()
 {
-	m_openAnimIn->release();
-	m_openAnimOut->release();
 }
 
 ReversibleCard* ReversibleCard::create(const char* inCardImageName, const char* outCardImageName, float duration)
@@ -27,10 +25,6 @@ bool ReversibleCard::init(const char* inCardImageName, const char* outCardImageN
 	{
 		return false;
 	}
-	m_listener = EventListenerTouchOneByOne::create();
-	m_listener->setSwallowTouches(true);
-	m_listener->onTouchBegan = CC_CALLBACK_2(ReversibleCard::TouchBegan, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener,this);
 	initData(inCardImageName, outCardImageName, duration);
 	this->scheduleUpdate();
 	return true;
@@ -38,8 +32,7 @@ bool ReversibleCard::init(const char* inCardImageName, const char* outCardImageN
 
 void ReversibleCard::initData(const char* inCardImageName, const char* outCardImageName, float duration)
 {
-	m_isOpened = false;
-
+	//m_isOpened = false;
 	Sprite* inCard = Sprite::create(inCardImageName);
 	inCard->setPosition(Point::ZERO);
 	inCard->setVisible(false);
@@ -51,48 +44,58 @@ void ReversibleCard::initData(const char* inCardImageName, const char* outCardIm
 	outCard->setTag(tag_outCard);
 	addChild(outCard);
 
-	m_openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(duration * .5),
-		Show::create(),
-		OrbitCamera::create(duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
-		NULL);
-	m_openAnimIn->retain();
+	this->setReversibleCardSize(outCard->getContentSize());
 
-	m_openAnimOut = (ActionInterval *)Sequence::create(OrbitCamera::create(duration * .5, 1, 0, kOutAngleZ, kOutDeltaZ, 0, 0),
-		Hide::create(),
-		DelayTime::create(duration * .5),
-		NULL);
-	m_openAnimOut->retain();
+	this->m_duration = duration;
 }
 
 void ReversibleCard::openCard()
 {
+	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(m_duration * .5),
+		Show::create(),
+		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
+		NULL);
+
+	auto openAnimOut = (ActionInterval *)Sequence::create(OrbitCamera::create(m_duration * .5, 1, 0, kOutAngleZ, kOutDeltaZ, 0, 0),
+		Hide::create(),
+		DelayTime::create(m_duration * .5),
+		NULL);
+
 	Sprite* inCard = (Sprite*)getChildByTag(tag_inCard);
 	Sprite* outCard = (Sprite*)getChildByTag(tag_outCard);
-	inCard->runAction(m_openAnimIn);
-	outCard->runAction(m_openAnimOut);
+	outCard->runAction(openAnimOut);
+	inCard->runAction(openAnimIn);
 }
 
-void ReversibleCard::update(float dt)
+void ReversibleCard::openCard(float delay)
 {
-	if(m_openAnimIn->isDone())
-	{
-		m_listener->setEnabled(true);
-	}
+	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(delay + m_duration * .5),
+		Show::create(),
+		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
+		NULL);
+
+	auto openAnimOut = (ActionInterval *)Sequence::create(DelayTime::create(delay),
+		OrbitCamera::create(m_duration * .5, 1, 0, kOutAngleZ, kOutDeltaZ, 0, 0),
+		Hide::create(),
+		NULL);
+
+	Sprite* inCard = (Sprite*)getChildByTag(tag_inCard);
+	Sprite* outCard = (Sprite*)getChildByTag(tag_outCard);
+	outCard->runAction(openAnimOut);
+	inCard->runAction(openAnimIn);
 }
 
-bool ReversibleCard::TouchBegan(Touch* touch, Event* event)
+void ReversibleCard::setReversibleCardSize(const Size& size)
 {
-	this->openCard();
-	m_listener->setEnabled(false);
-	return false;
+	this->m_reversibleCardSize = size;
 }
 
-void ReversibleCard::TouchMoved(Touch* touch, Event* event)
+const Size& ReversibleCard::getReversibleCardSize()
 {
-
+	return this->m_reversibleCardSize;
 }
 
-void ReversibleCard::TouchEnded(Touch* touch, Event* event)
-{
-
-}
+//bool ReversibleCard::isOpened()
+//{
+//	return this->m_isOpened;
+//}

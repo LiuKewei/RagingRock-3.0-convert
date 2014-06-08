@@ -34,6 +34,8 @@ class BattleLayer : public cocos2d::Layer
 		TAG_BATTLE_LEFT = 37250,
 		TAG_BATTLE_MID,
 		TAG_BATTLE_RIGHT,
+
+		TAG_BATTLE_CURRENT,
 	};
 
 public:
@@ -42,6 +44,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(BattleLayer);
 
+	void update(float dt);
 private:
 	void battleGameStart(Ref* pData);
 	void initBattleGame();
@@ -50,6 +53,11 @@ private:
 private:
 	Size m_winSize;
 	std::queue<ReversibleCard*>* m_battleCardGroups;
+	std::vector<ReversibleCard*>* m_currentCardGroup;
+
+	EventListenerTouchOneByOne* m_listener;
+
+	float m_openCardDuration;
 };
 
 #endif // __BATTLE_LAYER_H__

@@ -13,8 +13,8 @@ USING_NS_CC;
 #define kOutDeltaZ (90) //·âÃæ¿¨ÅÆÐý×ªµÄZÖá½Ç¶È²î
 
 enum {
-    tag_inCard = 1,
-    tag_outCard
+	tag_inCard = 1,
+	tag_outCard
 };
 
 
@@ -25,26 +25,27 @@ public:
 	virtual ~ReversibleCard();
 
 	static ReversibleCard* create(const char* inCardImageName, const char* outCardImageName, float duration);
-    virtual bool init(const char* inCardImageName, const char* outCardImageName, float duration);
+	virtual bool init(const char* inCardImageName, const char* outCardImageName, float duration);
 
-	void update(float dt);
-
-	// Touches Callback function
-	virtual bool TouchBegan(Touch* touch, Event* event);
-	virtual void TouchMoved(Touch* touch, Event* event);
-	virtual void TouchEnded(Touch* touch, Event* event);
-
-private:
 	void openCard();
+	void openCard(float delay);
+	//void waitForOpened(float dt);
+
+	void setReversibleCardSize(const Size& size);
+	const Size& getReversibleCardSize();
+	//bool isOpened();
 
 private:
-	bool m_isOpened;
-    ActionInterval* m_openAnimIn;
-    ActionInterval* m_openAnimOut;
+
+private:
+	//bool m_isOpened;
+	float m_duration;
+
+	//ActionInterval* m_openAnimIn;
+	//ActionInterval* m_openAnimOut;
+	Size m_reversibleCardSize;
 
 	void initData(const char* inCardImageName, const char* outCardImageName, float duration);
-	
-	EventListenerTouchOneByOne* m_listener;
 };
 
 #endif // __REVERSIBLE_CARD_H__

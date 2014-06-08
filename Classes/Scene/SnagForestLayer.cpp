@@ -51,7 +51,6 @@ bool SnagForestLayer::initWithEntryID(int entryId)
 	m_listener->onTouchBegan = CC_CALLBACK_2(SnagForestLayer::TouchBegan, this);
 	m_listener->onTouchMoved = CC_CALLBACK_2(SnagForestLayer::TouchMoved, this);
 	m_listener->onTouchEnded = CC_CALLBACK_2(SnagForestLayer::TouchEnded, this);
-	m_listener->setSwallowTouches(true);
 	m_listener->setEnabled(false);
 	_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
