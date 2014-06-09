@@ -32,7 +32,7 @@ bool ReversibleCard::init(const char* inCardImageName, const char* outCardImageN
 
 void ReversibleCard::initData(const char* inCardImageName, const char* outCardImageName, float duration)
 {
-	//m_isOpened = false;
+	m_isOpened = false;
 	Sprite* inCard = Sprite::create(inCardImageName);
 	inCard->setPosition(Point::ZERO);
 	inCard->setVisible(false);
@@ -51,6 +51,7 @@ void ReversibleCard::initData(const char* inCardImageName, const char* outCardIm
 
 void ReversibleCard::openCard()
 {
+	m_isOpened = false;
 	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(m_duration * .5),
 		Show::create(),
 		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
@@ -69,11 +70,12 @@ void ReversibleCard::openCard()
 
 void ReversibleCard::openCard(float delay)
 {
+	m_isOpened = false;
 	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(delay + m_duration * .5),
 		Show::create(),
 		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
+		CallFuncN::create(CC_CALLBACK_0(ReversibleCard::openCardFinished,this)),
 		NULL);
-
 	auto openAnimOut = (ActionInterval *)Sequence::create(DelayTime::create(delay),
 		OrbitCamera::create(m_duration * .5, 1, 0, kOutAngleZ, kOutDeltaZ, 0, 0),
 		Hide::create(),
@@ -83,6 +85,15 @@ void ReversibleCard::openCard(float delay)
 	Sprite* outCard = (Sprite*)getChildByTag(tag_outCard);
 	outCard->runAction(openAnimOut);
 	inCard->runAction(openAnimIn);
+}
+
+void ReversibleCard::verticalTilt(float deltaY)
+{
+	auto action = RotateBy::create(0.001f, Vertex3F(deltaY, 0, 0));
+	auto tiltAnimIn = Sequence::create(action, NULL);
+
+	Sprite* outCard = (Sprite*)getChildByTag(tag_outCard);
+	outCard->runAction(tiltAnimIn);
 }
 
 void ReversibleCard::setReversibleCardSize(const Size& size)
@@ -95,7 +106,12 @@ const Size& ReversibleCard::getReversibleCardSize()
 	return this->m_reversibleCardSize;
 }
 
-//bool ReversibleCard::isOpened()
-//{
-//	return this->m_isOpened;
-//}
+void ReversibleCard::openCardFinished()
+{
+	m_isOpened = true;
+}
+
+bool ReversibleCard::isOpened()
+{
+	return this->m_isOpened;
+}

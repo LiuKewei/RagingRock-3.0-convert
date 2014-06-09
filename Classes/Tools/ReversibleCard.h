@@ -29,16 +29,19 @@ public:
 
 	void openCard();
 	void openCard(float delay);
+	void verticalTilt(float deltaY);
+
 	//void waitForOpened(float dt);
 
 	void setReversibleCardSize(const Size& size);
 	const Size& getReversibleCardSize();
-	//bool isOpened();
+	bool isOpened();
 
 private:
+	void openCardFinished();
 
 private:
-	//bool m_isOpened;
+	bool m_isOpened;
 	float m_duration;
 
 	//ActionInterval* m_openAnimIn;

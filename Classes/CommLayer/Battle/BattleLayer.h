@@ -45,18 +45,23 @@ public:
 	CREATE_FUNC(BattleLayer);
 
 	void update(float dt);
+	void waitingForOpened(float dt);
 private:
 	void battleGameStart(Ref* pData);
 	void initBattleGame();
 
 	void pushCards();
+
+	void pileUpCards();
+
 private:
 	Size m_winSize;
-	std::queue<ReversibleCard*>* m_battleCardGroups;
+	std::list<ReversibleCard*>* m_battleCardGroups;
 	std::vector<ReversibleCard*>* m_currentCardGroup;
 
 	EventListenerTouchOneByOne* m_listener;
 
+	ReversibleCard* m_targetCard;
 	float m_openCardDuration;
 };
 
