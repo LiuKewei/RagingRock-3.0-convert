@@ -18,6 +18,8 @@ using namespace ui;
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
+#define CARD_TILT_ANGLE (55)
+
 class BattleLayer : public cocos2d::Layer
 {
 	enum
@@ -44,6 +46,9 @@ public:
 	virtual bool init();
 	CREATE_FUNC(BattleLayer);
 
+	// Touches Callback function
+	virtual bool TouchBegan(Touch* touch, Event* event);
+
 	void update(float dt);
 	void waitingForOpened(float dt);
 private:
@@ -62,7 +67,11 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 
 	ReversibleCard* m_targetCard;
+
+	bool m_isOpening;
 	float m_openCardDuration;
+
+
 };
 
 #endif // __BATTLE_LAYER_H__
