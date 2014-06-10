@@ -50,7 +50,7 @@ bool BattleLayer::TouchBegan(Touch* touch, Event* event)
 
 	//log("locationInNode ..  x = %f, y = %f", locationInNode.x, locationInNode.y);
 
-	if (!m_isOpening && locationInNode.y > (m_winSize.height / 4 + s.height + 36) && rect.containsPoint(locationInNode) && m_currentCardGroup->size() == 3)
+	if (!m_isOpening && locationInNode.y > (m_winSize.height / 4 /*+ s.height + 36*/) && rect.containsPoint(locationInNode) && m_currentCardGroup->size() == 3)
 	{
 		int idx = 0;
 		for (auto& ele : *m_currentCardGroup)
@@ -101,9 +101,9 @@ void BattleLayer::pushCards()
 		int column = -1;
 		while (column < 2)
 		{
-			m_battleCardGroups->front()->setPosition(Point(m_winSize.width / 2 + 200 * column, m_winSize.height / 2));
+			m_battleCardGroups->front()->setPosition(Point(m_winSize.width / 2 + 200 * column, m_winSize.height / 3));
 			_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), m_battleCardGroups->front());
-			this->addChild(m_battleCardGroups->front());
+			this->addChild(m_battleCardGroups->front(),Z_ORDER_MAX);
 			m_currentCardGroup->push_back(m_battleCardGroups->front());
 			m_battleCardGroups->pop_front();
 			++column;
@@ -116,7 +116,7 @@ void BattleLayer::pileUpCards()
 	std::list<ReversibleCard*>::iterator iter = m_battleCardGroups->begin();
 	int column = -1;
 	int row = 1;
-	int zorder = Z_ORDER_MAX;
+	int zorder = Z_ORDER_MAX-1;
 	while (column < 2 && iter != m_battleCardGroups->end())
 	{
 		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_winSize.height / 4 - 12 * row));
@@ -156,7 +156,8 @@ void BattleLayer::waitingForOpened(float dt)
 			while (column < 2 && m_currentCardGroup->size() < 3)
 			{
 				card = m_battleCardGroups->front();
-				card->verticalTilt(0.2f, -CARD_TILT_ANGLE, MoveBy::create(0.4f, Point(0, m_winSize.height / 2 - card->getPositionY())));
+				//card->verticalTilt(0.2f, -CARD_TILT_ANGLE, );
+				card->verticalTilt(0.2f, -CARD_TILT_ANGLE, MoveBy::create(0.2f, Point(0, 50)), MoveBy::create(0.2f, Point(0, m_winSize.height / 3 - card->getPositionY() - 50)));
 				m_currentCardGroup->push_back(card);
 				m_battleCardGroups->pop_front();
 				++column;

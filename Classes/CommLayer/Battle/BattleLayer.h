@@ -18,7 +18,7 @@ using namespace ui;
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
-#define CARD_TILT_ANGLE (55)
+#define CARD_TILT_ANGLE (-75)
 
 class BattleLayer : public cocos2d::Layer
 {

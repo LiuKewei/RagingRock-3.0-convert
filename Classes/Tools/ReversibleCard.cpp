@@ -109,10 +109,10 @@ void ReversibleCard::verticalTilt(float duration, float deltaY)
 	this->runAction(tiltAnimIn);
 }
 
-void ReversibleCard::verticalTilt(float duration, float deltaY, FiniteTimeAction *extAction)
+void ReversibleCard::verticalTilt(float duration, float deltaY, FiniteTimeAction *extActionBegin, FiniteTimeAction *extActionAfter)
 {
 	auto action = RotateBy::create(duration, Vertex3F(deltaY, 0, 0));
-	auto tiltAnimIn = Sequence::create(action, extAction, NULL);
+	auto tiltAnimIn = Sequence::create(extActionBegin, action, extActionAfter, NULL);
 	this->runAction(tiltAnimIn);
 }
 
