@@ -24,15 +24,6 @@ class BattleLayer : public cocos2d::Layer
 {
 	enum
 	{
-		TYPE_BATTLE_LEAD_NORMAL,
-		TYPE_BATTLE_LEAD_MAGIC,
-		TYPE_BATTLE_LEAD_INVINCIBLE,
-		TYPE_BATTLE_LEAD_PET,
-		TYPE_BATTLE_LEAD_DEVIL,
-	};
-
-	enum
-	{
 		TAG_BATTLE_LEFT = 37250,
 		TAG_BATTLE_MID,
 		TAG_BATTLE_RIGHT,
@@ -58,9 +49,12 @@ private:
 	void pushCards();
 
 	void pileUpCards();
+	void pileUpOneGroupCardsToTail();
 
+	void increaseCards4Groups(unsigned int groupCnt);
 private:
 	Size m_winSize;
+
 	std::list<ReversibleCard*>* m_battleCardGroups;
 	std::vector<ReversibleCard*>* m_currentCardGroup;
 
@@ -72,6 +66,8 @@ private:
 	float m_openCardDuration;
 
 
+	float m_pileUpHeight;
+	float m_openingHeight;
 };
 
 #endif // __BATTLE_LAYER_H__

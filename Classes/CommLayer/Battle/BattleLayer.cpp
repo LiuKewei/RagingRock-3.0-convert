@@ -3,6 +3,8 @@
 BattleLayer::BattleLayer()
 : m_targetCard(nullptr)
 , m_isOpening(false)
+, m_pileUpHeight(0.0f)
+, m_openingHeight(0.0f)
 {
 	m_battleCardGroups = new std::list<ReversibleCard*>();
 	m_currentCardGroup = new std::vector<ReversibleCard*>();
@@ -19,6 +21,9 @@ bool BattleLayer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 		m_winSize = Director::getInstance()->getWinSize();
+		m_pileUpHeight = m_winSize.height / 4;
+		m_openingHeight = m_winSize.height / 3;
+		m_openCardDuration = 0.4f;
 
 		this->schedule(schedule_selector(BattleLayer::waitingForOpened));
 
@@ -46,11 +51,14 @@ bool BattleLayer::TouchBegan(Touch* touch, Event* event)
 	Point locationInNode = touch->getLocation();
 	Size s = targetCard->getReversibleCardSize();
 	Point pos = targetCard->getPosition();
-	Rect rect = Rect(pos.x - s.width / 2, pos.y - s.height / 2, s.width, s.height);
+	Point anchorPoint = targetCard->getAnchorPoint();
+	Rect rect = Rect(pos.x - s.width *anchorPoint.x, pos.y - s.height*anchorPoint.y, s.width, s.height);
 
 	//log("locationInNode ..  x = %f, y = %f", locationInNode.x, locationInNode.y);
+	//log("pos ..  x = %f, y = %f", pos.x, pos.y);
+	//log("anchorPoint ..  x = %f, y = %f", anchorPoint.x, anchorPoint.y);
 
-	if (!m_isOpening && locationInNode.y > (m_winSize.height / 4 /*+ s.height + 36*/) && rect.containsPoint(locationInNode) && m_currentCardGroup->size() == 3)
+	if (!m_isOpening && locationInNode.y > (m_openingHeight + 10) && rect.containsPoint(locationInNode) && m_currentCardGroup->size() == 3)
 	{
 		int idx = 0;
 		for (auto& ele : *m_currentCardGroup)
@@ -77,22 +85,31 @@ void BattleLayer::battleGameStart(Ref* pData)
 
 void BattleLayer::initBattleGame()
 {
-	m_openCardDuration = 0.4f;
-	char cardname[12];
-	if (m_battleCardGroups != nullptr)
-	{
-		int cards = 0;
-		while (cards < 3 * 4)
-		{
-			sprintf(cardname, "battle%d.png", MsgTypeForObserver::getRand(TYPE_BATTLE_LEAD_NORMAL, TYPE_BATTLE_LEAD_DEVIL));
-			m_battleCardGroups->push_back(ReversibleCard::create(cardname, "battle_card_bg.png", m_openCardDuration));
-			++cards;
-		}
-	}
+	increaseCards4Groups(4);
 	pushCards();
 	pileUpCards();
 }
 
+
+void BattleLayer::increaseCards4Groups(unsigned int groupCnt)
+{
+	if (m_battleCardGroups != nullptr)
+	{
+		char cardname[12];
+		ReversibleCard* card = nullptr;
+		unsigned int cardType = 0;
+		int countOfCards = 0;
+		while (countOfCards < 3 * groupCnt)
+		{
+			cardType = MsgTypeForObserver::getRand(TYPE_BATTLE_LEAD_NORMAL, TYPE_BATTLE_LEAD_DEVIL);
+			sprintf(cardname, "battle%d.png", cardType);
+			card = ReversibleCard::create(cardname, "battle_card_bg.png", m_openCardDuration);
+			card->setCardType(cardType);
+			m_battleCardGroups->push_back(card);
+			++countOfCards;
+		}
+	}
+}
 
 void BattleLayer::pushCards()
 {
@@ -101,9 +118,9 @@ void BattleLayer::pushCards()
 		int column = -1;
 		while (column < 2)
 		{
-			m_battleCardGroups->front()->setPosition(Point(m_winSize.width / 2 + 200 * column, m_winSize.height / 3));
+			m_battleCardGroups->front()->setPosition(Point(m_winSize.width / 2 + 200 * column, m_openingHeight));
 			_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), m_battleCardGroups->front());
-			this->addChild(m_battleCardGroups->front(),Z_ORDER_MAX);
+			this->addChild(m_battleCardGroups->front(), Z_ORDER_MAX);
 			m_currentCardGroup->push_back(m_battleCardGroups->front());
 			m_battleCardGroups->pop_front();
 			++column;
@@ -116,10 +133,34 @@ void BattleLayer::pileUpCards()
 	std::list<ReversibleCard*>::iterator iter = m_battleCardGroups->begin();
 	int column = -1;
 	int row = 1;
-	int zorder = Z_ORDER_MAX-1;
+	int zorder = Z_ORDER_MAX - 1;
 	while (column < 2 && iter != m_battleCardGroups->end())
 	{
-		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_winSize.height / 4 - 12 * row));
+		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_pileUpHeight - 12 * row));
+		(*iter)->verticalTilt(0.001f, CARD_TILT_ANGLE);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), *iter);
+		this->addChild(*iter, zorder);
+		++iter;
+		++column;
+		if (column == 2)
+		{
+			column = -1;
+			++row;
+			--zorder;
+		}
+	}
+}
+
+void BattleLayer::pileUpOneGroupCardsToTail()
+{
+	std::list<ReversibleCard*>::iterator iter = m_battleCardGroups->end();
+	--iter; --iter;
+	int column = -1;
+	int row = 1;
+	int zorder = Z_ORDER_MAX - 1;
+	while (iter != m_battleCardGroups->end())
+	{
+		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_pileUpHeight - 12 * row));
 		(*iter)->verticalTilt(0.001f, CARD_TILT_ANGLE);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), *iter);
 		this->addChild(*iter, zorder);
@@ -156,12 +197,12 @@ void BattleLayer::waitingForOpened(float dt)
 			while (column < 2 && m_currentCardGroup->size() < 3)
 			{
 				card = m_battleCardGroups->front();
-				//card->verticalTilt(0.2f, -CARD_TILT_ANGLE, );
-				card->verticalTilt(0.2f, -CARD_TILT_ANGLE, MoveBy::create(0.2f, Point(0, 50)), MoveBy::create(0.2f, Point(0, m_winSize.height / 3 - card->getPositionY() - 50)));
+				card->verticalTilt(0.2f, -CARD_TILT_ANGLE, MoveBy::create(0.2f, Point(0, 50)), MoveBy::create(0.2f, Point(0, m_openingHeight - card->getPositionY() - 50)));
 				m_currentCardGroup->push_back(card);
 				m_battleCardGroups->pop_front();
 				++column;
 			}
 		}
+		increaseCards4Groups(1);
 	}
 }

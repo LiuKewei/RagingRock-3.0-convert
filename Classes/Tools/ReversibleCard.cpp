@@ -126,6 +126,16 @@ const Size& ReversibleCard::getReversibleCardSize()
 	return this->m_reversibleCardSize;
 }
 
+void ReversibleCard::setCardType(unsigned int type)
+{
+	this->m_cardType = type;
+}
+
+unsigned int ReversibleCard::getCardType()
+{
+	return this->m_cardType;
+}
+
 void ReversibleCard::openCardFinished()
 {
 	m_isOpened = true;

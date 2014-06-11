@@ -12,14 +12,24 @@ USING_NS_CC;
 #define kOutAngleZ (0) //封面卡牌的起始Z轴角度
 #define kOutDeltaZ (90) //封面卡牌旋转的Z轴角度差
 
-enum {
-	tag_inCard = 1,
-	tag_outCard
+
+enum
+{
+	TYPE_BATTLE_LEAD_NORMAL,
+	TYPE_BATTLE_LEAD_MAGIC,
+	TYPE_BATTLE_LEAD_INVINCIBLE,
+	TYPE_BATTLE_LEAD_PET,
+	TYPE_BATTLE_LEAD_DEVIL,
 };
 
 
 class ReversibleCard: public cocos2d::Sprite
 {
+	enum {
+		tag_inCard = 1,
+		tag_outCard
+	};
+
 public:
 	ReversibleCard();
 	virtual ~ReversibleCard();
@@ -35,9 +45,13 @@ public:
 	void setReversibleCardSize(const Size& size);
 	const Size& getReversibleCardSize();
 
+	void setCardType(unsigned int type);
+	unsigned int getCardType();
+
 	bool isOpened();
 
 private:
+	void initData(const char* inCardImageName, const char* outCardImageName, float duration);
 	void openCardFinished();
 
 private:
@@ -47,7 +61,7 @@ private:
 
 	Size m_reversibleCardSize;
 
-	void initData(const char* inCardImageName, const char* outCardImageName, float duration);
+	unsigned int m_cardType;
 };
 
 #endif // __REVERSIBLE_CARD_H__
