@@ -68,6 +68,7 @@ private:
 	void pileUpCards();
 	void pileUpOneGroupCardsToTail();
 	void showCard(Node* sender);
+	void removeTopGroup(Node* sender);
 
 	void battle();
 	void attack(int cnt);

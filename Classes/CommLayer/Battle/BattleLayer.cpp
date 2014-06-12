@@ -1,11 +1,11 @@
 #include "BattleLayer.h"
 
 BattleLayer::BattleLayer()
-: m_targetCard(nullptr)
-, m_isOpening(false)
-, m_pileUpHeight(0.0f)
-, m_openingHeight(0.0f)
-, m_hintInBackground(-1)
+	: m_targetCard(nullptr)
+	, m_isOpening(false)
+	, m_pileUpHeight(0.0f)
+	, m_openingHeight(0.0f)
+	, m_hintInBackground(-1)
 {
 	m_battleCardGroups = new std::list<ReversibleCard*>();
 	m_currentCardGroup = new std::vector<ReversibleCard*>();
@@ -75,7 +75,7 @@ bool BattleLayer::TouchBegan(Touch* touch, Event* event)
 			}
 			//++idx;  shouldn't add here
 		}
-		targetCard->openCard(m_openCardDuration*idx);
+		targetCard->openCard(m_openCardDuration*idx, true);
 		m_targetCard = targetCard;
 	}
 	return false;
@@ -116,9 +116,9 @@ void BattleLayer::initBgHint()
 	auto bgHint1 = Sprite::create("Hint1.png");
 	auto bgHint2 = Sprite::create("Hint2.png");
 	auto bgHint3 = Sprite::create("Hint3.png");
-	//bgHint1->setVisible(false);
-	//bgHint2->setVisible(false);
-	//bgHint3->setVisible(false);
+	bgHint1->setVisible(false);
+	bgHint2->setVisible(false);
+	bgHint3->setVisible(false);
 	bgHint1->setPosition(Point(m_winSize.width / 2, 800));
 	bgHint2->setPosition(Point(m_winSize.width / 2, 800));
 	bgHint3->setPosition(Point(m_winSize.width / 2, 800));
@@ -200,7 +200,7 @@ void BattleLayer::pileUpOneGroupCardsToTail()
 	{
 		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_pileUpHeight - c_intervalCardHeight * 3));
 		(*iter)->setVisible(false);
-		(*iter)->verticalTilt(0.001f, -CARD_TILT_ANGLE, 0.2f, CallFuncN::create(CC_CALLBACK_0(BattleLayer::showCard, this, (*iter))));
+		(*iter)->verticalTilt(0.2f, -CARD_TILT_ANGLE, CallFuncN::create(CC_CALLBACK_0(BattleLayer::showCard, this, (*iter))));
 		(*iter)->setLocalZOrder(zorder);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), *iter);
 		this->addChild(*iter);
@@ -219,11 +219,14 @@ void BattleLayer::update(float dt)
 			if (ele->getCardType() == TYPE_BATTLE_LEAD_DEVIL)
 			{
 				m_hintInBackground = -1;
+				m_hintVec.clear();
 				break;
 			}
 			m_hintVec.push_back(ele->getCardType());
 		}
+		m_hintInBackground = m_hintVec.size() == 3 ? m_hintVec.at(MsgTypeForObserver::getRand(0, m_hintVec.size() - 1)) : -1;
 		this->showBgHint();
+		this->unscheduleUpdate();
 	}
 }
 
@@ -234,6 +237,7 @@ void BattleLayer::waitingForOpened(float dt)
 		battle();
 		for (auto& ele : *m_currentCardGroup)
 		{
+			//ele->runAction( Sequence::create(MoveBy::create(0.2f, Point(0, 50)), FadeOut::create(0.9f), CallFuncN::create(CC_CALLBACK_0(BattleLayer::removeTopGroup, this, ele)), NULL) );
 			this->removeChild(ele);
 		}
 		m_currentCardGroup->clear();
@@ -258,7 +262,6 @@ void BattleLayer::waitingForOpened(float dt)
 		}
 		increaseCards4Groups(1);
 		pileUpOneGroupCardsToTail();
-		m_isOpening = false;
 	}
 }
 
@@ -268,13 +271,18 @@ void BattleLayer::showCard(Node* sender)
 	if (!card->isVisible())
 	{
 		card->setVisible(true);
+		m_isOpening = false;
 	}
+}
+
+void BattleLayer::removeTopGroup(Node* sender)
+{
+	auto card = (ReversibleCard*)sender;
+	this->removeChild(card);
 }
 
 void BattleLayer::showBgHint()
 {
-	if (m_hintInBackground == -1)return;
-	m_hintInBackground = m_hintVec.at(MsgTypeForObserver::getRand(0, m_hintVec.size() - 1));
 	switch (m_hintInBackground)
 	{
 	case TYPE_BATTLE_LEAD_NORMAL:
@@ -325,6 +333,7 @@ void BattleLayer::battle()
 		break;
 	}
 	m_targetCard = nullptr;
+	this->scheduleUpdate();
 }
 void BattleLayer::attack(int cnt)
 {

@@ -78,16 +78,21 @@ void ReversibleCard::openCard()
 	m_isOpening = true;
 }
 
-void ReversibleCard::openCard(float delay)
+void ReversibleCard::openCard(float delay, bool isblink)
 {
 	if (m_isOpening)
 	{
 		return;
 	}
 	m_isOpened = false;
+	auto blink = isblink ? Blink::create(0.2f,3) : NULL;
 	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(delay + m_duration * .5),
 		Show::create(),
 		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
+		MoveBy::create(0.2f, Point(0, 50)),
+		DelayTime::create(0.5f),
+		blink,
+		DelayTime::create(0.2f),
 		CallFuncN::create(CC_CALLBACK_0(ReversibleCard::openCardFinished, this)),
 		NULL);
 	auto openAnimOut = (ActionInterval *)Sequence::create(DelayTime::create(delay),

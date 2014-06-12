@@ -27,7 +27,7 @@ public:
 	virtual bool init(const char* inCardImageName, const char* outCardImageName, float duration);
 
 	void openCard();
-	void openCard(float delay);
+	void openCard(float delay, bool isblink = false);
 
 	void verticalTilt(float duration, float deltaY);
 	void verticalTilt(float duration, float deltaY, CallFuncN* callback);
