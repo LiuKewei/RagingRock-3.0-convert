@@ -18,7 +18,9 @@ using namespace ui;
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
-#define CARD_TILT_ANGLE (-75)
+#define CARD_TILT_ANGLE (75)
+
+const int c_intervalCardHeight = 12;
 
 class BattleLayer : public cocos2d::Layer
 {
@@ -51,7 +53,9 @@ private:
 	void pileUpCards();
 	void pileUpOneGroupCardsToTail();
 
-	void increaseCards4Groups(unsigned int groupCnt);
+	void increaseCards4Groups(int groupCnt);
+
+	void showCard(Node* sender);
 private:
 	Size m_winSize;
 

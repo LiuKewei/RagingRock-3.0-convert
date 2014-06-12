@@ -39,7 +39,10 @@ public:
 
 	void openCard();
 	void openCard(float delay);
+
 	void verticalTilt(float duration, float deltaY);
+	void verticalTilt(float duration, float deltaY, CallFuncN* callback);
+	void verticalTilt(float duration, float deltaY, float delay, CallFuncN* callback);
 	void verticalTilt(float duration, float deltaY, FiniteTimeAction *extActionBegin, FiniteTimeAction *extActionAfter);
 
 	void setReversibleCardSize(const Size& size);
