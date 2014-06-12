@@ -207,7 +207,6 @@ void BalloonLayer::initLabels()
 
 	m_succCntLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 气球次数 的label
 	m_succCntLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 400));
-
 	m_succCntLabel->setVisible(false);
 	this->addChild(m_succCntLabel, 1);
 

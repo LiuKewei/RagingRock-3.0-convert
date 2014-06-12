@@ -12,17 +12,6 @@ USING_NS_CC;
 #define kOutAngleZ (0) //封面卡牌的起始Z轴角度
 #define kOutDeltaZ (90) //封面卡牌旋转的Z轴角度差
 
-
-enum
-{
-	TYPE_BATTLE_LEAD_NORMAL,
-	TYPE_BATTLE_LEAD_MAGIC,
-	TYPE_BATTLE_LEAD_INVINCIBLE,
-	TYPE_BATTLE_LEAD_PET,
-	TYPE_BATTLE_LEAD_DEVIL,
-};
-
-
 class ReversibleCard: public cocos2d::Sprite
 {
 	enum {

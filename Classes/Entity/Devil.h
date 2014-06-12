@@ -26,5 +26,7 @@ private:
 	std::vector<Point>* m_devilPosVec;
 	unsigned int m_devilPosCnt;
 	unsigned int m_currentMaxIndex;
+
+
 };
 #endif // __DEVIL_H__
