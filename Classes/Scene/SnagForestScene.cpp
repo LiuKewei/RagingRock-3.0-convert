@@ -35,6 +35,13 @@ bool SnagForestScene::initWithPhysics()
 		_battleLayer = BattleLayer::create();
 		this->addChild(_battleLayer, 3);
 
+
+
+
+
+		_exitLayer = ExitLayer::create();
+		this->addChild(_exitLayer, Z_ORDER_MAX);
+
 		bRet = true;
 	} while (0);
 

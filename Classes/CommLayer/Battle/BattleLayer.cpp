@@ -224,7 +224,8 @@ void BattleLayer::update(float dt)
 			}
 			m_hintVec.push_back(ele->getCardType());
 		}
-		m_hintInBackground = m_hintVec.size() == 3 ? m_hintVec.at(MsgTypeForObserver::getRand(0, m_hintVec.size() - 1)) : -1;
+		m_hintVec.push_back(-1);
+		m_hintInBackground = m_hintVec.size() == 4 ? m_hintVec.at(MsgTypeForObserver::getRand(0, m_hintVec.size() - 1)) : -1;
 		this->showBgHint();
 		this->unscheduleUpdate();
 	}
@@ -237,7 +238,6 @@ void BattleLayer::waitingForOpened(float dt)
 		battle();
 		for (auto& ele : *m_currentCardGroup)
 		{
-			//ele->runAction( Sequence::create(MoveBy::create(0.2f, Point(0, 50)), FadeOut::create(0.9f), CallFuncN::create(CC_CALLBACK_0(BattleLayer::removeTopGroup, this, ele)), NULL) );
 			this->removeChild(ele);
 		}
 		m_currentCardGroup->clear();

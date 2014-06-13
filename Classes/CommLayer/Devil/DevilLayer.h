@@ -28,7 +28,6 @@ public:
 	CREATE_FUNC(DevilLayer);
 
 	void update(float dt);
-	void updateDevil(float dt);
 	void updateFightingBar(float dt);
 	
 	// Touches Callback function

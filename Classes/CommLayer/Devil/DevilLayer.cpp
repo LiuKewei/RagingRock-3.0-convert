@@ -69,16 +69,6 @@ void DevilLayer::update(float dt)
 	}
 }
 
-void DevilLayer::updateDevil(float dt)
-{
-	unsigned int maxIdx = m_devil->getDevilMaxIndexInCurrent();
-	//CCLOG("maxIdx %d", maxIdx);
-	//CCLOG("m_devil->getDevilPosVec()->size() %d", m_devil->getDevilPosVec()->size());
-	CC_ASSERT(maxIdx <= m_devil->getDevilPosVec()->size());
-	if ( m_devil->getDevilPosVec()->size() != 0 )m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx - 1)));
-}
-
-
 bool DevilLayer::TouchBegan(Touch* touch, Event* event)
 {
 	if (m_progress == NULL)
@@ -137,6 +127,9 @@ void DevilLayer::initDevil()
 	m_devil->bindSprite(Sprite::create("devil.png"));
 	m_devil->setDevilMaxIndexInCurrent(0);
 	m_devil->setDevilPosCnt(0);
+	m_devil->setPosition(Point::ZERO);
+	m_devil->setVisible(false);
+	this->addChild(m_devil, Z_ORDER_ZERO);
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilPosUpdate, m_devil);
 }
 
@@ -181,9 +174,12 @@ void DevilLayer::devilFighting(Ref* pData)
 
 void DevilLayer::devilPosHandle(Ref* pData)
 {
-	this->schedule(schedule_selector(DevilLayer::updateDevil), 2.0);
-	this->addChild(m_devil, Z_ORDER_ZERO);
-	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_DevilPosPush);
+	unsigned int maxIdx = m_devil->getDevilMaxIndexInCurrent();
+	//CCLOG("maxIdx %d", maxIdx);
+	//CCLOG("m_devil->getDevilPosVec()->size() %d", m_devil->getDevilPosVec()->size());
+	CC_ASSERT(maxIdx <= m_devil->getDevilPosVec()->size());
+	if (m_devil->getDevilPosVec()->size() != 0)m_devil->setPosition(m_devil->getDevilPosVec()->at(MsgTypeForObserver::getRand(0, maxIdx - 1)));
+	m_devil->setVisible(true);
 }
 
 void DevilLayer::destoryDevilLayer(Ref* pData)
@@ -194,13 +190,12 @@ void DevilLayer::destoryDevilLayer(Ref* pData)
 void DevilLayer::updateFightingBar(float dt)
 {
 	float proPercet = m_progress->getPercentage();
-	if (proPercet == 0.0f)
+	if (proPercet >= 100.0f)
 	{
 		this->removeAllChildren();
 		m_progress = NULL;
 		m_devil = NULL;
 		m_listener->setEnabled(false);
-		this->unschedule(schedule_selector(DevilLayer::updateDevil));
 		this->unschedule(schedule_selector(DevilLayer::updateFightingBar));
 		this->unscheduleUpdate();
 		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_DevilFightingStop, NULL);

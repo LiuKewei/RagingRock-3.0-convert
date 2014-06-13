@@ -64,8 +64,6 @@ private:
 	void initSlots();
 	void initArrow();
 	void initParticleFire();
-	void initExitButton();
-	void menuCloseCallback(Ref* pSender);
 
 
 	bool isCollidedWithBall(Ball* fallBall, Node *snag);

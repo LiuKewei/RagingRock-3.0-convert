@@ -54,9 +54,6 @@ bool SnagForestLayer::initWithEntryID(int entryId)
 	m_listener->setEnabled(false);
 	_eventDispatcher->addEventListenerWithFixedPriority(m_listener, -1);
 
-
-
-
 	return true;
 }
 
@@ -254,7 +251,6 @@ void SnagForestLayer::initResourcesWithProgresser()
 	initCells();
 	initArrow();
 	initParticleFire();
-	initExitButton();
 }
 
 void SnagForestLayer::initProgresser()
@@ -344,7 +340,7 @@ void SnagForestLayer::initSlots()
 	m_littleGameSlot->setScale(0.4f);
 
 	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
-	//gameslotY=500.0f;
+	gameslotY=500.0f;
 
 	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
 	for (int idx = 1; idx < 5; ++idx)
@@ -421,42 +417,6 @@ void SnagForestLayer::initParticleFire()
 	m_emitter->setEndSize(ParticleSystem::START_SIZE_EQUAL_TO_END_SIZE);
 	m_emitter->setBlendAdditive(true);
 	m_emitter->setVisible(false);
-}
-
-
-void SnagForestLayer::initExitButton()
-{
-
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Point origin = Director::getInstance()->getVisibleOrigin();
-
-	// add a "close" icon to exit the progress. it's an autorelease object
-	auto closeItem = MenuItemImage::create(
-		"CloseNormal.png",
-		"CloseSelected.png",
-		CC_CALLBACK_1(SnagForestLayer::menuCloseCallback, this));
-
-	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width / 2,
-		origin.y + closeItem->getContentSize().height / 2));
-
-	// create menu, it's an autorelease object
-	auto menu = Menu::create(closeItem, NULL);
-	menu->setPosition(Point::ZERO);
-	this->addChild(menu, Z_ORDER_MAX);
-}
-
-void SnagForestLayer::menuCloseCallback(Ref* pSender)
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
-	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
-	return;
-#endif
-
-	Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
 }
 
 /* === Ball Action ===*/

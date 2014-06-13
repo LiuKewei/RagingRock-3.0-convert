@@ -32,11 +32,6 @@ bool BalloonLayer::init()
 			MsgTypeForObserver::c_BalloonStart,
 			NULL);
 
-
-
-
-
-
 		bRet = true;
 	} while (0);
 
@@ -73,11 +68,7 @@ void BalloonLayer::unbombedreset(float dt)
 		sprintf(tmp, " %d", balloon->getSuccessCnt());
 		m_succCntLabel->setString(tmp);
 
-		if (balloon->getSuccessCnt() == 10)
-		{
-			this->schedule(schedule_selector(BalloonLayer::playSucc));
-		}
-		else
+		if (m_timing > 0)
 		{
 			balloon->setCounter(0);
 			balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
@@ -102,8 +93,22 @@ void BalloonLayer::playSucc(float dt)
 		this->getChildByTag(TAG_BALLOON_STAT)->setVisible(false);
 		m_balloonLabel->setVisible(false);
 		m_succCntLabel->setVisible(false);
+		m_timeLabel->setVisible(false);
 		m_listener->setEnabled(false);
 		this->unschedule(schedule_selector(BalloonLayer::playSucc));
+	}
+}
+
+void BalloonLayer::timing(float dt)
+{
+	m_timing -= dt;
+	char str[10] = { 0 };
+	sprintf(str, "%2.0f", m_timing);
+	m_timeLabel->setString(str);
+	if (m_timing <= 0)
+	{
+		this->schedule(schedule_selector(BalloonLayer::playSucc));
+		this->unschedule(schedule_selector(BalloonLayer::timing));
 	}
 }
 
@@ -211,6 +216,12 @@ void BalloonLayer::initLabels()
 	this->addChild(m_succCntLabel, 1);
 
 
+	m_timeLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 倒计时 的label
+	m_timeLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 300));
+	m_timeLabel->setVisible(false);
+	this->addChild(m_timeLabel, 1);
+
+
 	m_bomb = Label::createWithTTF(config2, "Bomb !!", TextHAlignment::LEFT);//创建显示 爆炸 的label
 	m_bomb->setPosition(Point(m_winSize.width / 2, m_winSize.height / 2));
 	m_bomb->setVisible(false);
@@ -239,4 +250,10 @@ void BalloonLayer::balloonGameStart(Ref* pData)
 	m_balloonLabel->setVisible(true);
 	m_succCntLabel->setString(" 0");
 	m_succCntLabel->setVisible(true);
+	m_timing = 30.0f;
+	m_timeLabel->setString("30");
+	m_timeLabel->setVisible(true);
+
+	//需要添加 3   2   1，ready go！
+	this->schedule(schedule_selector(BalloonLayer::timing), 1.0f);
 }
