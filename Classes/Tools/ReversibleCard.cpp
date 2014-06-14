@@ -89,7 +89,7 @@ void ReversibleCard::openCard(float delay, bool isblink)
 	auto openAnimIn = (ActionInterval*)Sequence::create(DelayTime::create(delay + m_duration * .5),
 		Show::create(),
 		OrbitCamera::create(m_duration * .5, 1, 0, kInAngleZ, kInDeltaZ, 0, 0),
-		MoveBy::create(0.2f, Point(0, 50)),
+		MoveBy::create(0.2f, Point(0, 30)),
 		DelayTime::create(0.5f),
 		blink,
 		DelayTime::create(0.2f),

@@ -40,36 +40,39 @@ bool BalloonLayer::init()
 
 void BalloonLayer::bombedreset(float dt)
 {
-	auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
-	auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
-	balloon->setCounter(0);
-	balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
-	char tmp[10];
-	sprintf(tmp, "Status%d", balloon->getMaxCnt());
+	if (m_timing > 0)
+	{
+		auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
+		auto balloonStatus = (Balloon*)this->getChildByTag(TAG_BALLOON_STAT);
+		balloon->setCounter(0);
+		balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
+		char tmp[10];
+		sprintf(tmp, "Status%d", balloon->getMaxCnt());
+		balloon->setVisible(true);
+		balloonStatus->setVisible(true);
+		m_listener->setEnabled(true);
+		balloonStatus->getArmature()->getAnimation()->play(tmp);
+	}
 	m_bomb->setVisible(false);
-	balloon->setVisible(true);
-	balloonStatus->setVisible(true);
-	m_listener->setEnabled(true);
-	balloonStatus->getArmature()->getAnimation()->play(tmp);
 	this->unschedule(schedule_selector(BalloonLayer::bombedreset));
 }
 
 void BalloonLayer::unbombedreset(float dt)
 {
-	auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
-	if (!balloon->isbombed())
+	if (m_timing > 0)
 	{
-		auto balloonSucc = (Armature*)this->getChildByTag(TAG_BALLOON_SUCC);
-		balloonSucc->setVisible(true);
-		balloonSucc->getAnimation()->play("A1");
-		balloon->setSuccessCnt(balloon->getSuccessCnt() + 1);
-
-		char tmp[10];
-		sprintf(tmp, " %d", balloon->getSuccessCnt());
-		m_succCntLabel->setString(tmp);
-
-		if (m_timing > 0)
+		auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
+		if (!balloon->isbombed())
 		{
+			auto balloonSucc = (Armature*)this->getChildByTag(TAG_BALLOON_SUCC);
+			balloonSucc->setVisible(true);
+			balloonSucc->getAnimation()->play("A1");
+			balloon->setSuccessCnt(balloon->getSuccessCnt() + 1);
+
+			char tmp[10];
+			sprintf(tmp, " %d", balloon->getSuccessCnt());
+			m_succCntLabel->setString(tmp);
+
 			balloon->setCounter(0);
 			balloon->setMaxCnt(MsgTypeForObserver::getRand(1, 5));
 			sprintf(tmp, "Status%d", balloon->getMaxCnt());
@@ -86,15 +89,16 @@ void BalloonLayer::playSucc(float dt)
 	auto balloonSucc = (Armature*)this->getChildByTag(TAG_BALLOON_SUCC);
 	if (balloonSucc->getAnimation()->isComplete())
 	{
-		auto balloon = (Balloon*)this->getChildByTag(TAG_BALLOON);
-		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
 		m_balloonLayout->setVisible(false);
-		balloon->setVisible(false);
+		this->getChildByTag(TAG_BALLOON)->setVisible(false);
 		this->getChildByTag(TAG_BALLOON_STAT)->setVisible(false);
+		balloonSucc->setVisible(false);
 		m_balloonLabel->setVisible(false);
 		m_succCntLabel->setVisible(false);
 		m_timeLabel->setVisible(false);
 		m_listener->setEnabled(false);
+		m_bomb->setVisible(false);
+		NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStop, NULL);
 		this->unschedule(schedule_selector(BalloonLayer::playSucc));
 	}
 }
@@ -102,10 +106,13 @@ void BalloonLayer::playSucc(float dt)
 void BalloonLayer::timing(float dt)
 {
 	m_timing -= dt;
-	char str[10] = { 0 };
-	sprintf(str, "%2.0f", m_timing);
-	m_timeLabel->setString(str);
-	if (m_timing <= 0)
+	if (m_timing >= 0)
+	{
+		char str[10] = { 0 };
+		sprintf(str, "%2.0f", m_timing);
+		m_timeLabel->setString(str);
+	}
+	else
 	{
 		this->schedule(schedule_selector(BalloonLayer::playSucc));
 		this->unschedule(schedule_selector(BalloonLayer::timing));
@@ -138,8 +145,11 @@ bool BalloonLayer::TouchBegan(Touch* touch, Event* event)
 	else if (balloon->getCounter() == balloon->getMaxCnt())
 	{
 		// µÈ´ý1Ãë£¬ÖØÖÃÆøÇòMaxCnt,counter
-		balloon->setbombed(false);
-		this->schedule(schedule_selector(BalloonLayer::unbombedreset), 1.0);
+		if(m_timing > 0)
+		{
+			balloon->setbombed(false);
+			this->schedule(schedule_selector(BalloonLayer::unbombedreset), 1.0);
+		}
 		return false;
 	}
 	return true;

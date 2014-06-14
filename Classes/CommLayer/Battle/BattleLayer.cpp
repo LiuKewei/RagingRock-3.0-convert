@@ -23,12 +23,12 @@ bool BattleLayer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 		m_winSize = Director::getInstance()->getWinSize();
-		m_pileUpHeight = m_winSize.height / 4;
-		m_openingHeight = m_winSize.height / 3;
+		m_pileUpHeight = m_winSize.height / 4 + 45;
+		m_openingHeight = m_winSize.height / 3 + 5;
 		m_openCardDuration = 0.4f;
-
-		this->scheduleUpdate();
-		this->schedule(schedule_selector(BattleLayer::waitingForOpened));
+		m_battleBase = Layer::create();
+		m_battleBase->setVisible(false);
+		this->addChild(m_battleBase);
 
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->onTouchBegan = CC_CALLBACK_2(BattleLayer::TouchBegan, this);
@@ -41,7 +41,7 @@ bool BattleLayer::init()
 			MsgTypeForObserver::c_BattleStart,
 			NULL);
 
-		initBattleGame();
+		
 
 		bRet = true;
 	} while (0);
@@ -83,16 +83,34 @@ bool BattleLayer::TouchBegan(Touch* touch, Event* event)
 
 void BattleLayer::battleGameStart(Ref* pData)
 {
+	initBattleGame();
+	this->schedule(schedule_selector(BattleLayer::waitingForOpened));
+	m_battleBase->setVisible(true);
+}
 
+void BattleLayer::battleGameStop()
+{
+	this->unschedule(schedule_selector(BattleLayer::waitingForOpened));
+	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BattleStop, NULL);
+	m_battleBase->setVisible(false);
 }
 
 
 void BattleLayer::initBattleGame()
 {
+	m_battleLayout = GUIReader::getInstance()->widgetFromJsonFile("BattleUI_1.ExportJson");
+	m_battleBase->addChild(m_battleLayout);
+
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("BattleAnimation.ExportJson");
+	auto paw = Armature::create("BattleAnimation");
+	paw->setPosition(Point(472, 151));
+	paw->setTag(TAG_BATTLE_PAW);
+	m_battleBase->addChild(paw);
+
+
 	initBgHint();
 	increaseCards4Groups(4);
 	pushCards();
-	pileUpCards();
 	initLabels();
 }
 
@@ -102,13 +120,13 @@ void BattleLayer::initLabels()
 
 	m_devilHP = 5;
 	m_devilHPLabel = Label::createWithTTF(config2, "5", TextHAlignment::LEFT);//创建显示 魔王血量 的label
-	m_devilHPLabel->setPosition(Point(m_winSize.width / 2 - 200, m_winSize.height / 2 + 400));
-	this->addChild(m_devilHPLabel, 1);
+	m_devilHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 2 + 200));
+	m_battleBase->addChild(m_devilHPLabel, 1);
 
 	m_leadHP = 2;
 	m_leadHPLabel = Label::createWithTTF(config2, "2", TextHAlignment::LEFT);//创建显示 主角血量 的label
-	m_leadHPLabel->setPosition(Point(m_winSize.width / 2 + 200, m_winSize.height / 2 + 400));
-	this->addChild(m_leadHPLabel, 1);
+	m_leadHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 6));
+	m_battleBase->addChild(m_leadHPLabel, 1);
 }
 
 void BattleLayer::initBgHint()
@@ -119,15 +137,15 @@ void BattleLayer::initBgHint()
 	bgHint1->setVisible(false);
 	bgHint2->setVisible(false);
 	bgHint3->setVisible(false);
-	bgHint1->setPosition(Point(m_winSize.width / 2, 800));
-	bgHint2->setPosition(Point(m_winSize.width / 2, 800));
-	bgHint3->setPosition(Point(m_winSize.width / 2, 800));
+	bgHint1->setPosition(Point(m_winSize.width / 2, 8000));
+	bgHint2->setPosition(Point(m_winSize.width / 2, 8000));
+	bgHint3->setPosition(Point(m_winSize.width / 2, 8000));
 	bgHint1->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL);
 	bgHint2->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC);
 	bgHint3->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE);
-	this->addChild(bgHint1, Z_ORDER_MAX);
-	this->addChild(bgHint2, Z_ORDER_MAX);
-	this->addChild(bgHint3, Z_ORDER_MAX);
+	m_battleBase->addChild(bgHint1, Z_ORDER_MAX);
+	m_battleBase->addChild(bgHint2, Z_ORDER_MAX);
+	m_battleBase->addChild(bgHint3, Z_ORDER_MAX);
 }
 
 void BattleLayer::pushCards()
@@ -139,12 +157,13 @@ void BattleLayer::pushCards()
 		{
 			m_battleCardGroups->front()->setPosition(Point(m_winSize.width / 2 + 200 * column, m_openingHeight));
 			_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), m_battleCardGroups->front());
-			this->addChild(m_battleCardGroups->front(), Z_ORDER_MAX);
+			m_battleBase->addChild(m_battleCardGroups->front(), Z_ORDER_MAX);
 			m_currentCardGroup->push_back(m_battleCardGroups->front());
 			m_battleCardGroups->pop_front();
 			++column;
 		}
 	}
+	pileUpCards();
 }
 
 void BattleLayer::pileUpCards()
@@ -155,10 +174,10 @@ void BattleLayer::pileUpCards()
 	int zorder = Z_ORDER_MAX - 1;
 	while (column < 2 && iter != m_battleCardGroups->end())
 	{
-		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_pileUpHeight - 12 * row));
+		(*iter)->setPosition(Point(m_winSize.width / 2 + 200 * column, m_pileUpHeight - c_intervalCardHeight * row));
 		(*iter)->verticalTilt(0.001f, -CARD_TILT_ANGLE);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), *iter);
-		this->addChild(*iter, zorder);
+		m_battleBase->addChild(*iter, zorder);
 		++iter;
 		++column;
 		if (column == 2)
@@ -203,13 +222,13 @@ void BattleLayer::pileUpOneGroupCardsToTail()
 		(*iter)->verticalTilt(0.2f, -CARD_TILT_ANGLE, CallFuncN::create(CC_CALLBACK_0(BattleLayer::showCard, this, (*iter))));
 		(*iter)->setLocalZOrder(zorder);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), *iter);
-		this->addChild(*iter);
+		m_battleBase->addChild(*iter);
 		++iter;
 		++column;
 	}
 }
 
-void BattleLayer::update(float dt)
+void BattleLayer::updateBgHint()
 {
 	if (m_currentCardGroup->size() == 3)
 	{
@@ -227,7 +246,6 @@ void BattleLayer::update(float dt)
 		m_hintVec.push_back(-1);
 		m_hintInBackground = m_hintVec.size() == 4 ? m_hintVec.at(MsgTypeForObserver::getRand(0, m_hintVec.size() - 1)) : -1;
 		this->showBgHint();
-		this->unscheduleUpdate();
 	}
 }
 
@@ -238,17 +256,18 @@ void BattleLayer::waitingForOpened(float dt)
 		battle();
 		for (auto& ele : *m_currentCardGroup)
 		{
-			this->removeChild(ele);
+			m_battleBase->removeChild(ele);
 		}
 		m_currentCardGroup->clear();
 		if (m_battleCardGroups->size() >= 3)
 		{
 			int column = -1;
 			ReversibleCard* card = nullptr;
-			while (column < 2 && m_currentCardGroup->size() < 3)
+			while (column < 2 && m_currentCardGroup->size() < 3) 
 			{
+				//当前牌翻完以后，把扑在底下的第一排翻转回来之后拿上来
 				card = m_battleCardGroups->front();
-				card->verticalTilt(0.2f, CARD_TILT_ANGLE, MoveBy::create(0.2f, Point(0, 50)), MoveBy::create(0.2f, Point(0, m_openingHeight - card->getPositionY() - 50)));
+				card->verticalTilt(0.2f, CARD_TILT_ANGLE, MoveBy::create(0.2f, Point(0, 40)), MoveBy::create(0.2f, Point(0, m_openingHeight - card->getPositionY() - 40)));
 				card->setLocalZOrder(card->getLocalZOrder() + 1);
 				m_currentCardGroup->push_back(card);
 				m_battleCardGroups->pop_front();
@@ -256,10 +275,12 @@ void BattleLayer::waitingForOpened(float dt)
 			}
 			for (auto& ele : *m_battleCardGroups)
 			{
+				//扑在底下的第二排第三排依次上移
 				ele->setLocalZOrder(ele->getLocalZOrder() + 1);
 				ele->runAction(MoveBy::create(0.2f, Point(0, c_intervalCardHeight)));
 			}
 		}
+		//增加一排，放置牌堆最底下
 		increaseCards4Groups(1);
 		pileUpOneGroupCardsToTail();
 	}
@@ -278,7 +299,7 @@ void BattleLayer::showCard(Node* sender)
 void BattleLayer::removeTopGroup(Node* sender)
 {
 	auto card = (ReversibleCard*)sender;
-	this->removeChild(card);
+	m_battleBase->removeChild(card);
 }
 
 void BattleLayer::showBgHint()
@@ -286,25 +307,25 @@ void BattleLayer::showBgHint()
 	switch (m_hintInBackground)
 	{
 	case TYPE_BATTLE_LEAD_NORMAL:
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(true);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(true);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
 	case TYPE_BATTLE_LEAD_MAGIC:
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(true);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(true);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
 	case TYPE_BATTLE_LEAD_INVINCIBLE:
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(true);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(true);
 		break;
 	default:
 		//所有背景提示全部关闭
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		this->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
+		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
 	}
 }
@@ -333,7 +354,12 @@ void BattleLayer::battle()
 		break;
 	}
 	m_targetCard = nullptr;
-	this->scheduleUpdate();
+	if (m_leadHP <= 0 || m_devilHP <= 0)
+	{
+		battleGameStop();
+		return;
+	}
+	updateBgHint();
 }
 void BattleLayer::attack(int cnt)
 {
@@ -345,6 +371,11 @@ void BattleLayer::attack(int cnt)
 
 void BattleLayer::injuredOrCure(int cnt)
 {
+	if (cnt < 0)
+	{
+		auto paw = (Armature*)m_battleBase->getChildByTag(TAG_BATTLE_PAW);
+		paw->getAnimation()->play("Animation1");
+	}
 	m_leadHP = m_leadHP + cnt;
 	char tmp[5];
 	sprintf(tmp, "%d", m_leadHP);

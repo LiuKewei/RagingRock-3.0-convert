@@ -340,7 +340,7 @@ void SnagForestLayer::initSlots()
 	m_littleGameSlot->setScale(0.4f);
 
 	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
-	gameslotY=500.0f;
+	gameslotY=960.0f;
 
 	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
 	for (int idx = 1; idx < 5; ++idx)
@@ -530,8 +530,15 @@ void SnagForestLayer::handleDevil(Ref* pData)
 void SnagForestLayer::handleDevilStop(Ref* pData)
 {
 	removeDevil();
-	recover();
+	//recover();
 	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_DevilFightingStop);
+	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BattleStart, NULL);
+}
+
+void SnagForestLayer::handleBattleStop(Ref* pData)
+{
+	recover();
+	NotificationCenter::getInstance()->removeObserver(this, MsgTypeForObserver::c_BattleStop);
 }
 
 void SnagForestLayer::interactionSubscribe()
@@ -553,6 +560,12 @@ void SnagForestLayer::interactionSubscribe()
 		this,
 		callfuncO_selector(SnagForestLayer::handleBalloonStop),
 		MsgTypeForObserver::c_BalloonStop,
+		NULL);
+
+	NotificationCenter::getInstance()->addObserver(
+		this,
+		callfuncO_selector(SnagForestLayer::handleBattleStop),
+		MsgTypeForObserver::c_BattleStop,
 		NULL);
 }
 

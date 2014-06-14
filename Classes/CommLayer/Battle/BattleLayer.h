@@ -18,7 +18,7 @@ using namespace ui;
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
-#define CARD_TILT_ANGLE (75)
+#define CARD_TILT_ANGLE (85)
 
 const int c_intervalCardHeight = 12;
 
@@ -38,9 +38,7 @@ class BattleLayer : public cocos2d::Layer
 	enum
 	{
 		TAG_BATTLE = 37250,
-		TAG_BATTLE_LEFT,
-		TAG_BATTLE_MID,
-		TAG_BATTLE_RIGHT,
+		TAG_BATTLE_PAW,
 
 		TAG_BATTLE_CURRENT,
 	};
@@ -54,7 +52,7 @@ public:
 	// Touches Callback function
 	virtual bool TouchBegan(Touch* touch, Event* event);
 
-	void update(float dt);
+	//void update(float dt);
 	void waitingForOpened(float dt);
 private:
 	void initBattleGame();
@@ -62,6 +60,7 @@ private:
 	void initBgHint();
 
 	void battleGameStart(Ref* pData);
+	void battleGameStop();
 
 	void pushCards();
 	void increaseCards4Groups(int groupCnt);
@@ -74,10 +73,13 @@ private:
 	void attack(int cnt);
 	void injuredOrCure(int cnt);//负数受伤，正数治疗
 
+	void updateBgHint();
 	void showBgHint();
 
 private:
 	Size m_winSize;
+	Layer* m_battleBase;
+	Widget* m_battleLayout;
 
 	std::list<ReversibleCard*>* m_battleCardGroups;
 	std::vector<ReversibleCard*>* m_currentCardGroup;

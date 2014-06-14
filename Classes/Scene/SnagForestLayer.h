@@ -77,6 +77,7 @@ private:
 	void triggerDevil();
 
 	void handleBalloonStop(Ref* pData);
+	void handleBattleStop(Ref* pData);
 	
 	bool removeDevil();
 

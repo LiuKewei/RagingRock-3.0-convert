@@ -97,7 +97,7 @@ void DevilLayer::TouchMoved(Touch* touch, Event* event)
 	Point start = touch->getStartLocation();
 
 	Point afterStart = touch->getLocation();
-	if (abs(afterStart.x - m_fightingMoved) > 10.0f)
+	if (abs(afterStart.x - m_fightingMoved) > 7.0f)
 	{
 		m_fightingVal = 0.1f;
 	}
@@ -190,7 +190,7 @@ void DevilLayer::destoryDevilLayer(Ref* pData)
 void DevilLayer::updateFightingBar(float dt)
 {
 	float proPercet = m_progress->getPercentage();
-	if (proPercet >= 100.0f)
+	if (proPercet >= 100.0f || proPercet <= 0.0f)
 	{
 		this->removeAllChildren();
 		m_progress = NULL;

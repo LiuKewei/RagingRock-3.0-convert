@@ -33,6 +33,7 @@ public:
 	const static char* c_BalloonStop;
 
 	const static char* c_BattleStart;
+	const static char* c_BattleStop;
 
 	static int getRand(int start,int end);
 };
