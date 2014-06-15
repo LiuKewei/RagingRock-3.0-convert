@@ -340,7 +340,7 @@ void SnagForestLayer::initSlots()
 	m_littleGameSlot->setScale(0.4f);
 
 	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
-	gameslotY=960.0f;
+	//gameslotY=960.0f;
 
 	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
 	for (int idx = 1; idx < 5; ++idx)

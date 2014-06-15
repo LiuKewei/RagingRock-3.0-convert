@@ -41,7 +41,7 @@ bool BattleLayer::init()
 			MsgTypeForObserver::c_BattleStart,
 			NULL);
 
-		
+		initBattleGame();
 
 		bRet = true;
 	} while (0);
@@ -83,7 +83,8 @@ bool BattleLayer::TouchBegan(Touch* touch, Event* event)
 
 void BattleLayer::battleGameStart(Ref* pData)
 {
-	initBattleGame();
+	increaseCards4Groups(4);
+	pushCards();
 	this->schedule(schedule_selector(BattleLayer::waitingForOpened));
 	m_battleBase->setVisible(true);
 }
@@ -107,10 +108,7 @@ void BattleLayer::initBattleGame()
 	paw->setTag(TAG_BATTLE_PAW);
 	m_battleBase->addChild(paw);
 
-
 	initBgHint();
-	increaseCards4Groups(4);
-	pushCards();
 	initLabels();
 }
 
@@ -118,13 +116,13 @@ void BattleLayer::initLabels()
 {
 	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
 
-	m_devilHP = 5;
-	m_devilHPLabel = Label::createWithTTF(config2, "5", TextHAlignment::LEFT);//创建显示 魔王血量 的label
+	m_devilHP = 10;
+	m_devilHPLabel = Label::createWithTTF(config2, "10", TextHAlignment::LEFT);//创建显示 魔王血量 的label
 	m_devilHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 2 + 200));
 	m_battleBase->addChild(m_devilHPLabel, 1);
 
-	m_leadHP = 2;
-	m_leadHPLabel = Label::createWithTTF(config2, "2", TextHAlignment::LEFT);//创建显示 主角血量 的label
+	m_leadHP = 3;
+	m_leadHPLabel = Label::createWithTTF(config2, "3", TextHAlignment::LEFT);//创建显示 主角血量 的label
 	m_leadHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 6));
 	m_battleBase->addChild(m_leadHPLabel, 1);
 }
@@ -201,7 +199,7 @@ void BattleLayer::increaseCards4Groups(int groupCnt)
 		{
 			cardType = MsgTypeForObserver::getRand(TYPE_BATTLE_LEAD_NORMAL, TYPE_BATTLE_LEAD_DEVIL);
 			sprintf(cardname, "battle%d.png", cardType);
-			card = ReversibleCard::create(cardname, "battle_card_bg.png", m_openCardDuration);
+			card = ReversibleCard::create(cardname, "battle4.png", m_openCardDuration);
 			card->setCardType(cardType);
 			m_battleCardGroups->push_back(card);
 			++countOfCards;
