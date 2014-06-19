@@ -56,12 +56,13 @@ public:
 
 	//void update(float dt);
 	void waitingForOpened(float dt);
-	//void updateCombo(float dt);
+	void updateCombo(float dt);
 private:
 	void initBattleGame();
 	void initLabels();
 	void initBgHint();
 	void initCombo();
+	void initParticleFire();
 
 	void battleGameStart(Ref* pData);
 	void battleGameStop();
@@ -77,6 +78,8 @@ private:
 	void attack(int cnt);
 	void injuredOrCure(int cnt);//负数受伤，正数治疗
 
+	void burnCombo();
+
 	void updateBgHint();
 	void showBgHint();
 
@@ -91,6 +94,8 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 
 	ReversibleCard* m_targetCard;
+
+	ParticleSystem* m_emitter;
 	int m_comboValue;
 	bool m_comboflag;  // true :: 燃烧, false :: 翻中 TYPE_BATTLE_LEAD_NORMAL, 非燃烧
 

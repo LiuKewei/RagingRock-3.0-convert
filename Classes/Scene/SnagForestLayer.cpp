@@ -31,6 +31,7 @@ SnagForestLayer::~SnagForestLayer()
 	_eventDispatcher->removeEventListener(m_listener);
 	m_cellMap.clear();
 	CC_SAFE_DELETE(m_slotPos);
+	m_emitter->release();
 }
 
 void SnagForestLayer::setPhyWorld(PhysicsWorld* world)
@@ -102,16 +103,20 @@ void SnagForestLayer::update(float dt)
 
 void SnagForestLayer::updateProgresser(float dt)
 {
-	float loadingVar = m_resLoadingProgresser->getPercentage();
+	float loadingVar = m_resLoadingProgresser->getPercentage(); 
+	char str[10] = { 0 };
+	sprintf(str, "%2.0f %", loadingVar);
+	auto label = (Label*)this->getChildByTag(TAG_SNAGFOREST_LOADING);
+	label->setString(str);
 	if (m_resLoadingProgresser != NULL && loadingVar < 100.0f)
 	{
-		m_resLoadingProgresser->setPercentage(loadingVar + 1.0f);
+		m_resLoadingProgresser->setPercentage(loadingVar + 0.5f);
 	}
 	else if (loadingVar >= 100.0f)
 	{
 		this->unschedule(schedule_selector(SnagForestLayer::updateProgresser));
 		//m_resLoadingProgresser->setPercentage(100.0f);
-
+		this->removeChildByTag(TAG_SNAGFOREST_LOADING);
 		this->removeChild(m_resLoadingProgresser);
 		this->removeChild(m_loadBg);
 		if (m_listener != NULL && !m_listener->isEnabled())
@@ -119,6 +124,7 @@ void SnagForestLayer::updateProgresser(float dt)
 			m_listener->setEnabled(true);
 		}
 	}
+
 }
 
 void SnagForestLayer::ballRising(float dt)
@@ -261,12 +267,18 @@ void SnagForestLayer::initProgresser()
 	m_loadBg->setPosition(p);
 	this->addChild(m_loadBg, Z_ORDER_MAX + 1);
 
-	m_resLoadingProgresser = ProgressTimer::create(Sprite::create("silder_progressBar.png"));
+	TTFConfig config2("Marker Felt.ttf", 25, GlyphCollection::DYNAMIC, nullptr, true);
+	auto loadingLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 倒计时 的label
+	loadingLabel->setPosition(p+Point(50,0));
+	loadingLabel->setTag(TAG_SNAGFOREST_LOADING);
+	this->addChild(loadingLabel, Z_ORDER_MAX + 2);
+
+	m_resLoadingProgresser = ProgressTimer::create(Sprite::create("silder_progressBar1.png"));
 	CC_ASSERT(m_resLoadingProgresser != NULL);
 	m_resLoadingProgresser->setType(ProgressTimer::Type::BAR);
 	m_resLoadingProgresser->setPosition(p);  // set progress bar be same with m_loadBg
-	m_resLoadingProgresser->setMidpoint(Point(0, 0));
-	m_resLoadingProgresser->setBarChangeRate(Point(1, 0));
+	m_resLoadingProgresser->setMidpoint(Point(1, 0));
+	m_resLoadingProgresser->setBarChangeRate(Point(0, 1));
 	m_resLoadingProgresser->setPercentage(0);
 	this->addChild(m_resLoadingProgresser, Z_ORDER_MAX + 1);
 	this->schedule(schedule_selector(SnagForestLayer::updateProgresser));

@@ -2,6 +2,7 @@
 
 BattleLayer::BattleLayer()
 	: m_targetCard(nullptr)
+	, m_emitter(nullptr)
 	, m_isOpening(false)
 	, m_pileUpHeight(0.0f)
 	, m_openingHeight(0.0f)
@@ -17,6 +18,7 @@ BattleLayer::~BattleLayer()
 	CC_SAFE_DELETE(m_battleCardGroups);
 	CC_SAFE_DELETE(m_currentCardGroup);
 	m_listener->release();
+	m_emitter->release();
 }
 bool BattleLayer::init()
 {
@@ -96,6 +98,8 @@ void BattleLayer::battleGameStop()
 	this->unschedule(schedule_selector(BattleLayer::waitingForOpened));
 	NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BattleStop, NULL);
 	m_battleBase->setVisible(false);
+
+	m_emitter->setVisible(false);
 }
 
 
@@ -113,6 +117,29 @@ void BattleLayer::initBattleGame()
 	initBgHint();
 	initLabels();
 	initCombo();
+	initParticleFire();
+}
+
+// Particle
+void BattleLayer::initParticleFire()
+{
+	m_emitter = ParticleFire::create();
+	m_emitter->retain();
+	m_emitter->setPosition(Point(m_winSize.width / 4, m_winSize.height / 6));
+	m_battleBase->addChild(m_emitter, Z_ORDER_MAX);
+	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("fire.png"));
+	m_emitter->setEmissionRate(800);
+	m_emitter->setSpeed(120);
+	m_emitter->setSpeedVar(0);
+	m_emitter->setContentSize(m_winSize);
+	m_emitter->setLifeVar(0.3f);
+	m_emitter->setLife(0.2f);
+	m_emitter->setDuration(-1);
+	m_emitter->setStartSize(20.0f);
+	m_emitter->setStartSizeVar(50.0f);
+	m_emitter->setEndSize(ParticleSystem::START_SIZE_EQUAL_TO_END_SIZE);
+	m_emitter->setBlendAdditive(true);
+	m_emitter->setVisible(false);
 }
 
 void BattleLayer::initCombo()
@@ -126,6 +153,8 @@ void BattleLayer::initCombo()
 	combo->setBarChangeRate(Point(1, 0));
 	combo->setPercentage(m_comboValue/c_comboMax*100);
 	m_battleBase->addChild(combo, Z_ORDER_MAX);
+
+	this->schedule(schedule_selector(BattleLayer::updateCombo));
 }
 
 void BattleLayer::initLabels()
@@ -244,11 +273,21 @@ void BattleLayer::pileUpOneGroupCardsToTail()
 	}
 }
 
-//void BattleLayer::updateCombo(float dt)
-//{
-//	
-//
-//}
+void BattleLayer::updateCombo(float dt)
+{
+	auto combo = (ProgressTimer*)m_battleBase->getChildByTag(TAG_BATTLE_COMBO);
+	float combovalue = combo->getPercentage();
+	if (combovalue - ((float)m_comboValue / (float)c_comboMax*100.0f ) < 0)
+	{
+		combo->setPercentage(combo->getPercentage() + 5.0f);
+	}
+	else if (combovalue - ((float)m_comboValue / (float)c_comboMax*100.0f) > 0)
+	{
+		combo->setPercentage(combo->getPercentage() - 5.0f);
+	}
+
+	
+}
 
 void BattleLayer::updateBgHint()
 {
@@ -358,29 +397,22 @@ void BattleLayer::battle()
 	switch (m_targetCard->getCardType())
 	{
 	case TYPE_BATTLE_LEAD_NORMAL:
-		this->attack(m_comboValue);
-		if (m_comboflag && m_comboValue == 1)
+		if (m_comboflag && m_comboValue == 0)
 		{
+			this->attack(1);
 			m_comboValue = c_comboMax;
-			m_comboflag = false;
 			//È¼ÉÕÐ§¹ûÏûÊ§
-
+			m_emitter->setVisible(false);
 		}
 		else
 		{
-			m_comboValue = m_comboValue == c_comboMax ? c_comboMax : m_comboValue+1;
+			this->attack(m_comboValue);
+			m_comboValue = m_comboValue == c_comboMax ? c_comboMax : m_comboValue + 1;
 		}
+		m_comboflag = false;
 		break;
 	case TYPE_BATTLE_LEAD_MAGIC:
-		if (m_comboflag)
-		{
-			//È¼ÉÕ
-		}
-		else
-		{
-			m_comboflag = true;
-		}
-		m_comboValue = 1;
+		this->burnCombo();
 		this->attack(2);
 		break;
 		//case TYPE_BATTLE_LEAD_INVINCIBLE:
@@ -390,28 +422,23 @@ void BattleLayer::battle()
 		//	this->injuredOrCure(1);
 		//	break;
 	case TYPE_BATTLE_LEAD_DEVIL:
-		if (m_comboflag)
-		{
-			//È¼ÉÕ
-		}
-		else
-		{
-			m_comboflag = true;
-		}
-		m_comboValue = 1;
+		this->burnCombo();
 		this->injuredOrCure(-1);
 		break;
 	default:
 		break;
 	}
 
-	auto combo = (ProgressTimer*)m_battleBase->getChildByTag(TAG_BATTLE_COMBO);
-	combo->setPercentage(m_comboValue/c_comboMax*100);
+	//auto combo = (ProgressTimer*)m_battleBase->getChildByTag(TAG_BATTLE_COMBO);
+	//combo->setPercentage( (float)m_comboValue / (float)c_comboMax*100.0f );
+
 
 	m_targetCard = nullptr;
 	if (m_leadHP <= 0 || m_devilHP <= 0)
 	{
 		battleGameStop();
+
+		this->unschedule(schedule_selector(BattleLayer::updateCombo));
 		return;
 	}
 	updateBgHint();
@@ -435,4 +462,19 @@ void BattleLayer::injuredOrCure(int cnt)
 	char tmp[5];
 	sprintf(tmp, "%d", m_leadHP);
 	m_leadHPLabel->setString(tmp);
+}
+
+void BattleLayer::burnCombo()
+{
+	if (m_comboflag)
+	{
+		//burn
+		m_emitter->setVisible(true);
+		m_comboValue = 0;
+	}
+	else
+	{
+		m_comboflag = true;
+		m_comboValue = 1;
+	}
 }

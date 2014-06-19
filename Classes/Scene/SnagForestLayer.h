@@ -31,6 +31,12 @@ const unsigned int c_ballHeightStop = 2;
 
 class SnagForestLayer : public cocos2d::Layer
 {
+	enum
+	{
+		TAG_SNAGFOREST = 39250,
+		TAG_SNAGFOREST_LOADING,
+	};
+
 public:
 	SnagForestLayer();
 	virtual ~SnagForestLayer();
