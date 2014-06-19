@@ -6,6 +6,8 @@ BattleLayer::BattleLayer()
 	, m_pileUpHeight(0.0f)
 	, m_openingHeight(0.0f)
 	, m_hintInBackground(-1)
+	, m_comboValue(1)
+	, m_comboflag(false)
 {
 	m_battleCardGroups = new std::list<ReversibleCard*>();
 	m_currentCardGroup = new std::vector<ReversibleCard*>();
@@ -110,19 +112,33 @@ void BattleLayer::initBattleGame()
 
 	initBgHint();
 	initLabels();
+	initCombo();
+}
+
+void BattleLayer::initCombo()
+{
+	auto combo = ProgressTimer::create(Sprite::create("combo.png"));
+	CC_ASSERT(combo != NULL);
+	combo->setTag(TAG_BATTLE_COMBO);
+	combo->setType(ProgressTimer::Type::BAR);
+	combo->setPosition(Point(m_winSize.width / 4, m_winSize.height / 6));
+	combo->setMidpoint(Point(0, 0));
+	combo->setBarChangeRate(Point(1, 0));
+	combo->setPercentage(m_comboValue/c_comboMax*100);
+	m_battleBase->addChild(combo, Z_ORDER_MAX);
 }
 
 void BattleLayer::initLabels()
 {
 	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
 
-	m_devilHP = 10;
-	m_devilHPLabel = Label::createWithTTF(config2, "10", TextHAlignment::LEFT);//创建显示 魔王血量 的label
+	m_devilHP = 1000;
+	m_devilHPLabel = Label::createWithTTF(config2, "1000", TextHAlignment::LEFT);//创建显示 魔王血量 的label
 	m_devilHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 2 + 200));
 	m_battleBase->addChild(m_devilHPLabel, 1);
 
-	m_leadHP = 3;
-	m_leadHPLabel = Label::createWithTTF(config2, "3", TextHAlignment::LEFT);//创建显示 主角血量 的label
+	m_leadHP = 300;
+	m_leadHPLabel = Label::createWithTTF(config2, "300", TextHAlignment::LEFT);//创建显示 主角血量 的label
 	m_leadHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 6));
 	m_battleBase->addChild(m_leadHPLabel, 1);
 }
@@ -131,19 +147,19 @@ void BattleLayer::initBgHint()
 {
 	auto bgHint1 = Sprite::create("Hint1.png");
 	auto bgHint2 = Sprite::create("Hint2.png");
-	auto bgHint3 = Sprite::create("Hint3.png");
+	//auto bgHint3 = Sprite::create("Hint3.png");
 	bgHint1->setVisible(false);
 	bgHint2->setVisible(false);
-	bgHint3->setVisible(false);
+	//bgHint3->setVisible(false);
 	bgHint1->setPosition(Point(m_winSize.width / 2, 8000));
 	bgHint2->setPosition(Point(m_winSize.width / 2, 8000));
-	bgHint3->setPosition(Point(m_winSize.width / 2, 8000));
+	//bgHint3->setPosition(Point(m_winSize.width / 2, 8000));
 	bgHint1->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL);
 	bgHint2->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC);
-	bgHint3->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE);
+	//bgHint3->setTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE);
 	m_battleBase->addChild(bgHint1, Z_ORDER_MAX);
 	m_battleBase->addChild(bgHint2, Z_ORDER_MAX);
-	m_battleBase->addChild(bgHint3, Z_ORDER_MAX);
+	//m_battleBase->addChild(bgHint3, Z_ORDER_MAX);
 }
 
 void BattleLayer::pushCards()
@@ -192,6 +208,8 @@ void BattleLayer::increaseCards4Groups(int groupCnt)
 	if (m_battleCardGroups != nullptr)
 	{
 		char cardname[12];
+		char devilcard[12];
+		sprintf(devilcard, "battle%d.png", TYPE_BATTLE_LEAD_DEVIL);
 		ReversibleCard* card = nullptr;
 		unsigned int cardType = 0;
 		int countOfCards = 0;
@@ -199,7 +217,7 @@ void BattleLayer::increaseCards4Groups(int groupCnt)
 		{
 			cardType = MsgTypeForObserver::getRand(TYPE_BATTLE_LEAD_NORMAL, TYPE_BATTLE_LEAD_DEVIL);
 			sprintf(cardname, "battle%d.png", cardType);
-			card = ReversibleCard::create(cardname, "battle4.png", m_openCardDuration);
+			card = ReversibleCard::create(cardname, devilcard, m_openCardDuration);
 			card->setCardType(cardType);
 			m_battleCardGroups->push_back(card);
 			++countOfCards;
@@ -225,6 +243,12 @@ void BattleLayer::pileUpOneGroupCardsToTail()
 		++column;
 	}
 }
+
+//void BattleLayer::updateCombo(float dt)
+//{
+//	
+//
+//}
 
 void BattleLayer::updateBgHint()
 {
@@ -307,23 +331,23 @@ void BattleLayer::showBgHint()
 	case TYPE_BATTLE_LEAD_NORMAL:
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(true);
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		//m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
 	case TYPE_BATTLE_LEAD_MAGIC:
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(true);
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		//m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
-	case TYPE_BATTLE_LEAD_INVINCIBLE:
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(true);
-		break;
+		//case TYPE_BATTLE_LEAD_INVINCIBLE:
+		//	m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
+		//	m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
+		//	m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(true);
+		//	break;
 	default:
 		//所有背景提示全部关闭
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_NORMAL)->setVisible(false);
 		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_MAGIC)->setVisible(false);
-		m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
+		//m_battleBase->getChildByTag(TAG_BATTLE - TYPE_BATTLE_LEAD_INVINCIBLE)->setVisible(false);
 		break;
 	}
 }
@@ -334,23 +358,56 @@ void BattleLayer::battle()
 	switch (m_targetCard->getCardType())
 	{
 	case TYPE_BATTLE_LEAD_NORMAL:
-		this->attack(1);
+		this->attack(m_comboValue);
+		if (m_comboflag && m_comboValue == 1)
+		{
+			m_comboValue = c_comboMax;
+			m_comboflag = false;
+			//燃烧效果消失
+
+		}
+		else
+		{
+			m_comboValue = m_comboValue == c_comboMax ? c_comboMax : m_comboValue+1;
+		}
 		break;
 	case TYPE_BATTLE_LEAD_MAGIC:
+		if (m_comboflag)
+		{
+			//燃烧
+		}
+		else
+		{
+			m_comboflag = true;
+		}
+		m_comboValue = 1;
 		this->attack(2);
 		break;
-	case TYPE_BATTLE_LEAD_INVINCIBLE:
-		this->attack(5);
-		break;
-	case TYPE_BATTLE_LEAD_PET:
-		this->injuredOrCure(1);
-		break;
+		//case TYPE_BATTLE_LEAD_INVINCIBLE:
+		//	this->attack(5);
+		//	break;
+		//case TYPE_BATTLE_LEAD_PET:
+		//	this->injuredOrCure(1);
+		//	break;
 	case TYPE_BATTLE_LEAD_DEVIL:
+		if (m_comboflag)
+		{
+			//燃烧
+		}
+		else
+		{
+			m_comboflag = true;
+		}
+		m_comboValue = 1;
 		this->injuredOrCure(-1);
 		break;
 	default:
 		break;
 	}
+
+	auto combo = (ProgressTimer*)m_battleBase->getChildByTag(TAG_BATTLE_COMBO);
+	combo->setPercentage(m_comboValue/c_comboMax*100);
+
 	m_targetCard = nullptr;
 	if (m_leadHP <= 0 || m_devilHP <= 0)
 	{

@@ -20,6 +20,7 @@ using namespace ui;
 
 #define CARD_TILT_ANGLE (85)
 
+const int c_comboMax = 5;
 const int c_intervalCardHeight = 12;
 
 class BattleLayer : public cocos2d::Layer
@@ -28,8 +29,8 @@ class BattleLayer : public cocos2d::Layer
 	{
 		TYPE_BATTLE_LEAD_NORMAL,
 		TYPE_BATTLE_LEAD_MAGIC,
-		TYPE_BATTLE_LEAD_INVINCIBLE,
-		TYPE_BATTLE_LEAD_PET,
+		//TYPE_BATTLE_LEAD_INVINCIBLE,
+		//TYPE_BATTLE_LEAD_PET,
 		TYPE_BATTLE_LEAD_DEVIL,
 	};
 
@@ -39,6 +40,7 @@ class BattleLayer : public cocos2d::Layer
 	{
 		TAG_BATTLE = 37250,
 		TAG_BATTLE_PAW,
+		TAG_BATTLE_COMBO,
 
 		TAG_BATTLE_CURRENT,
 	};
@@ -54,10 +56,12 @@ public:
 
 	//void update(float dt);
 	void waitingForOpened(float dt);
+	//void updateCombo(float dt);
 private:
 	void initBattleGame();
 	void initLabels();
 	void initBgHint();
+	void initCombo();
 
 	void battleGameStart(Ref* pData);
 	void battleGameStop();
@@ -87,6 +91,8 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 
 	ReversibleCard* m_targetCard;
+	int m_comboValue;
+	bool m_comboflag;  // true :: »º…’, false :: ∑≠÷– TYPE_BATTLE_LEAD_NORMAL, ∑«»º…’
 
 	Label* m_devilHPLabel;
 	int m_devilHP;
