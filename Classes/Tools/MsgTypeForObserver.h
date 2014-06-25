@@ -22,18 +22,23 @@ enum
 class MsgTypeForObserver
 {
 public:
+	//
 	const static char* c_DevilPosUpdate;
 	const static char* c_DevilFightingStart;
 	const static char* c_DevilFightingStop;
 	const static char* c_DevilPosPush;
 
-
-
+	//
 	const static char* c_BalloonStart;
 	const static char* c_BalloonStop;
 
+	//
 	const static char* c_BattleStart;
 	const static char* c_BattleStop;
+
+	//
+	const static char* c_BrickStart;
+	const static char* c_BrickStop;
 
 	static int getRand(int start,int end);
 };

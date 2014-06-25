@@ -125,7 +125,7 @@ void BattleLayer::initParticleFire()
 {
 	m_emitter = ParticleFire::create();
 	m_emitter->retain();
-	m_emitter->setPosition(Point(m_winSize.width / 4, m_winSize.height / 6));
+	m_emitter->setPosition(Point(m_winSize.width / 6, m_winSize.height / 6));
 	m_battleBase->addChild(m_emitter, Z_ORDER_MAX);
 	m_emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("fire.png"));
 	m_emitter->setEmissionRate(800);

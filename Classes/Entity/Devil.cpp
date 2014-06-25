@@ -10,6 +10,7 @@ Devil::Devil()
 
 Devil::~Devil()
 {
+	m_devilPosVec->clear();
 	CC_SAFE_DELETE(m_devilPosVec);
 }
 

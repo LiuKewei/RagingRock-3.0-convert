@@ -9,11 +9,13 @@
 #include "DevilLayer.h"
 #include "BalloonLayer.h"
 #include "BattleLayer.h"
+#include "BrickLayer.h"
 #include "ExitLayer.h"
 #else
 #include "CommLayer/Devil/DevilLayer.h"
 #include "CommLayer/Balloon/BalloonLayer.h"
 #include "CommLayer/Battle/BattleLayer.h"
+#include "CommLayer/Brick/BrickLayer.h"
 #include "CommLayer/ExitLayer.h"
 #endif
 
@@ -48,6 +50,7 @@ public:
 	CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);
 	CC_SYNTHESIZE(BalloonLayer*, _balloonLayer, BalloonLayer);
 	CC_SYNTHESIZE(BattleLayer*, _battleLayer, BattleLayer);
+	CC_SYNTHESIZE(BrickLayer*, _brickLayer, BrickLayer);
 	CC_SYNTHESIZE(ExitLayer*, _exitLayer, ExitLayer);
 	
 };

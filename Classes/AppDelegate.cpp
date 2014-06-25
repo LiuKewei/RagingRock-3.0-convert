@@ -13,6 +13,9 @@ const char* MsgTypeForObserver::c_BalloonStop = "6";
 const char* MsgTypeForObserver::c_BattleStart = "7";
 const char* MsgTypeForObserver::c_BattleStop = "8";
 
+const char* MsgTypeForObserver::c_BrickStart = "9";
+const char* MsgTypeForObserver::c_BrickStop = "10";
+
 AppDelegate::AppDelegate() {
 
 }

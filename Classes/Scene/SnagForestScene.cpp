@@ -35,6 +35,8 @@ bool SnagForestScene::initWithPhysics()
 		_battleLayer = BattleLayer::create();
 		this->addChild(_battleLayer, 3);
 
+		_brickLayer = BrickLayer::create();
+		this->addChild(_brickLayer, 3);
 
 
 
