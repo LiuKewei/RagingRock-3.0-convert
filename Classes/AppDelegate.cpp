@@ -16,6 +16,7 @@ const char* MsgTypeForObserver::c_BattleStop = "8";
 const char* MsgTypeForObserver::c_BrickStart = "9";
 const char* MsgTypeForObserver::c_BrickStop = "10";
 
+
 AppDelegate::AppDelegate() {
 
 }
@@ -90,6 +91,7 @@ void AppDelegate::addResPath() {
 	std::vector<std::string> searchPaths =FileUtils::getInstance()->getSearchPaths();
 	searchPaths.insert(searchPaths.begin(), "./Balloon");
 	searchPaths.insert(searchPaths.begin(), "./Battle");
+	searchPaths.insert(searchPaths.begin(), "./Brick"); 
 	searchPaths.insert(searchPaths.begin(), "./fonts");
 	FileUtils::getInstance()->setSearchPaths(searchPaths);
 }

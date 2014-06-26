@@ -7,6 +7,19 @@
 USING_NS_CC;
 
 
+enum
+{
+	SHAPE_TRIANGLE,
+	SHAPE_SQUARE,
+};
+
+enum
+{
+	COLOR_RED,
+	COLOR_GREEN,
+	COLOR_YELLOW,
+};
+
 class Brick : public Entity
 {
 public:
@@ -15,8 +28,17 @@ public:
 	virtual bool init();
 	CREATE_FUNC(Brick);
 
+
+	void setShape(int shape);
+	int getShape();
+	void setColor(int color);
+	int getColor();
+
 private:
 
+private:
+	int m_shape;
+	int m_color;
 	
 };
 #endif // __BRICK_H__

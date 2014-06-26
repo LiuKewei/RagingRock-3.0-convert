@@ -23,21 +23,31 @@ using namespace ui;
 #define right_parabolaY(_POS_X_) ( -(_POS_X_)*(_POS_X_)/12.0f + (_POS_X_)*355.0f/6.0f - 9800.0f )
 
 const Point c_PosLeft = Point(200, 100);
+const Point c_PosMid = Point(320, 100);
 const Point c_PosRight = Point(440, 100);
+
 const Point c_PosEnd = Point(320, 600);
+const Point c_PosMidTop = Point(320, 700);
+
+const float c_brickSpeed = 2.0f;
+const float c_brickScaleSpeed = 0.003f;
+
+const int c_brickNameIndex[2][3] = {
+	0, 1, 2,
+	3, 4, 5
+};
+
+
 
 
 class BrickLayer : public cocos2d::Layer
 {
 	enum
 	{
-	};
-
-
-
-	enum
-	{
 		TAG_BRICK = 31250,
+		TAG_BRICK_MID,
+		TAG_BRICK_LEFT,
+		TAG_BRICK_RIGHT,
 	};
 
 public:
@@ -49,10 +59,17 @@ public:
 	// Touches Callback function
 	virtual bool TouchBegan(Touch* touch, Event* event);
 
-	void update(float dt);
+	void updateMidTop(float dt);
+	void updateMidEnd(float dt);
+	void updateLeft(float dt);
+	void updateRight(float dt);
 private:
 	void brickGameStart(Ref* pData);
 
+	Brick* brickCreate();
+	void brickPutLeft();
+	void brickPutMid();
+	void brickPutRight();
 private:
 	Size m_winSize;
 	Layer* m_brickBase;

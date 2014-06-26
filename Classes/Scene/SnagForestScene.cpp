@@ -20,20 +20,21 @@ bool SnagForestScene::initWithPhysics()
 	do 
 	{
 		CC_BREAK_IF(!Scene::initWithPhysics());
-		_snagForestLayer = new SnagForestLayer();
-		_snagForestLayer->autorelease();
-		_snagForestLayer->setPhyWorld(this->getPhysicsWorld());
-		_snagForestLayer->initWithEntryID(0);
-		this->addChild(_snagForestLayer);
 
-		_devilLayer = DevilLayer::create();
-		this->addChild(_devilLayer,1);
+		//_snagForestLayer = new SnagForestLayer();
+		//_snagForestLayer->autorelease();
+		//_snagForestLayer->setPhyWorld(this->getPhysicsWorld());
+		//_snagForestLayer->initWithEntryID(0);
+		//this->addChild(_snagForestLayer);
 
-		_balloonLayer = BalloonLayer::create();
-		this->addChild(_balloonLayer, 2);
+		//_devilLayer = DevilLayer::create();
+		//this->addChild(_devilLayer,1);
 
-		_battleLayer = BattleLayer::create();
-		this->addChild(_battleLayer, 3);
+		//_balloonLayer = BalloonLayer::create();
+		//this->addChild(_balloonLayer, 2);
+
+		//_battleLayer = BattleLayer::create();
+		//this->addChild(_battleLayer, 3);
 
 		_brickLayer = BrickLayer::create();
 		this->addChild(_brickLayer, 3);

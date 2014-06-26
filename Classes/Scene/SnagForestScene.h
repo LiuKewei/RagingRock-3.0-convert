@@ -47,6 +47,7 @@ public:
 	CREATE_FUNC_PHY(SnagForestScene);
 
 	CC_SYNTHESIZE(SnagForestLayer*, _snagForestLayer, SnagForestLayer);
+
 	CC_SYNTHESIZE(DevilLayer*, _devilLayer, DevilLayer);
 	CC_SYNTHESIZE(BalloonLayer*, _balloonLayer, BalloonLayer);
 	CC_SYNTHESIZE(BattleLayer*, _battleLayer, BattleLayer);
