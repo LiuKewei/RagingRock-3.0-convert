@@ -7,6 +7,7 @@ const char* c_brickName[6] = {
 };
 
 BrickLayer::BrickLayer()
+	: m_islaunch(false)
 {
 }
 BrickLayer::~BrickLayer()
@@ -19,10 +20,15 @@ bool BrickLayer::init()
 	do
 	{
 		CC_BREAK_IF(!Layer::init());
+		Point origin = Director::getInstance()->getVisibleOrigin();
+		Size size = Director::getInstance()->getVisibleSize();
+		CCLOG("getVisibleOrigin ... %f, %f", origin.x,origin.y);
+		CCLOG("getVisibleSize ... %f, %f", size.width,size.height);
 		m_winSize = Director::getInstance()->getWinSize();
 		m_brickBase = Layer::create();
-		m_brickBase->setContentSize(Size(640, 960));
+		m_brickBase->setContentSize(m_winSize);
 		//m_brickBase->setVisible(false);
+		m_brickBase->setPosition(origin);
 		this->addChild(m_brickBase);
 
 		m_listener = EventListenerTouchOneByOne::create();
@@ -36,6 +42,8 @@ bool BrickLayer::init()
 			MsgTypeForObserver::c_BrickStart,
 			NULL);
 
+
+		initGoalBrick();
 		brickPutLeft();
 		brickPutMid();
 		brickPutRight();
@@ -54,7 +62,14 @@ void BrickLayer::brickGameStart(Ref* pData)
 
 bool BrickLayer::TouchBegan(Touch* touch, Event* event)
 {
+	if (m_islaunch) return false;
 	auto brick = static_cast<Brick*>(event->getCurrentTarget());
+	Point locationInNode = touch->getLocation();
+	Size s = brick->getContentSize();
+	Rect rect = Rect(brick->getPositionX() - s.width / 2, brick->getPositionY() - s.height / 2, s.width, s.height);
+	if (!rect.containsPoint(locationInNode)) return false;
+	m_islaunch = true;
+
 	if (brick->getPosition() == c_PosLeft)
 	{
 		this->schedule(schedule_selector(BrickLayer::updateLeft));
@@ -76,10 +91,11 @@ void BrickLayer::updateLeft(float dt)
 	auto brick = static_cast<Brick*>(m_brickBase->getChildByTag(TAG_BRICK_LEFT));
 	if (brick->getPositionX() >= c_PosEnd.x)
 	{
-		CCLOG("updateLeft           END");
-		m_brickBase->removeChildByTag(TAG_BRICK_LEFT);
+		this->brickGoalJudge(brick);
+		this->brickChangeCurrent(TAG_BRICK_LEFT);
 		this->brickPutLeft();
 		this->unschedule(schedule_selector(BrickLayer::updateLeft));
+		m_islaunch = false;
 		return;
 	}
 	float x = brick->getPositionX() + c_brickSpeed;
@@ -94,11 +110,11 @@ void BrickLayer::updateMidTop(float dt)
 	float y = 0.0f;
 	if (brick->getPositionY() < c_PosEnd.y)
 	{
-		y = brick->getPositionY() + 12.0f;
+		y = brick->getPositionY() + 15.0f;
 	}
 	else
 	{
-		y = brick->getPositionY() + 6.0f;
+		y = brick->getPositionY() + 7.5f;
 	}
 
 	brick->setPosition(Point(c_PosEnd.x, y));
@@ -106,7 +122,6 @@ void BrickLayer::updateMidTop(float dt)
 
 	if (brick->getPositionY() >= c_PosMidTop.y)
 	{
-		CCLOG("updateMidTop           END");
 		this->unschedule(schedule_selector(BrickLayer::updateMidTop));
 		this->schedule(schedule_selector(BrickLayer::updateMidEnd));
 		return;
@@ -121,10 +136,11 @@ void BrickLayer::updateMidEnd(float dt)
 
 	if (brick->getPositionY() <= c_PosEnd.y)
 	{
-		CCLOG("updateMidEnd           END");
-		m_brickBase->removeChildByTag(TAG_BRICK_MID);
+		this->brickGoalJudge(brick);
+		this->brickChangeCurrent(TAG_BRICK_MID);
 		this->brickPutMid();
 		this->unschedule(schedule_selector(BrickLayer::updateMidEnd));
+		m_islaunch = false;
 		return;
 	}
 }
@@ -134,10 +150,11 @@ void BrickLayer::updateRight(float dt)
 	auto brick = static_cast<Brick*>(m_brickBase->getChildByTag(TAG_BRICK_RIGHT));
 	if (brick->getPositionX() <= c_PosEnd.x)
 	{
-		CCLOG("updateRight           END");
-		m_brickBase->removeChildByTag(TAG_BRICK_RIGHT);
+		this->brickGoalJudge(brick);
+		this->brickChangeCurrent(TAG_BRICK_RIGHT);
 		this->brickPutRight();
 		this->unschedule(schedule_selector(BrickLayer::updateRight));
+		m_islaunch = false;
 		return;
 	}
 	float x = brick->getPositionX() - c_brickSpeed;
@@ -169,9 +186,24 @@ Brick* BrickLayer::brickCreate()
 	brick->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));
 	brick->setShape(shape);
 	brick->setColor(color);
+	brick->setLocalZOrder(Z_ORDER_MAX);
 	m_brickBase->addChild(brick);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), brick);
 	return brick;
+}
+
+void BrickLayer::initGoalBrick()
+{
+	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_SQUARE);
+	int color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
+	auto brick = Brick::create();
+	brick->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));
+	brick->setShape(shape);
+	brick->setColor(color);
+	brick->setLocalZOrder(Z_ORDER_ZERO);
+	brick->setPosition(c_PosEnd);
+	brick->setTag(TAG_BRICK_CURRENT);
+	m_brickBase->addChild(brick);
 }
 
 void BrickLayer::brickPutLeft()
@@ -191,4 +223,29 @@ void BrickLayer::brickPutRight()
 	auto brick = brickCreate();
 	brick->setPosition(c_PosRight);
 	brick->setTag(TAG_BRICK_RIGHT);
+}
+
+
+void BrickLayer::brickChangeCurrent(brickTagEnum eTag)
+{
+	m_brickBase->removeChildByTag(TAG_BRICK_CURRENT);
+	m_brickBase->getChildByTag(eTag)->setTag(TAG_BRICK_CURRENT);
+	m_brickBase->getChildByTag(TAG_BRICK_CURRENT)->setLocalZOrder(Z_ORDER_ZERO);
+}
+
+
+bool BrickLayer::brickGoalJudge(Brick* brick)
+{
+	auto curBrick = static_cast<Brick*>(m_brickBase->getChildByTag(TAG_BRICK_CURRENT));
+	if (brick->getShape() == curBrick->getShape() || brick->getColor() == curBrick->getColor())
+	{
+		//加分
+		CCLOG("SCORE ++++++++++");
+	}
+	else
+	{
+		//不加分，结束游戏
+		CCLOG("GAME OVER!!!!!!");
+	}
+	return false;
 }

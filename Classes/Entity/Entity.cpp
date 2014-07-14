@@ -23,6 +23,7 @@ void Entity::setSpriteAsNULL()
 void Entity::bindSprite(Sprite* sprite)
 {
 	this->m_sprite = sprite;
+	this->setContentSize(sprite->getContentSize());
 	this->addChild(m_sprite);
 }
 

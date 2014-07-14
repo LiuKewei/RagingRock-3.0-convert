@@ -42,12 +42,14 @@ const int c_brickNameIndex[2][3] = {
 
 class BrickLayer : public cocos2d::Layer
 {
-	enum
+	enum brickTagEnum
 	{
 		TAG_BRICK = 31250,
 		TAG_BRICK_MID,
 		TAG_BRICK_LEFT,
 		TAG_BRICK_RIGHT,
+
+		TAG_BRICK_CURRENT,
 	};
 
 public:
@@ -67,15 +69,20 @@ private:
 	void brickGameStart(Ref* pData);
 
 	Brick* brickCreate();
+	void initGoalBrick();
 	void brickPutLeft();
 	void brickPutMid();
 	void brickPutRight();
+
+	void brickChangeCurrent(brickTagEnum e);
+
+	bool brickGoalJudge(Brick* brick);
 private:
 	Size m_winSize;
 	Layer* m_brickBase;
 	EventListenerTouchOneByOne* m_listener;
 
-
+	bool m_islaunch;
 };
 
 #endif // __BRICK_LAYER_H__

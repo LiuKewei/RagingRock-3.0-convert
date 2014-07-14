@@ -7,13 +7,13 @@
 USING_NS_CC;
 
 
-enum
+enum brickShapeEnum
 {
 	SHAPE_TRIANGLE,
 	SHAPE_SQUARE,
 };
 
-enum
+enum brickColorEnum
 {
 	COLOR_RED,
 	COLOR_GREEN,
