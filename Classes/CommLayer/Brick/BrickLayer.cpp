@@ -1,9 +1,10 @@
 #include "BrickLayer.h"
 
 
-const char* c_brickName[6] = {
+const char* c_brickName[9] = {
 	"TRIANGLE_RED.png", "TRIANGLE_GREEN.png", "TRIANGLE_YELLOW.png",
-	"SQUARE_RED.png", "SQUARE_GREEN.png", "SQUARE_YELLOW.png"
+	"SQUARE_RED.png", "SQUARE_GREEN.png", "SQUARE_YELLOW.png",
+	"CIRCLE_RED.png", "CIRCLE_GREEN.png", "CIRCLE_YELLOW.png"
 };
 
 BrickLayer::BrickLayer()
@@ -180,7 +181,7 @@ void BrickLayer::updateRight(float dt)
 // ************  private  ************ //
 Brick* BrickLayer::brickCreate()
 {
-	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_SQUARE);
+	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
 	int color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
 	auto brick = Brick::create();
 	brick->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));
@@ -194,7 +195,7 @@ Brick* BrickLayer::brickCreate()
 
 void BrickLayer::initGoalBrick()
 {
-	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_SQUARE);
+	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
 	int color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
 	auto brick = Brick::create();
 	brick->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));

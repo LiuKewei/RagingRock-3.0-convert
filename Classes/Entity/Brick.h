@@ -11,6 +11,7 @@ enum brickShapeEnum
 {
 	SHAPE_TRIANGLE,
 	SHAPE_SQUARE,
+	SHAPE_CIRCLE,
 };
 
 enum brickColorEnum
