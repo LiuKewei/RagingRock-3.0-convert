@@ -29,11 +29,11 @@ const Point c_PosRight = Point(440, 100);
 const Point c_PosEnd = Point(320, 600);
 const Point c_PosMidTop = Point(320, 700);
 
+const Point c_PosBrickStartBtn = Point(325, 800);
+
 const float c_brickSpeed = 2.0f;
 const float c_brickScaleSpeed = 0.003f;
-
-
-
+const float c_brickTiming = 5.0f;
 
 
 class BrickLayer : public cocos2d::Layer
@@ -62,6 +62,8 @@ public:
 	void updateMidEnd(float dt);
 	void updateLeft(float dt);
 	void updateRight(float dt);
+	void timing(float dt);
+
 private:
 	void initBrickBG();
 
@@ -86,6 +88,9 @@ private:
 	Widget* m_brickLayout;
 
 	int m_brickScore;
+
+	Label* m_timeLabel;
+	float m_timing;
 };
 
 #endif // __BRICK_LAYER_H__

@@ -18,6 +18,9 @@ using namespace ui;
 #include "Tools/MsgTypeForObserver.h"
 #endif
 
+const float c_balloonTiming = 30.0f;
+
+
 class BalloonLayer : public cocos2d::Layer
 {
 	enum

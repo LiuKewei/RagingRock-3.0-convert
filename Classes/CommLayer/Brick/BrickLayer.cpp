@@ -29,8 +29,8 @@ bool BrickLayer::init()
 		CC_BREAK_IF(!Layer::init());
 		Point origin = Director::getInstance()->getVisibleOrigin();
 		Size size = Director::getInstance()->getVisibleSize();
-		CCLOG("getVisibleOrigin ... %f, %f", origin.x,origin.y);
-		CCLOG("getVisibleSize ... %f, %f", size.width,size.height);
+		//CCLOG("getVisibleOrigin ... %f, %f", origin.x,origin.y);
+		//CCLOG("getVisibleSize ... %f, %f", size.width,size.height);
 		m_winSize = Director::getInstance()->getWinSize();
 		m_brickBase = Layer::create();
 		m_brickBase->setContentSize(m_winSize);
@@ -41,7 +41,8 @@ bool BrickLayer::init()
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->onTouchBegan = CC_CALLBACK_2(BrickLayer::TouchBegan, this);
 		m_listener->setSwallowTouches(true);
-		m_listener->retain();// 必须保留，要不然出了BrickLayer::init()方法，m_listener就会被释放然后变成不可访问的地址。
+		// 必须保留，要不然出了BrickLayer::init()方法，或者绑定m_listener的对象被自动释放以后，listener也会跟着被释放，从而导致无法继续绑定新的精灵
+		m_listener->retain();
 
 		NotificationCenter::getInstance()->addObserver(
 			this,
@@ -50,7 +51,6 @@ bool BrickLayer::init()
 			NULL);
 
 		initBrickBG();
-
 
 		initGoalBrick();
 		brickPutLeft();
@@ -67,6 +67,7 @@ bool BrickLayer::init()
 void BrickLayer::brickGameStart(Ref* pData)
 {
 
+	
 }
 
 bool BrickLayer::TouchBegan(Touch* touch, Event* event)
@@ -75,8 +76,8 @@ bool BrickLayer::TouchBegan(Touch* touch, Event* event)
 	auto brick = static_cast<Brick*>(event->getCurrentTarget());
 	Point locationInNode = touch->getLocation();
 	Size s = brick->getContentSize();
-	Rect rect = Rect(brick->getPositionX() - s.width / 2, brick->getPositionY() - s.height / 2, s.width, s.height);
-	if (!rect.containsPoint(locationInNode)) return false;
+	Rect rectBrick = Rect(brick->getPositionX() - s.width / 2, brick->getPositionY() - s.height / 2, s.width, s.height);
+	if (!rectBrick.containsPoint(locationInNode)) return false;
 	m_islaunch = true;
 
 	if (brick->getPosition() == c_PosLeft)
@@ -104,6 +105,8 @@ void BrickLayer::updateLeft(float dt)
 		this->brickChangeCurrent(TAG_BRICK_LEFT);
 		this->brickPutLeft();
 		this->unschedule(schedule_selector(BrickLayer::updateLeft));
+		this->schedule(schedule_selector(BrickLayer::timing));
+		m_timing = c_brickTiming;
 		m_islaunch = false;
 		return;
 	}
@@ -149,6 +152,8 @@ void BrickLayer::updateMidEnd(float dt)
 		this->brickChangeCurrent(TAG_BRICK_MID);
 		this->brickPutMid();
 		this->unschedule(schedule_selector(BrickLayer::updateMidEnd));
+		this->schedule(schedule_selector(BrickLayer::timing));
+		m_timing = c_brickTiming;
 		m_islaunch = false;
 		return;
 	}
@@ -163,6 +168,8 @@ void BrickLayer::updateRight(float dt)
 		this->brickChangeCurrent(TAG_BRICK_RIGHT);
 		this->brickPutRight();
 		this->unschedule(schedule_selector(BrickLayer::updateRight));
+		this->schedule(schedule_selector(BrickLayer::timing));
+		m_timing = c_brickTiming;
 		m_islaunch = false;
 		return;
 	}
@@ -173,7 +180,23 @@ void BrickLayer::updateRight(float dt)
 
 
 
+void BrickLayer::timing(float dt)
+{
+	m_timing -= dt;
+	if (m_timing >= 0)
+	{
+		char str[10] = { 0 };
+		sprintf(str, "%2.0f", m_timing);
+		m_timeLabel->setString(str);
+	}
+	else
+	{
+		this->unschedule(schedule_selector(BrickLayer::timing));
 
+		//计时时间到，自动发射左侧图形
+		this->schedule(schedule_selector(BrickLayer::updateLeft));
+	}
+}
 
 
 
@@ -213,12 +236,38 @@ void BrickLayer::initBrickBG()
 	m_brickBase->addChild(role);
 
 
-	auto scoreLabel = Label::createWithBMFont("fonts/futura-48.fnt", "0000");
+	auto scoreLabel = Label::createWithBMFont("fonts/futura-48.fnt", "Press To Start");
     m_brickBase->addChild(scoreLabel);
-	scoreLabel->setScale(2.0f);
+	scoreLabel->setScale(1.8f);
 	scoreLabel->setTag(TAG_BRICK_SCORE);
-    scoreLabel->setPosition(Point(325, 800));
+	scoreLabel->setPosition(c_PosBrickStartBtn);
 	m_brickScore = 0;
+
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = [=](Touch* touch, Event* event){
+		auto target = static_cast<Label*>(event->getCurrentTarget());
+		Point locationInNode = touch->getLocation();
+		Size s = target->getContentSize();
+		log("Label size %f %f", s.width, s.height);
+		log("Label locationInNode %f %f", locationInNode.x, locationInNode.y);
+		log("Label position %f %f", target->getPositionX(), target->getPositionY());
+		Rect rect = Rect(target->getPositionX() - 250, target->getPositionY() - 30, 500, 60);
+		if (!rect.containsPoint(locationInNode)) return false;
+		m_timing = c_brickTiming;
+
+
+		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
+		scoreLable->setString("0000");
+		this->schedule(schedule_selector(BrickLayer::timing));
+		return false;
+	};
+	listener->setSwallowTouches(true);
+
+	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
+	m_timeLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 倒计时 的label
+	m_timeLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 300));
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, m_timeLabel);
+	m_brickBase->addChild(m_timeLabel, 1);
 }
 
 void BrickLayer::initGoalBrick()
@@ -269,7 +318,7 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 	if (brick->getShape() == curBrick->getShape() || brick->getColor() == curBrick->getColor())
 	{
 		//加分
-		CCLOG("SCORE ++++++++++");
+		//CCLOG("SCORE ++++++++++");
 		m_brickScore += 50;
 		char tmp[5];
 		sprintf(tmp, "%04d", m_brickScore);
@@ -279,8 +328,9 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 	else
 	{
 		//不加分，结束游戏
-		CCLOG("GAME OVER!!!!!!");
-
+		//CCLOG("GAME OVER!!!!!!");
+		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
+		scoreLable->setString("GAME OVER!");
 	}
 	return false;
 }

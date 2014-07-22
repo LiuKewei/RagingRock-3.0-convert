@@ -260,8 +260,9 @@ void BalloonLayer::balloonGameStart(Ref* pData)
 	m_balloonLabel->setVisible(true);
 	m_succCntLabel->setString(" 0");
 	m_succCntLabel->setVisible(true);
-	m_timing = 30.0f;
-	m_timeLabel->setString("30");
+	m_timing = c_balloonTiming;
+	sprintf(tmp, "%2.0f", m_timing);
+	m_timeLabel->setString(tmp);
 	m_timeLabel->setVisible(true);
 
 	//ĞèÒªÌí¼Ó 3   2   1£¬ready go£¡
