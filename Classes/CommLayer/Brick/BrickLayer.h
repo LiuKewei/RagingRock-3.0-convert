@@ -32,10 +32,6 @@ const Point c_PosMidTop = Point(320, 700);
 const float c_brickSpeed = 2.0f;
 const float c_brickScaleSpeed = 0.003f;
 
-const int c_brickNameIndex[2][3] = {
-	0, 1, 2,
-	3, 4, 5
-};
 
 
 
@@ -48,6 +44,7 @@ class BrickLayer : public cocos2d::Layer
 		TAG_BRICK_MID,
 		TAG_BRICK_LEFT,
 		TAG_BRICK_RIGHT,
+		TAG_BRICK_SCORE,
 
 		TAG_BRICK_CURRENT,
 	};
@@ -66,6 +63,8 @@ public:
 	void updateLeft(float dt);
 	void updateRight(float dt);
 private:
+	void initBrickBG();
+
 	void brickGameStart(Ref* pData);
 
 	Brick* brickCreate();
@@ -83,6 +82,10 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 
 	bool m_islaunch;
+
+	Widget* m_brickLayout;
+
+	int m_brickScore;
 };
 
 #endif // __BRICK_LAYER_H__

@@ -1,6 +1,12 @@
 #include "BrickLayer.h"
 
 
+const int c_brickNameIndex[3][3] = {
+	0, 1, 2,
+	3, 4, 5,
+	6, 7, 8
+};
+
 const char* c_brickName[9] = {
 	"TRIANGLE_RED.png", "TRIANGLE_GREEN.png", "TRIANGLE_YELLOW.png",
 	"SQUARE_RED.png", "SQUARE_GREEN.png", "SQUARE_YELLOW.png",
@@ -42,6 +48,8 @@ bool BrickLayer::init()
 			callfuncO_selector(BrickLayer::brickGameStart),
 			MsgTypeForObserver::c_BrickStart,
 			NULL);
+
+		initBrickBG();
 
 
 		initGoalBrick();
@@ -193,6 +201,26 @@ Brick* BrickLayer::brickCreate()
 	return brick;
 }
 
+void BrickLayer::initBrickBG()
+{
+	m_brickLayout = GUIReader::getInstance()->widgetFromJsonFile("BrickUI_1.ExportJson");
+	m_brickBase->addChild(m_brickLayout);
+
+	Sprite* role = Sprite::create("BrickRole.png");
+	role->setPosition(Point(325,425));
+	role->setScale(0.8f);
+	role->setTag(TAG_BRICK);
+	m_brickBase->addChild(role);
+
+
+	auto scoreLabel = Label::createWithBMFont("fonts/futura-48.fnt", "0000");
+    m_brickBase->addChild(scoreLabel);
+	scoreLabel->setScale(2.0f);
+	scoreLabel->setTag(TAG_BRICK_SCORE);
+    scoreLabel->setPosition(Point(325, 800));
+	m_brickScore = 0;
+}
+
 void BrickLayer::initGoalBrick()
 {
 	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
@@ -242,11 +270,17 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 	{
 		//加分
 		CCLOG("SCORE ++++++++++");
+		m_brickScore += 50;
+		char tmp[5];
+		sprintf(tmp, "%04d", m_brickScore);
+		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
+		scoreLable->setString(tmp);
 	}
 	else
 	{
 		//不加分，结束游戏
 		CCLOG("GAME OVER!!!!!!");
+
 	}
 	return false;
 }
