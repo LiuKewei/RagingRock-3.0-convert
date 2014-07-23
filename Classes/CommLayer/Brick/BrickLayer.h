@@ -68,16 +68,17 @@ private:
 	void initBrickBG();
 
 	void brickGameStart(Ref* pData);
-
-	Brick* brickCreate();
-	void initGoalBrick();
-	void brickPutLeft();
-	void brickPutMid();
-	void brickPutRight();
+	
+	Brick* initGoalBrick();
+	Brick* brickCreate(Brick* brick = nullptr, int colorORshape = 0);
+	void brickPutLeft(Brick* brick = nullptr, int colorORshape = 0);
+	void brickPutMid(Brick* brick = nullptr, int colorORshape = 0);
+	void brickPutRight(Brick* brick = nullptr, int colorORshape = 0);
 
 	void brickChangeCurrent(brickTagEnum e);
 
 	bool brickGoalJudge(Brick* brick);
+	void brickTimingReset();
 private:
 	Size m_winSize;
 	Layer* m_brickBase;
@@ -91,6 +92,8 @@ private:
 
 	Label* m_timeLabel;
 	float m_timing;
+
+	char m_timeLabelstr[10];
 };
 
 #endif // __BRICK_LAYER_H__

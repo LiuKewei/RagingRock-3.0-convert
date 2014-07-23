@@ -27,6 +27,12 @@ void Entity::bindSprite(Sprite* sprite)
 	this->addChild(m_sprite);
 }
 
+void Entity::bindSpriteWithoutSize(Sprite* sprite)
+{
+	this->m_sprite = sprite;
+	this->addChild(m_sprite);
+}
+
 void Entity::bindArmature(Armature* armature)
 {
 	this->m_armature = armature;

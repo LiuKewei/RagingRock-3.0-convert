@@ -51,6 +51,7 @@ public:
 	Armature* getArmature();
 	void setSpriteAsNULL();		/*set sprite object*/
 	void bindSprite(Sprite* sprite);		/*bind sprite object*/
+	void bindSpriteWithoutSize(Sprite* sprite);		/*bind sprite object*/
 	void bindArmature(Armature* armature);
 
 protected:

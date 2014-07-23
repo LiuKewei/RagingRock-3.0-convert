@@ -14,7 +14,7 @@ const char* c_brickName[9] = {
 };
 
 BrickLayer::BrickLayer()
-	: m_islaunch(false)
+	: m_islaunch(true)
 {
 }
 BrickLayer::~BrickLayer()
@@ -34,7 +34,7 @@ bool BrickLayer::init()
 		m_winSize = Director::getInstance()->getWinSize();
 		m_brickBase = Layer::create();
 		m_brickBase->setContentSize(m_winSize);
-		//m_brickBase->setVisible(false);
+		m_brickBase->setVisible(false);
 		m_brickBase->setPosition(origin);
 		this->addChild(m_brickBase);
 
@@ -50,13 +50,6 @@ bool BrickLayer::init()
 			MsgTypeForObserver::c_BrickStart,
 			NULL);
 
-		initBrickBG();
-
-		initGoalBrick();
-		brickPutLeft();
-		brickPutMid();
-		brickPutRight();
-
 		bRet = true;
 	} while (0);
 
@@ -66,8 +59,13 @@ bool BrickLayer::init()
 
 void BrickLayer::brickGameStart(Ref* pData)
 {
+	initBrickBG();
 
-	
+	auto brick = initGoalBrick();
+	brickPutLeft(brick, -1);
+	brickPutMid();
+	brickPutRight(brick, 1);
+	m_brickBase->setVisible(true);
 }
 
 bool BrickLayer::TouchBegan(Touch* touch, Event* event)
@@ -79,6 +77,9 @@ bool BrickLayer::TouchBegan(Touch* touch, Event* event)
 	Rect rectBrick = Rect(brick->getPositionX() - s.width / 2, brick->getPositionY() - s.height / 2, s.width, s.height);
 	if (!rectBrick.containsPoint(locationInNode)) return false;
 	m_islaunch = true;
+
+	m_timeLabel->setVisible(false);
+	this->unschedule(schedule_selector(BrickLayer::timing));
 
 	if (brick->getPosition() == c_PosLeft)
 	{
@@ -105,9 +106,7 @@ void BrickLayer::updateLeft(float dt)
 		this->brickChangeCurrent(TAG_BRICK_LEFT);
 		this->brickPutLeft();
 		this->unschedule(schedule_selector(BrickLayer::updateLeft));
-		this->schedule(schedule_selector(BrickLayer::timing));
-		m_timing = c_brickTiming;
-		m_islaunch = false;
+		this->brickTimingReset();
 		return;
 	}
 	float x = brick->getPositionX() + c_brickSpeed;
@@ -152,9 +151,7 @@ void BrickLayer::updateMidEnd(float dt)
 		this->brickChangeCurrent(TAG_BRICK_MID);
 		this->brickPutMid();
 		this->unschedule(schedule_selector(BrickLayer::updateMidEnd));
-		this->schedule(schedule_selector(BrickLayer::timing));
-		m_timing = c_brickTiming;
-		m_islaunch = false;
+		this->brickTimingReset();
 		return;
 	}
 }
@@ -168,9 +165,7 @@ void BrickLayer::updateRight(float dt)
 		this->brickChangeCurrent(TAG_BRICK_RIGHT);
 		this->brickPutRight();
 		this->unschedule(schedule_selector(BrickLayer::updateRight));
-		this->schedule(schedule_selector(BrickLayer::timing));
-		m_timing = c_brickTiming;
-		m_islaunch = false;
+		this->brickTimingReset();
 		return;
 	}
 	float x = brick->getPositionX() - c_brickSpeed;
@@ -183,19 +178,18 @@ void BrickLayer::updateRight(float dt)
 void BrickLayer::timing(float dt)
 {
 	m_timing -= dt;
-	if (m_timing >= 0)
-	{
-		char str[10] = { 0 };
-		sprintf(str, "%2.0f", m_timing);
-		m_timeLabel->setString(str);
-	}
-	else
+	if (m_timing < 0)
 	{
 		this->unschedule(schedule_selector(BrickLayer::timing));
+		m_timing = c_brickTiming;
+		m_timeLabel->setVisible(false);
+		m_islaunch = true;
 
 		//计时时间到，自动发射左侧图形
 		this->schedule(schedule_selector(BrickLayer::updateLeft));
 	}
+	sprintf(m_timeLabelstr, "%2.0f", m_timing);
+	m_timeLabel->setString(m_timeLabelstr);
 }
 
 
@@ -210,18 +204,33 @@ void BrickLayer::timing(float dt)
 
 
 // ************  private  ************ //
-Brick* BrickLayer::brickCreate()
+Brick* BrickLayer::brickCreate(Brick* brick, int colorORshape)
 {
-	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
-	int color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
-	auto brick = Brick::create();
-	brick->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));
-	brick->setShape(shape);
-	brick->setColor(color);
-	brick->setLocalZOrder(Z_ORDER_MAX);
-	m_brickBase->addChild(brick);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), brick);
-	return brick;
+	int shape = 0;
+	int color = 0;
+	switch (colorORshape)
+	{
+	case -1:
+		shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
+		color = brick->getColor();
+		break;
+	case 1:
+		shape = brick->getShape();
+		color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
+		break;
+	default:
+		shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
+		color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
+		break;
+	}
+	auto b = Brick::create();
+	b->bindSprite(Sprite::create(c_brickName[c_brickNameIndex[shape][color]]));
+	b->setShape(shape);
+	b->setColor(color);
+	b->setLocalZOrder(Z_ORDER_MAX);
+	m_brickBase->addChild(b);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(m_listener->clone(), b);
+	return b;
 }
 
 void BrickLayer::initBrickBG()
@@ -235,14 +244,6 @@ void BrickLayer::initBrickBG()
 	role->setTag(TAG_BRICK);
 	m_brickBase->addChild(role);
 
-
-	auto scoreLabel = Label::createWithBMFont("fonts/futura-48.fnt", "Press To Start");
-    m_brickBase->addChild(scoreLabel);
-	scoreLabel->setScale(1.8f);
-	scoreLabel->setTag(TAG_BRICK_SCORE);
-	scoreLabel->setPosition(c_PosBrickStartBtn);
-	m_brickScore = 0;
-
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [=](Touch* touch, Event* event){
 		auto target = static_cast<Label*>(event->getCurrentTarget());
@@ -253,24 +254,30 @@ void BrickLayer::initBrickBG()
 		log("Label position %f %f", target->getPositionX(), target->getPositionY());
 		Rect rect = Rect(target->getPositionX() - 250, target->getPositionY() - 30, 500, 60);
 		if (!rect.containsPoint(locationInNode)) return false;
-		m_timing = c_brickTiming;
-
+		this->brickTimingReset();
 
 		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
 		scoreLable->setString("0000");
-		this->schedule(schedule_selector(BrickLayer::timing));
+		_eventDispatcher->removeEventListener(listener);
 		return false;
 	};
 	listener->setSwallowTouches(true);
 
+	auto scoreLabel = Label::createWithBMFont("fonts/futura-48.fnt", "Press To Start");
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, scoreLabel);
+	m_brickBase->addChild(scoreLabel);
+	scoreLabel->setScale(1.8f);
+	scoreLabel->setTag(TAG_BRICK_SCORE);
+	scoreLabel->setPosition(c_PosBrickStartBtn);
+	m_brickScore = 0;
+
 	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
 	m_timeLabel = Label::createWithTTF(config2, "", TextHAlignment::LEFT);//创建显示 倒计时 的label
-	m_timeLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 300));
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, m_timeLabel);
+	m_timeLabel->setPosition(Point(m_winSize.width / 2 + 100, m_winSize.height / 2 + 200));
 	m_brickBase->addChild(m_timeLabel, 1);
 }
 
-void BrickLayer::initGoalBrick()
+Brick* BrickLayer::initGoalBrick()
 {
 	int shape = MsgTypeForObserver::getRand(SHAPE_TRIANGLE, SHAPE_CIRCLE);
 	int color = MsgTypeForObserver::getRand(COLOR_RED, COLOR_YELLOW);
@@ -282,25 +289,27 @@ void BrickLayer::initGoalBrick()
 	brick->setPosition(c_PosEnd);
 	brick->setTag(TAG_BRICK_CURRENT);
 	m_brickBase->addChild(brick);
+
+	return brick;
 }
 
-void BrickLayer::brickPutLeft()
+void BrickLayer::brickPutLeft(Brick* brick, int colorORshape)
 {
-	auto brick = brickCreate();
-	brick->setPosition(c_PosLeft);
-	brick->setTag(TAG_BRICK_LEFT);
+	auto b = brickCreate(brick, colorORshape);
+	b->setPosition(c_PosLeft);
+	b->setTag(TAG_BRICK_LEFT);
 }
-void BrickLayer::brickPutMid()
+void BrickLayer::brickPutMid(Brick* brick, int colorORshape)
 {
-	auto brick = brickCreate();
-	brick->setPosition(c_PosMid);
-	brick->setTag(TAG_BRICK_MID);
+	auto b = brickCreate(brick, colorORshape);
+	b->setPosition(c_PosMid);
+	b->setTag(TAG_BRICK_MID);
 }
-void BrickLayer::brickPutRight()
+void BrickLayer::brickPutRight(Brick* brick, int colorORshape)
 {
-	auto brick = brickCreate();
-	brick->setPosition(c_PosRight);
-	brick->setTag(TAG_BRICK_RIGHT);
+	auto b = brickCreate(brick, colorORshape);
+	b->setPosition(c_PosRight);
+	b->setTag(TAG_BRICK_RIGHT);
 }
 
 
@@ -331,6 +340,21 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 		//CCLOG("GAME OVER!!!!!!");
 		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
 		scoreLable->setString("GAME OVER!");
+
+		m_islaunch = true;
+		this->unschedule(schedule_selector(BrickLayer::timing));
+		m_timeLabel->setVisible(false);
 	}
 	return false;
+}
+
+
+void BrickLayer::brickTimingReset()
+{
+	m_timing = c_brickTiming;
+	m_islaunch = false;
+	m_timeLabel->setVisible(true);
+	sprintf(m_timeLabelstr, "%2.0f", m_timing);
+	m_timeLabel->setString(m_timeLabelstr);
+	this->schedule(schedule_selector(BrickLayer::timing), 1.0f);
 }

@@ -22,6 +22,7 @@ SnagForestLayer::SnagForestLayer()
 	, m_loadingVar(1.0f)
 	, m_cellside(0.0f)
 	, m_loadBg(NULL)
+	, m_littlegamechangeflag(0)
 {
 	m_slotPos = new std::vector<Point>();
 }
@@ -93,7 +94,17 @@ void SnagForestLayer::update(float dt)
 	{
 		if (!m_isLittleGameStart)
 		{
-			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+			++m_littlegamechangeflag;
+			if (m_littlegamechangeflag == 1)
+			{
+				//NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BrickStart, NULL);
+			}
+			else if (m_littlegamechangeflag == 2)
+			{
+				
+				m_littlegamechangeflag = 0;
+			}
 			pause();
 			m_isLittleGameStart = true;
 		}
@@ -171,7 +182,8 @@ bool SnagForestLayer::TouchBegan(Touch* touch, Event* event)
 
 	// create ball and set position of ball on arrow
 	m_ball = Ball::create();
-	m_ball->bindSprite(Sprite::createWithSpriteFrame(
+	//m_ball->bindSprite(Sprite::create("ball.png"));
+	m_ball->bindSpriteWithoutSize(Sprite::createWithSpriteFrame(
 		SpriteFrameCache::getInstance()->getSpriteFrameByName("ball.png")
 		));
 	m_ball->setBallSize(m_ball->getSprite()->getContentSize());
@@ -352,7 +364,7 @@ void SnagForestLayer::initSlots()
 	m_littleGameSlot->setScale(0.4f);
 
 	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
-	//gameslotY=960.0f;
+	gameslotY=1000.0f;
 
 	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
 	for (int idx = 1; idx < 5; ++idx)

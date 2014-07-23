@@ -124,7 +124,7 @@ void DevilLayer::TouchEnded(Touch* touch, Event* event)
 void DevilLayer::initDevil()
 {
 	m_devil = Devil::create();
-	m_devil->bindSprite(Sprite::create("devil.png"));
+	m_devil->bindSpriteWithoutSize(Sprite::create("devil.png"));
 	m_devil->setDevilMaxIndexInCurrent(0);
 	m_devil->setDevilPosCnt(0);
 	m_devil->setPosition(Point::ZERO);

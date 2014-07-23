@@ -118,5 +118,7 @@ private:
 	bool  m_isBallGoingUp;
 	bool  m_isLittleGameStart;
 
+	int m_littlegamechangeflag;
+
 };
 #endif // __SNAGFOREST_LAYER_H__
