@@ -78,7 +78,8 @@ private:
 	void brickChangeCurrent(brickTagEnum e);
 
 	bool brickGoalJudge(Brick* brick);
-	void brickTimingReset();
+	void brickTimingStart();
+	void brickTimingStop();
 private:
 	Size m_winSize;
 	Layer* m_brickBase;

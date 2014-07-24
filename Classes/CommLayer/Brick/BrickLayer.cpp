@@ -76,10 +76,11 @@ bool BrickLayer::TouchBegan(Touch* touch, Event* event)
 	Size s = brick->getContentSize();
 	Rect rectBrick = Rect(brick->getPositionX() - s.width / 2, brick->getPositionY() - s.height / 2, s.width, s.height);
 	if (!rectBrick.containsPoint(locationInNode)) return false;
-	m_islaunch = true;
+	this->brickTimingStop();
 
-	m_timeLabel->setVisible(false);
-	this->unschedule(schedule_selector(BrickLayer::timing));
+	m_timing = c_brickTiming;
+	sprintf(m_timeLabelstr, "%2.0f", m_timing);
+	m_timeLabel->setString(m_timeLabelstr);
 
 	if (brick->getPosition() == c_PosLeft)
 	{
@@ -106,7 +107,7 @@ void BrickLayer::updateLeft(float dt)
 		this->brickChangeCurrent(TAG_BRICK_LEFT);
 		this->brickPutLeft();
 		this->unschedule(schedule_selector(BrickLayer::updateLeft));
-		this->brickTimingReset();
+		this->brickTimingStart();
 		return;
 	}
 	float x = brick->getPositionX() + c_brickSpeed;
@@ -151,7 +152,7 @@ void BrickLayer::updateMidEnd(float dt)
 		this->brickChangeCurrent(TAG_BRICK_MID);
 		this->brickPutMid();
 		this->unschedule(schedule_selector(BrickLayer::updateMidEnd));
-		this->brickTimingReset();
+		this->brickTimingStart();
 		return;
 	}
 }
@@ -165,7 +166,7 @@ void BrickLayer::updateRight(float dt)
 		this->brickChangeCurrent(TAG_BRICK_RIGHT);
 		this->brickPutRight();
 		this->unschedule(schedule_selector(BrickLayer::updateRight));
-		this->brickTimingReset();
+		this->brickTimingStart();
 		return;
 	}
 	float x = brick->getPositionX() - c_brickSpeed;
@@ -180,10 +181,8 @@ void BrickLayer::timing(float dt)
 	m_timing -= dt;
 	if (m_timing < 0)
 	{
-		this->unschedule(schedule_selector(BrickLayer::timing));
 		m_timing = c_brickTiming;
-		m_timeLabel->setVisible(false);
-		m_islaunch = true;
+		this->brickTimingStop();
 
 		//计时时间到，自动发射左侧图形
 		this->schedule(schedule_selector(BrickLayer::updateLeft));
@@ -249,12 +248,12 @@ void BrickLayer::initBrickBG()
 		auto target = static_cast<Label*>(event->getCurrentTarget());
 		Point locationInNode = touch->getLocation();
 		Size s = target->getContentSize();
-		log("Label size %f %f", s.width, s.height);
-		log("Label locationInNode %f %f", locationInNode.x, locationInNode.y);
-		log("Label position %f %f", target->getPositionX(), target->getPositionY());
+		//log("Label size %f %f", s.width, s.height);
+		//log("Label locationInNode %f %f", locationInNode.x, locationInNode.y);
+		//log("Label position %f %f", target->getPositionX(), target->getPositionY());
 		Rect rect = Rect(target->getPositionX() - 250, target->getPositionY() - 30, 500, 60);
 		if (!rect.containsPoint(locationInNode)) return false;
-		this->brickTimingReset();
+		this->brickTimingStart();
 
 		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
 		scoreLable->setString("0000");
@@ -341,20 +340,22 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
 		scoreLable->setString("GAME OVER!");
 
-		m_islaunch = true;
-		this->unschedule(schedule_selector(BrickLayer::timing));
-		m_timeLabel->setVisible(false);
+		this->brickTimingStop();
 	}
 	return false;
 }
 
 
-void BrickLayer::brickTimingReset()
+void BrickLayer::brickTimingStart()
 {
-	m_timing = c_brickTiming;
-	m_islaunch = false;
-	m_timeLabel->setVisible(true);
-	sprintf(m_timeLabelstr, "%2.0f", m_timing);
-	m_timeLabel->setString(m_timeLabelstr);
 	this->schedule(schedule_selector(BrickLayer::timing), 1.0f);
+	m_timeLabel->setVisible(true);
+	m_islaunch = false;
+}
+
+void BrickLayer::brickTimingStop()
+{
+	m_islaunch = true;
+	this->unschedule(schedule_selector(BrickLayer::timing));
+	m_timeLabel->setVisible(false);
 }
