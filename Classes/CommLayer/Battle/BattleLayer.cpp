@@ -161,13 +161,13 @@ void BattleLayer::initLabels()
 {
 	TTFConfig config2("Marker Felt.ttf", 30, GlyphCollection::DYNAMIC, nullptr, true);
 
-	m_devilHP = 1000;
-	m_devilHPLabel = Label::createWithTTF(config2, "1000", TextHAlignment::LEFT);//创建显示 魔王血量 的label
+	m_devilHP = 30;
+	m_devilHPLabel = Label::createWithTTF(config2, "30", TextHAlignment::LEFT);//创建显示 魔王血量 的label
 	m_devilHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 2 + 200));
 	m_battleBase->addChild(m_devilHPLabel, 1);
 
-	m_leadHP = 300;
-	m_leadHPLabel = Label::createWithTTF(config2, "300", TextHAlignment::LEFT);//创建显示 主角血量 的label
+	m_leadHP = 10;
+	m_leadHPLabel = Label::createWithTTF(config2, "10", TextHAlignment::LEFT);//创建显示 主角血量 的label
 	m_leadHPLabel->setPosition(Point(m_winSize.width / 2 + 250, m_winSize.height / 6));
 	m_battleBase->addChild(m_leadHPLabel, 1);
 }

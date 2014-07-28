@@ -97,12 +97,12 @@ void SnagForestLayer::update(float dt)
 			++m_littlegamechangeflag;
 			if (m_littlegamechangeflag == 1)
 			{
-				//NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
+				
 				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BrickStart, NULL);
 			}
 			else if (m_littlegamechangeflag == 2)
 			{
-				
+				NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BalloonStart, NULL);
 				m_littlegamechangeflag = 0;
 			}
 			pause();
@@ -364,7 +364,7 @@ void SnagForestLayer::initSlots()
 	m_littleGameSlot->setScale(0.4f);
 
 	float gameslotY = m_littleGameSlot->getContentSize().height/2*0.4f;
-	gameslotY=1000.0f;
+	gameslotY=650.0f;
 
 	m_slotPos->push_back(Point(m_winSize.width / 2,  gameslotY));
 	for (int idx = 1; idx < 5; ++idx)
@@ -588,6 +588,12 @@ void SnagForestLayer::interactionSubscribe()
 
 	NotificationCenter::getInstance()->addObserver(
 		this,
+		callfuncO_selector(SnagForestLayer::handleBalloonStop),
+		MsgTypeForObserver::c_BrickStop,
+		NULL);
+
+	NotificationCenter::getInstance()->addObserver(
+		this,
 		callfuncO_selector(SnagForestLayer::handleBattleStop),
 		MsgTypeForObserver::c_BattleStop,
 		NULL);
@@ -617,6 +623,8 @@ void SnagForestLayer::handleBalloonStop(Ref* pData)
 	}
 	recover();
 }
+
+
 
 
 bool SnagForestLayer::removeDevil()

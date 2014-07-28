@@ -15,11 +15,13 @@ const char* c_brickName[9] = {
 
 BrickLayer::BrickLayer()
 	: m_islaunch(true)
+	, m_isGameOver(false)
 {
 }
 BrickLayer::~BrickLayer()
 {
 	m_listener->release();
+	m_brickBase->release();
 }
 bool BrickLayer::init()
 {
@@ -27,16 +29,16 @@ bool BrickLayer::init()
 	do
 	{
 		CC_BREAK_IF(!Layer::init());
-		Point origin = Director::getInstance()->getVisibleOrigin();
-		Size size = Director::getInstance()->getVisibleSize();
 		//CCLOG("getVisibleOrigin ... %f, %f", origin.x,origin.y);
 		//CCLOG("getVisibleSize ... %f, %f", size.width,size.height);
 		m_winSize = Director::getInstance()->getWinSize();
+		Point origin = Director::getInstance()->getVisibleOrigin();
+		Size size = Director::getInstance()->getVisibleSize();
 		m_brickBase = Layer::create();
 		m_brickBase->setContentSize(m_winSize);
 		m_brickBase->setVisible(false);
 		m_brickBase->setPosition(origin);
-		this->addChild(m_brickBase);
+		m_brickBase->retain();
 
 		m_listener = EventListenerTouchOneByOne::create();
 		m_listener->onTouchBegan = CC_CALLBACK_2(BrickLayer::TouchBegan, this);
@@ -185,8 +187,19 @@ void BrickLayer::timing(float dt)
 		m_timeLabel->setVisible(false);
 		m_islaunch = true;
 
-		//计时时间到，自动发射左侧图形
-		this->schedule(schedule_selector(BrickLayer::updateLeft));
+		if (m_isGameOver)
+		{
+			m_isGameOver = false;
+			NotificationCenter::getInstance()->postNotification(MsgTypeForObserver::c_BrickStop, NULL);
+			m_brickBase->removeAllChildren();
+			this->removeAllChildren();
+			return;
+		}
+		else
+		{
+			//计时时间到，自动发射左侧图形
+			this->schedule(schedule_selector(BrickLayer::updateLeft));
+		}
 	}
 	sprintf(m_timeLabelstr, "%2.0f", m_timing);
 	m_timeLabel->setString(m_timeLabelstr);
@@ -235,6 +248,8 @@ Brick* BrickLayer::brickCreate(Brick* brick, int colorORshape)
 
 void BrickLayer::initBrickBG()
 {
+	this->addChild(m_brickBase);
+
 	m_brickLayout = GUIReader::getInstance()->widgetFromJsonFile("BrickUI_1.ExportJson");
 	m_brickBase->addChild(m_brickLayout);
 
@@ -341,6 +356,8 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 		auto scoreLable = static_cast<Label*>(m_brickBase->getChildByTag(TAG_BRICK_SCORE));
 		scoreLable->setString("GAME OVER!");
 
+		m_isGameOver = true;
+
 		m_islaunch = true;
 		this->unschedule(schedule_selector(BrickLayer::timing));
 		m_timeLabel->setVisible(false);
@@ -352,7 +369,14 @@ bool BrickLayer::brickGoalJudge(Brick* brick)
 void BrickLayer::brickTimingReset()
 {
 	m_timing = c_brickTiming;
-	m_islaunch = false;
+	if (m_isGameOver)
+	{
+		m_islaunch = true;
+	}
+	else
+	{
+		m_islaunch = false;
+	}
 	m_timeLabel->setVisible(true);
 	sprintf(m_timeLabelstr, "%2.0f", m_timing);
 	m_timeLabel->setString(m_timeLabelstr);

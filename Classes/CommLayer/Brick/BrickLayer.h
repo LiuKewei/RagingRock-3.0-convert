@@ -85,6 +85,7 @@ private:
 	EventListenerTouchOneByOne* m_listener;
 
 	bool m_islaunch;
+	bool m_isGameOver;
 
 	Widget* m_brickLayout;
 
